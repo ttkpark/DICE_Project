@@ -1,0 +1,184 @@
+{
+  "backend": "iverilog",
+  "scope": "simulation-only behavioral model, not gate-level timing or PPA",
+  "passed": 16,
+  "case_count": 16,
+  "cases": [
+    {
+      "case": "demo",
+      "instructions": 900,
+      "outputs": [
+        6,
+        4,
+        10,
+        90
+      ],
+      "pass": true
+    },
+    {
+      "case": "large_bias",
+      "instructions": 900,
+      "outputs": [
+        1073741820,
+        -1073741815,
+        1000009,
+        -1000009
+      ],
+      "pass": true
+    },
+    {
+      "case": "max_positive",
+      "instructions": 16986,
+      "outputs": [
+        129032,
+        129033,
+        129031,
+        133128
+      ],
+      "pass": true
+    },
+    {
+      "case": "mixed_sign",
+      "instructions": 8906,
+      "outputs": [
+        -51,
+        49,
+        -1,
+        998
+      ],
+      "pass": true
+    },
+    {
+      "case": "negative_extreme",
+      "instructions": 17018,
+      "outputs": [
+        130048,
+        130049,
+        130047,
+        125952
+      ],
+      "pass": true
+    },
+    {
+      "case": "random_00",
+      "instructions": 9663,
+      "outputs": [
+        -727902,
+        -279670,
+        715841,
+        582668
+      ],
+      "pass": true
+    },
+    {
+      "case": "random_01",
+      "instructions": 9318,
+      "outputs": [
+        -693528,
+        -613656,
+        716261,
+        241756
+      ],
+      "pass": true
+    },
+    {
+      "case": "random_02",
+      "instructions": 7555,
+      "outputs": [
+        -210285,
+        762300,
+        -459297,
+        -733358
+      ],
+      "pass": true
+    },
+    {
+      "case": "random_03",
+      "instructions": 9205,
+      "outputs": [
+        -320779,
+        -543107,
+        274751,
+        889578
+      ],
+      "pass": true
+    },
+    {
+      "case": "random_04",
+      "instructions": 9054,
+      "outputs": [
+        826955,
+        553017,
+        -172125,
+        189079
+      ],
+      "pass": true
+    },
+    {
+      "case": "random_05",
+      "instructions": 8113,
+      "outputs": [
+        -692680,
+        -506900,
+        -566025,
+        101125
+      ],
+      "pass": true
+    },
+    {
+      "case": "random_06",
+      "instructions": 8103,
+      "outputs": [
+        789232,
+        698919,
+        -161675,
+        930305
+      ],
+      "pass": true
+    },
+    {
+      "case": "random_07",
+      "instructions": 7435,
+      "outputs": [
+        -508944,
+        -838485,
+        -614073,
+        803367
+      ],
+      "pass": true
+    },
+    {
+      "case": "random_08",
+      "instructions": 8377,
+      "outputs": [
+        -493180,
+        -613855,
+        331308,
+        -990049
+      ],
+      "pass": true
+    },
+    {
+      "case": "random_09",
+      "instructions": 7908,
+      "outputs": [
+        -266423,
+        -917571,
+        -70182,
+        8012
+      ],
+      "pass": true
+    },
+    {
+      "case": "zero_weights",
+      "instructions": 730,
+      "outputs": [
+        17,
+        -17,
+        0,
+        123
+      ],
+      "pass": true
+    }
+  ]
+}
