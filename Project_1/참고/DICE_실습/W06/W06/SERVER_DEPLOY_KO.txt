@@ -1,0 +1,41 @@
+W06 서버 배포 — 전체 DICE 계정
+
+아래 한 줄을 실행합니다.
+
+sudo bash /home/jhpark/codex/dice/deploy_w06_all.sh
+
+대상: 실행 시 존재하는 diceNNN 전체 계정, 교강사 포함
+설치: /home/dice/계정명/DICE/W06
+기존 자료: /var/backups/dice-w06/deploy_*/계정명/W06에 보존
+배포 기록: 같은 deploy_* 폴더의 manifest.json 및 계정명/deployment.json
+사전 경로 검사만 하려면 위 명령 뒤에 --check를 붙입니다.
+
+학생 시작점은 W06/README_KO.md입니다.
+
+레슨 1: todo/lesson/01_ports — 시뮬레이션·파형
+레슨 2: todo/lesson/02_timing_x0 — 시뮬레이션·파형
+레슨 3: todo/lesson/03_synthesis — 합성만 별도로 진행
+체크포인트: todo/checkpoint — 빈칸 6개, 14개 검사
+
+학생용 쉘/Tcl 파일은 실제로 명령어 목록으로 교체했습니다.
+run.sh는 폴더 생성·VCS 실행, view.sh는 Verdi 실행,
+run_synth.sh는 DC 실행 한 줄입니다. if/for/함수/해시 검사 코드는 없습니다.
+환경만 source setup.tcl로 읽고 synth.tcl의 나머지 명령을 한 줄씩 입력합니다.
+
+배포 전 압축과 원본, 별도 합성 레슨·체크포인트의 DC 파일을 확인합니다.
+설치 후 모든 파일의 해시와 실제 계정의 읽기·쓰기·실행 권한을 검사합니다.
+설치 오류가 나면 해당 계정의 이전 작업을 복구하고 중단합니다.
+앞서 완료한 계정은 새 배포본을 유지합니다. 진행 상황은 manifest.json에 남습니다.
+다른 주차와 기존 W06 백업·검증 폴더는 유지합니다.
+전체 배포는 계정별 VCS/Verdi/DC 실행을 반복하지 않으며 별도 확인합니다.
+일반 계정 세션에서 sudo 인증이 없으면 학생 홈 확인·설치를 진행할 수 없습니다.
+기존 폴더 위에 압축을 수동으로 덮어쓰지 마세요.
+
+라이브러리는 실제 학생 계정에서 접근 가능한지 교강사가 확인합니다.
+DC는 큐를 통해 실행하고 마지막에 exit합니다. 실제 학생의 대화형 입력은
+자동 검사와 별도로 확인합니다. Error/Fatal/FAIL이면 다음 줄로 진행하지 않습니다.
+합성은 비채점이며 추가 제출이나 최적화 과제는 없습니다.
+실제 검증 기록은 instructor/VALIDATION.md에 있습니다.
+
+기존 deploy_w06_dice024.sh는 dice024 한 계정의 교체·서버 검증·구버전 삭제용입니다.
+전체 계정 배포에는 위 deploy_w06_all.sh를 사용하세요.
