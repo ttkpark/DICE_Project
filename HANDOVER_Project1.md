@@ -160,7 +160,7 @@ Y[j] ← acc_j;  DONE_ADDR ← DONE_TOKEN
 
 ## 5. CPU PIPELINE (김대현 담당) — 이미 있는 것
 
-> 박기호 로컬 `class-2026-2/1020_RISC_PIPELINE/` 에 **5단 파이프라인 CORE 가 이미 구현·검증돼 있음** (아직 이 레포에 안 올림). 처음부터 짜지 말고 이걸 출발점으로 쓰는 걸 권장. 레포에 올려 달라고 하면 올림.
+> `Project_1/참고/1020_RISC_PIPELINE/` 에 **5단 파이프라인 CORE 가 이미 구현·검증돼 있음**. 처음부터 짜지 말고 이걸 출발점으로 쓰는 걸 권장. 실행법은 그 폴더 `README.md`, 설계 근거는 `SPEC.md`.
 
 ### 5.1 TOP.v / CONTROLLER.v (단일 사이클·파이프라인 공통, 완료)
 
@@ -274,8 +274,8 @@ python3 tools/verify.py my.hex                                    # 16 case: 정
 | R1.3a 배포본 (SDC, PPT/PDF, 릴리스노트) | 이 레포 `Project_1/Project1_R1p3a/` |
 | starter (R1.2 기준, TOP 연결됨·CONTROLLER 미완) | `Project_1/Project1_INT8_Starter_20261020/`, 사본 `Project_1/starter_giho/` |
 | 기준본 실습 패키지 (`tb_behavior_cpu.sv`, `verify_rtl.py`) | `Project_1/Project1_INT8_Baseline_20261007/` |
-| 단일 사이클 완성본 (TOP/CONTROLLER/ASM 2종/검증·합성 스크립트) | 박기호 로컬 `class-2026-2/1020_RISC/` — **레포 미반영** |
-| 파이프라인 완성본 | 박기호 로컬 `class-2026-2/1020_RISC_PIPELINE/` — **레포 미반영** |
+| 단일 사이클 완성본 (TOP/CONTROLLER/ASM 2종/검증·합성 스크립트, 명세 `SPEC.md`) | `Project_1/참고/1020_RISC/` |
+| 파이프라인 완성본 (5단 CORE.v, 명세 `SPEC.md`) | `Project_1/참고/1020_RISC_PIPELINE/` |
 | 공식 SDC 원문 | `Project_1/Project1_R1p3a/Project1_INT8_CPU_ONLY_20261023.sdc` |
 
 참고: R1.3a ZIP 안의 starter 는 TOP 의 4연결이 `32'b0` TODO 로 비어 있는 버전이다. 레포의 starter 는 TOP 연결이 이미 된 R1.2 사본.

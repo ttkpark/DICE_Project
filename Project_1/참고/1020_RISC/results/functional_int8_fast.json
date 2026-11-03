@@ -1,0 +1,234 @@
+{
+  "program": "int8_fast.hex",
+  "imem_words": 192,
+  "case_count": 16,
+  "passed": 16,
+  "mean_cycles": 552.5,
+  "cases": [
+    {
+      "case": "demo",
+      "pass": true,
+      "errors": [],
+      "cycles": 540,
+      "loads": 50,
+      "stores": 5,
+      "outputs": [
+        6,
+        4,
+        10,
+        90
+      ]
+    },
+    {
+      "case": "large_bias",
+      "pass": true,
+      "errors": [],
+      "cycles": 540,
+      "loads": 50,
+      "stores": 5,
+      "outputs": [
+        1073741820,
+        -1073741815,
+        1000009,
+        -1000009
+      ]
+    },
+    {
+      "case": "max_positive",
+      "pass": true,
+      "errors": [],
+      "cycles": 656,
+      "loads": 50,
+      "stores": 5,
+      "outputs": [
+        129032,
+        129033,
+        129031,
+        133128
+      ]
+    },
+    {
+      "case": "mixed_sign",
+      "pass": true,
+      "errors": [],
+      "cycles": 536,
+      "loads": 50,
+      "stores": 5,
+      "outputs": [
+        -51,
+        49,
+        -1,
+        998
+      ]
+    },
+    {
+      "case": "negative_extreme",
+      "pass": true,
+      "errors": [],
+      "cycles": 464,
+      "loads": 50,
+      "stores": 5,
+      "outputs": [
+        130048,
+        130049,
+        130047,
+        125952
+      ]
+    },
+    {
+      "case": "random_00",
+      "pass": true,
+      "errors": [],
+      "cycles": 560,
+      "loads": 50,
+      "stores": 5,
+      "outputs": [
+        -727902,
+        -279670,
+        715841,
+        582668
+      ]
+    },
+    {
+      "case": "random_01",
+      "pass": true,
+      "errors": [],
+      "cycles": 568,
+      "loads": 50,
+      "stores": 5,
+      "outputs": [
+        -693528,
+        -613656,
+        716261,
+        241756
+      ]
+    },
+    {
+      "case": "random_02",
+      "pass": true,
+      "errors": [],
+      "cycles": 580,
+      "loads": 50,
+      "stores": 5,
+      "outputs": [
+        -210285,
+        762300,
+        -459297,
+        -733358
+      ]
+    },
+    {
+      "case": "random_03",
+      "pass": true,
+      "errors": [],
+      "cycles": 548,
+      "loads": 50,
+      "stores": 5,
+      "outputs": [
+        -320779,
+        -543107,
+        274751,
+        889578
+      ]
+    },
+    {
+      "case": "random_04",
+      "pass": true,
+      "errors": [],
+      "cycles": 552,
+      "loads": 50,
+      "stores": 5,
+      "outputs": [
+        826955,
+        553017,
+        -172125,
+        189079
+      ]
+    },
+    {
+      "case": "random_05",
+      "pass": true,
+      "errors": [],
+      "cycles": 544,
+      "loads": 50,
+      "stores": 5,
+      "outputs": [
+        -692680,
+        -506900,
+        -566025,
+        101125
+      ]
+    },
+    {
+      "case": "random_06",
+      "pass": true,
+      "errors": [],
+      "cycles": 564,
+      "loads": 50,
+      "stores": 5,
+      "outputs": [
+        789232,
+        698919,
+        -161675,
+        930305
+      ]
+    },
+    {
+      "case": "random_07",
+      "pass": true,
+      "errors": [],
+      "cycles": 532,
+      "loads": 50,
+      "stores": 5,
+      "outputs": [
+        -508944,
+        -838485,
+        -614073,
+        803367
+      ]
+    },
+    {
+      "case": "random_08",
+      "pass": true,
+      "errors": [],
+      "cycles": 556,
+      "loads": 50,
+      "stores": 5,
+      "outputs": [
+        -493180,
+        -613855,
+        331308,
+        -990049
+      ]
+    },
+    {
+      "case": "random_09",
+      "pass": true,
+      "errors": [],
+      "cycles": 560,
+      "loads": 50,
+      "stores": 5,
+      "outputs": [
+        -266423,
+        -917571,
+        -70182,
+        8012
+      ]
+    },
+    {
+      "case": "zero_weights",
+      "pass": true,
+      "errors": [],
+      "cycles": 540,
+      "loads": 50,
+      "stores": 5,
+      "outputs": [
+        17,
+        -17,
+        0,
+        123
+      ]
+    }
+  ],
+  "scope": "Python ISA model. RTL cycle 은 run.sh / run.ps1 의 results/cycles.csv 참조"
+}
