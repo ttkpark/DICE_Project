@@ -1,0 +1,32 @@
+ 
+****************************************
+Report : area
+Design : TOP
+Version: V-2023.12-SP5
+Date   : Tue Nov 10 21:29:26 2026
+****************************************
+
+Information: Updating design information... (UID-85)
+Warning: Design 'TOP' contains 1 high-fanout nets. A fanout number of 1000 will be used for delay calculations involving these nets. (TIM-134)
+Library(s) Used:
+
+    saed32rvt_ss0p95v125c (File: /opt/eda/pdk/saed32nm/edk/SAED32_EDK/lib/stdcell_rvt/db_nldm/saed32rvt_ss0p95v125c.db)
+
+Number of ports:                         2043
+Number of nets:                          6175
+Number of cells:                         5546
+Number of combinational cells:           4475
+Number of sequential cells:              1056
+Number of macros/black boxes:               0
+Number of buf/inv:                        713
+Number of references:                       1
+
+Combinational area:              10922.855084
+Buf/Inv area:                     1278.852650
+Noncombinational area:            6977.777893
+Macro/Black Box area:                0.000000
+Net Interconnect area:            6108.559828
+
+Total cell area:                 17900.632977
+Total area:                      24009.192805
+1

@@ -1,0 +1,110 @@
+{
+  "release": "1.4",
+  "scope": "공개 16개 연습 결과. 공식 24개 성적은 별도 고정 덱에서 산출.",
+  "fingerprint": "6342ad7198e969d8ad7e2395fcf34731ac5637d4930df90f8003b743c115e262",
+  "cpu_sources": [
+    "rtl/TOP.v",
+    "rtl/CORE.v",
+    "rtl/CONTROLLER.v"
+  ],
+  "top_ports": 48,
+  "period_ns": 1.7,
+  "frequency_mhz": 588.2352941176471,
+  "timing_pass": 1,
+  "setup_slack_ns": 0.00305295,
+  "hold_slack_ns": 0.114771,
+  "public_case_count": 16,
+  "mean_cycles": 636.25,
+  "time_us": 1.081625,
+  "cpu_cell_area_um2": 22288.68342,
+  "imem_area_um2": 27352.3,
+  "dmem_area_um2": 50667.68,
+  "total_area_um2": 100308.66342,
+  "cpu_power_mw": 8.347504125736737,
+  "memory_dynamic_mw": 4.921058592395701,
+  "memory_static_proxy_mw": 1.5603996,
+  "total_power_mw": 14.828962318132438,
+  "cpu_case_power": [
+    {
+      "case": "demo",
+      "cpu_average_power_mw": 8.056000000000001,
+      "weight_cycles": 630
+    },
+    {
+      "case": "large_bias",
+      "cpu_average_power_mw": 8.2528,
+      "weight_cycles": 630
+    },
+    {
+      "case": "max_positive",
+      "cpu_average_power_mw": 7.4882,
+      "weight_cycles": 688
+    },
+    {
+      "case": "mixed_sign",
+      "cpu_average_power_mw": 8.033,
+      "weight_cycles": 628
+    },
+    {
+      "case": "negative_extreme",
+      "cpu_average_power_mw": 8.4089,
+      "weight_cycles": 592
+    },
+    {
+      "case": "random_00",
+      "cpu_average_power_mw": 8.6136,
+      "weight_cycles": 640
+    },
+    {
+      "case": "random_01",
+      "cpu_average_power_mw": 8.5452,
+      "weight_cycles": 644
+    },
+    {
+      "case": "random_02",
+      "cpu_average_power_mw": 8.6592,
+      "weight_cycles": 650
+    },
+    {
+      "case": "random_03",
+      "cpu_average_power_mw": 8.5772,
+      "weight_cycles": 634
+    },
+    {
+      "case": "random_04",
+      "cpu_average_power_mw": 8.5405,
+      "weight_cycles": 636
+    },
+    {
+      "case": "random_05",
+      "cpu_average_power_mw": 8.6009,
+      "weight_cycles": 632
+    },
+    {
+      "case": "random_06",
+      "cpu_average_power_mw": 8.6346,
+      "weight_cycles": 642
+    },
+    {
+      "case": "random_07",
+      "cpu_average_power_mw": 8.6052,
+      "weight_cycles": 626
+    },
+    {
+      "case": "random_08",
+      "cpu_average_power_mw": 8.6651,
+      "weight_cycles": 638
+    },
+    {
+      "case": "random_09",
+      "cpu_average_power_mw": 8.8013,
+      "weight_cycles": 640
+    },
+    {
+      "case": "zero_weights",
+      "cpu_average_power_mw": 7.1225000000000005,
+      "weight_cycles": 630
+    }
+  ],
+  "power_method": "same mapped CPU, per-case RTL SAIF mapped with saif_map, cycle-weighted power; pre-route estimate, annotation reports require TA review"
+}

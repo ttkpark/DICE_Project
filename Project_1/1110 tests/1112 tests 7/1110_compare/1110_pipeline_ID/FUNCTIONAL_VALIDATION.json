@@ -1,0 +1,216 @@
+{
+  "scope": "RV32I 8명령 기능 모델 회귀. 물리 PPA 결과가 아님",
+  "static_instructions": 57,
+  "case_count": 16,
+  "passed": 16,
+  "cases": [
+    {
+      "case": "demo",
+      "outputs": [
+        6,
+        4,
+        10,
+        90
+      ],
+      "instructions": 900,
+      "data_loads": 110,
+      "data_stores": 37,
+      "pass": true
+    },
+    {
+      "case": "large_bias",
+      "outputs": [
+        1073741820,
+        -1073741815,
+        1000009,
+        -1000009
+      ],
+      "instructions": 900,
+      "data_loads": 110,
+      "data_stores": 37,
+      "pass": true
+    },
+    {
+      "case": "max_positive",
+      "outputs": [
+        129032,
+        129033,
+        129031,
+        133128
+      ],
+      "instructions": 16986,
+      "data_loads": 110,
+      "data_stores": 37,
+      "pass": true
+    },
+    {
+      "case": "mixed_sign",
+      "outputs": [
+        -51,
+        49,
+        -1,
+        998
+      ],
+      "instructions": 8906,
+      "data_loads": 110,
+      "data_stores": 37,
+      "pass": true
+    },
+    {
+      "case": "negative_extreme",
+      "outputs": [
+        130048,
+        130049,
+        130047,
+        125952
+      ],
+      "instructions": 17018,
+      "data_loads": 110,
+      "data_stores": 37,
+      "pass": true
+    },
+    {
+      "case": "random_00",
+      "outputs": [
+        -727902,
+        -279670,
+        715841,
+        582668
+      ],
+      "instructions": 9663,
+      "data_loads": 110,
+      "data_stores": 37,
+      "pass": true
+    },
+    {
+      "case": "random_01",
+      "outputs": [
+        -693528,
+        -613656,
+        716261,
+        241756
+      ],
+      "instructions": 9318,
+      "data_loads": 110,
+      "data_stores": 37,
+      "pass": true
+    },
+    {
+      "case": "random_02",
+      "outputs": [
+        -210285,
+        762300,
+        -459297,
+        -733358
+      ],
+      "instructions": 7555,
+      "data_loads": 110,
+      "data_stores": 37,
+      "pass": true
+    },
+    {
+      "case": "random_03",
+      "outputs": [
+        -320779,
+        -543107,
+        274751,
+        889578
+      ],
+      "instructions": 9205,
+      "data_loads": 110,
+      "data_stores": 37,
+      "pass": true
+    },
+    {
+      "case": "random_04",
+      "outputs": [
+        826955,
+        553017,
+        -172125,
+        189079
+      ],
+      "instructions": 9054,
+      "data_loads": 110,
+      "data_stores": 37,
+      "pass": true
+    },
+    {
+      "case": "random_05",
+      "outputs": [
+        -692680,
+        -506900,
+        -566025,
+        101125
+      ],
+      "instructions": 8113,
+      "data_loads": 110,
+      "data_stores": 37,
+      "pass": true
+    },
+    {
+      "case": "random_06",
+      "outputs": [
+        789232,
+        698919,
+        -161675,
+        930305
+      ],
+      "instructions": 8103,
+      "data_loads": 110,
+      "data_stores": 37,
+      "pass": true
+    },
+    {
+      "case": "random_07",
+      "outputs": [
+        -508944,
+        -838485,
+        -614073,
+        803367
+      ],
+      "instructions": 7435,
+      "data_loads": 110,
+      "data_stores": 37,
+      "pass": true
+    },
+    {
+      "case": "random_08",
+      "outputs": [
+        -493180,
+        -613855,
+        331308,
+        -990049
+      ],
+      "instructions": 8377,
+      "data_loads": 110,
+      "data_stores": 37,
+      "pass": true
+    },
+    {
+      "case": "random_09",
+      "outputs": [
+        -266423,
+        -917571,
+        -70182,
+        8012
+      ],
+      "instructions": 7908,
+      "data_loads": 110,
+      "data_stores": 37,
+      "pass": true
+    },
+    {
+      "case": "zero_weights",
+      "outputs": [
+        17,
+        -17,
+        0,
+        123
+      ],
+      "instructions": 730,
+      "data_loads": 110,
+      "data_stores": 37,
+      "pass": true
+    }
+  ]
+}

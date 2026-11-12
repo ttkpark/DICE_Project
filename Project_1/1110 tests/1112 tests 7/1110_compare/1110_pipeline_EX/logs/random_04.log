@@ -1,0 +1,17 @@
+Info: [VCS_SAVE_RESTORE_INFO] ASLR (Address Space Layout Randomization) is detected on the machine. To enable $save functionality, ASLR will be switched off and simv re-executed.
+Please use '-no_save' simv switch to avoid re-execution or '-suppress=ASLR_DETECTED_INFO' to suppress this message.
+Chronologic VCS simulator copyright 1991-2023
+Contains Synopsys proprietary information.
+Compiler version V-2023.12-SP2-1_Full64; Runtime version V-2023.12-SP2-1_Full64;  Nov 11 10:57 2026
+MEMORY_PPA cycles=772 LOAD=52 STORE=5 IMEM_words=63 F_MHz=617.284
+MEMORY_PPA IMEM_area_um2=8713.50 DMEM_area_um2=50667.68
+MEMORY_PPA P_mem_dynamic_mW=1.967673 P_mem_static_proxy_mW=1.187624
+MEMORY_PPA P_mem_total_mW=3.155296 T_us=1.250640
+ACTIVE_WINDOW start_ns=3.240000 end_ns=1253.880000
+PASS TB_TOP: Y[0..3] match; DONE at cycle 772
+$finish called from file "/home/dice/dice008/DICE/Project1/1110_compare/1110_pipeline_EX/sim/TB_TOP.v", line 186.
+$finish at simulation time           1253880000
+           V C S   S i m u l a t i o n   R e p o r t 
+Time: 1253880000 fs
+CPU Time:      0.180 seconds;       Data structure size:   0.0Mb
+Wed Nov 11 10:57:31 2026

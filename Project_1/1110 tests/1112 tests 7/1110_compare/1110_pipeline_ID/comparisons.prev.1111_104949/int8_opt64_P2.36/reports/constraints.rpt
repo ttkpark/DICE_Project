@@ -1,0 +1,26 @@
+ 
+****************************************
+Report : constraint
+        -all_violators
+Design : TOP
+Version: V-2023.12-SP5
+Date   : Tue Nov 10 21:53:39 2026
+****************************************
+
+
+   max_transition
+
+                             Required        Actual
+   Net                      Transition     Transition        Slack
+   -----------------------------------------------------------------
+   u_core/N46                   0.09           0.09          -0.01  (VIOLATED)
+       PIN :   u_core/instruction_id_reg[19]/Q
+                                0.09           0.09          -0.01  (VIOLATED)
+   u_core/N51                   0.09           0.09          -0.01  (VIOLATED)
+       PIN :   u_core/instruction_id_reg[24]/Q
+                                0.09           0.09          -0.01  (VIOLATED)
+
+   -----------------------------------------------------------------
+   Total                      2                  -0.02  
+
+1

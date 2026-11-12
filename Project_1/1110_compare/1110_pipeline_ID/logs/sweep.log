@@ -1,0 +1,2383 @@
+LICENSE QUEUE: acquired slot 2/25 after 0s; starting dc_shell_queue.
+Info: [VCS_SAVE_RESTORE_INFO] ASLR (Address Space Layout Randomization) is detected on the machine. To enable $save functionality, ASLR will be switched off and simv re-executed.
+Please use '-no_save' simv switch to avoid this.
+
+                           Design Compiler Graphical 
+                                 DC Ultra (TM)
+                                  DFTMAX (TM)
+                              Power Compiler (TM)
+                                 DesignWare (R)
+                                 DC Expert (TM)
+                               Design Vision (TM)
+                               HDL Compiler (TM)
+                               VHDL Compiler (TM)
+                                  DFT Compiler
+                               Design Compiler(R)
+
+               Version V-2023.12-SP5 for linux64 - Jul 16, 2024 
+
+                    Copyright (c) 1988 - 2024 Synopsys, Inc.
+   This software and the associated documentation are proprietary to Synopsys,
+ Inc. This software may only be used in accordance with the terms and conditions
+ of a written license agreement with Synopsys, Inc. All other use, reproduction,
+   or distribution of this software is strictly prohibited.  Licensed Products
+     communicate with Synopsys servers for the purpose of providing software
+    updates, detecting software piracy and verifying that customers are using
+    Licensed Products in conformity with the applicable License Key for such
+  Licensed Products. Synopsys will use information gathered in connection with
+    this process to deliver software updates and pursue software pirates and
+                                   infringers.
+
+ Inclusivity & Diversity - Visit SolvNetPlus to read the "Synopsys Statement on
+            Inclusivity and Diversity" (Refer to article 000036315 at
+                        https://solvnetplus.synopsys.com)
+Initializing...
+Current time:       Tue Nov 10 21:49:40 2026
+Hostname:           dice
+CPU Model:          Intel(R) Xeon(R) Gold 6242R CPU @ 3.10GHz
+CPU Details:        Cores = 80 : Sockets = 2 : Cache Size = 36608 KB : Freq = 4.10 GHz
+OS:                 Linux 4.18.0-553.134.1.el8_10.x86_64
+RAM:                251 GB (Free   5 GB)
+Swap:                31 GB (Free  30 GB)
+Work Filesystem:    /home/dice mounted to /dev/sdc1
+Tmp Filesystem:     / mounted to /dev/nvme0n1p1
+Work Disk:          7450 GB (Free 7323 GB)
+Tmp Disk:           1862 GB (Free 1384 GB)
+
+CPU Load: 6%, Ram Free: 5 GB, Swap Free: 30 GB, Work Disk Free: 7323 GB, Tmp Disk Free: 1384 GB
+# =============================================================================
+# 주기 탐색 (timing 만). run_all.sh 가 각 실험 폴더 루트에서 부른다:
+#     dc_shell_queue -f ../tools/sweep_timing.tcl
+#
+# 공식 synth/run_ppa.tcl 과 같은 순서·같은 명령으로 합성한다
+#   (rtl.f 의 CPU RTL -> elaborate TOP -> common.sdc -> compile -> RESET=0 -> STA).
+# 다른 점은 하나: common.sdc 의 create_clock 주기 숫자를 후보 값으로 바꿔 가며 반복한다.
+# SAIF·전력은 다루지 않는다. 전력과 최종 판정은 공식 run_ppa.sh 가 낸다.
+#
+# 입력 : build/sweep_periods.tcl   (run_all.sh 가 씀)   set P1_SWEEP {4.00 3.90 ...}
+# 출력 : results/sweep.csv         period_ns,setup_slack_ns,hold_slack_ns,cpu_cell_area_um2,pass
+#        reports/sweep/setup_<주기>.rpt, hold_<주기>.rpt   (소수 4자리)
+# =============================================================================
+file mkdir build/dc_work results reports/sweep
+source synth/library_setup.tcl
+* /opt/eda/pdk/saed32nm/edk/SAED32_EDK/lib/stdcell_rvt/db_nldm/saed32rvt_ss0p95v125c.db
+define_design_lib WORK -path build/dc_work
+1
+source build/sweep_periods.tcl
+2.40 2.38 2.36 2.34 2.32 2.30
+# CPU RTL 목록: run_ppa.tcl 과 같은 방식으로 synth/rtl.f 를 읽는다.
+set p1_file [open synth/rtl.f r]
+file15
+set p1_rtl {}
+while {[gets $p1_file p1_line] >= 0} {
+    set p1_line [string trim [lindex [split $p1_line #] 0]]
+    if {$p1_line ne ""} {lappend p1_rtl $p1_line}
+}
+close $p1_file
+analyze -format verilog $p1_rtl
+Running PRESTO HDLC
+Compiling source file ./rtl/TOP.v
+Compiling source file ./rtl/CORE.v
+Compiling source file ./rtl/CONTROLLER.v
+Presto compilation completed successfully.
+Loading db file '/opt/eda/pdk/saed32nm/edk/SAED32_EDK/lib/stdcell_rvt/db_nldm/saed32rvt_ss0p95v125c.db'
+1
+# 공통 SDC 원문. 아래에서 주기 숫자 한 곳만 바꿔 쓴다.
+set p1_file [open synth/common.sdc r]
+file15
+set p1_sdc [read $p1_file]
+# EE362 Project 1 R1.4 CPU-only common SDC. Units: ns / fF.
+# Only the period number 4.00 may be changed by a team.
+# 100MHz=10.00ns, 200MHz=5.00ns, 250MHz=4.00ns.
+create_clock -name CPU_CLK -period 2.40 [get_ports CLK]
+set_clock_uncertainty -setup 0.10 [get_clocks CPU_CLK]
+set_clock_uncertainty -hold 0.05 [get_clocks CPU_CLK]
+set_clock_transition 0.08 [get_clocks CPU_CLK]
+
+# R1.4: instruction/data inputs and all 20 reserved input buses.
+set_input_delay -clock [get_clocks CPU_CLK] -min 1.00 [get_ports {INSTR READDATA RESERVED_IN*}]
+set_input_delay -clock [get_clocks CPU_CLK] -max 1.00 [get_ports {INSTR READDATA RESERVED_IN*}]
+set_input_transition 0.10 [get_ports {INSTR READDATA RESERVED_IN*}]
+
+# CPU outputs and reserved output buses. IMEM/DMEM are not in TOP.
+set_output_delay -clock [get_clocks CPU_CLK] -min 1.00 [all_outputs]
+set_output_delay -clock [get_clocks CPU_CLK] -max 1.00 [all_outputs]
+set_load 20.0 [all_outputs]
+set_max_transition 0.25 [all_outputs]
+
+# RESET: synchronous active-high. Do NOT case-analyze before compile.
+# After compile, run: set_case_analysis 0 [get_ports RESET]
+# Reset behavior is checked separately by functional simulation.
+
+close $p1_file
+set p1_csv [open results/sweep.csv w]
+file15
+puts $p1_csv "period_ns,setup_slack_ns,hold_slack_ns,cpu_cell_area_um2,pass"
+foreach p1_period $P1_SWEEP {
+    puts "P1_SWEEP period $p1_period ns"
+    remove_design -all
+    elaborate TOP
+    current_design TOP
+    if {![link]} {error "P1: unresolved CPU module/library reference"}
+
+    if {[regsub {(create_clock -name CPU_CLK -period )[0-9.]+} $p1_sdc "\\1$p1_period" p1_sdc_now] != 1} {
+        error "P1: create_clock line not found in synth/common.sdc"
+    }
+    set p1_file [open build/sweep_common.sdc w]
+    puts $p1_file $p1_sdc_now
+    close $p1_file
+    source build/sweep_common.sdc
+
+    compile
+    set_case_analysis 0 [get_ports RESET]
+
+    report_timing -delay_type max -max_paths 3 -significant_digits 4 > reports/sweep/setup_$p1_period.rpt
+    report_timing -delay_type min -max_paths 3 -significant_digits 4 > reports/sweep/hold_$p1_period.rpt
+    set p1_setup [get_attribute [get_timing_paths -delay_type max -max_paths 1 -nworst 1] slack]
+    set p1_hold  [get_attribute [get_timing_paths -delay_type min -max_paths 1 -nworst 1] slack]
+    redirect -variable p1_area_rpt {report_area}
+    if {![regexp {Total cell area:\s*([\d.eE+\-]+)} $p1_area_rpt -> p1_area]} {error "P1: no cell area in report_area"}
+
+    # pass 는 반올림 전 값으로 판정한다 (공식 flow 와 같은 기준: 둘 다 0 이상).
+    set p1_pass [expr {$p1_setup >= 0.0 && $p1_hold >= 0.0}]
+    puts $p1_csv [format "%s,%.4f,%.4f,%.2f,%d" $p1_period $p1_setup $p1_hold $p1_area $p1_pass]
+    flush $p1_csv
+}
+P1_SWEEP period 2.40 ns
+Removing library 'saed32rvt_ss0p95v125c'
+Loading db file '/opt/eda/pdk/saed32nm/edk/SAED32_EDK/lib/stdcell_rvt/db_nldm/saed32rvt_ss0p95v125c.db'
+Loading db file '/opt/eda/synopsys/products/syn/V-2023.12-SP5/libraries/syn/gtech.db'
+Loading db file '/opt/eda/synopsys/products/syn/V-2023.12-SP5/libraries/syn/standard.sldb'
+  Loading link library 'saed32rvt_ss0p95v125c'
+  Loading link library 'gtech'
+Running PRESTO HDLC
+Presto compilation completed successfully. (TOP)
+Elaborated 1 design.
+Current design is now 'TOP'.
+Information: Building the design 'CORE'. (HDL-193)
+Warning:  ./rtl/CORE.v:122: DEFAULT branch of CASE statement cannot be reached. (ELAB-311)
+
+Statistics for case statements in always block at line 111 in file
+	'./rtl/CORE.v'
+===============================================
+|           Line           |  full/ parallel  |
+===============================================
+|           112            |    auto/auto     |
+===============================================
+
+Statistics for case statements in always block at line 269 in file
+	'./rtl/CORE.v'
+===============================================
+|           Line           |  full/ parallel  |
+===============================================
+|           270            |    auto/auto     |
+===============================================
+
+Statistics for case statements in always block at line 301 in file
+	'./rtl/CORE.v'
+===============================================
+|           Line           |  full/ parallel  |
+===============================================
+|           309            |    auto/auto     |
+===============================================
+
+Inferred memory devices in process
+	in routine CORE line 201 in file
+		'./rtl/CORE.v'.
+===============================================================================
+|    Register Name    |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+===============================================================================
+|       PC_reg        | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+===============================================================================
+
+Inferred memory devices in process
+	in routine CORE line 208 in file
+		'./rtl/CORE.v'.
+===============================================================================
+|    Register Name    |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+===============================================================================
+| instruction_id_reg  | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+===============================================================================
+
+Inferred memory devices in process
+	in routine CORE line 215 in file
+		'./rtl/CORE.v'.
+=================================================================================
+|     Register Name     |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+=================================================================================
+| sequential_pc_id_reg  | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+| instruction_pc_id_reg | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+=================================================================================
+
+Inferred memory devices in process
+	in routine CORE line 225 in file
+		'./rtl/CORE.v'.
+=================================================================================
+|     Register Name     |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+=================================================================================
+|  write_memory_ex_reg  | Flip-flop |   1   |  N  | N  | N  | N  | N  | N  | N  |
+| result_select_ex_reg  | Flip-flop |   2   |  Y  | N  | N  | N  | N  | N  | N  |
+| write_register_ex_reg | Flip-flop |   1   |  N  | N  | N  | N  | N  | N  | N  |
+=================================================================================
+
+Inferred memory devices in process
+	in routine CORE line 239 in file
+		'./rtl/CORE.v'.
+================================================================================
+|    Register Name     |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+================================================================================
+| use_immediate_ex_reg | Flip-flop |   1   |  N  | N  | N  | N  | N  | N  | N  |
+| alu_operation_ex_reg | Flip-flop |   3   |  Y  | N  | N  | N  | N  | N  | N  |
+|   operand1_ex_reg    | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+|   operand2_ex_reg    | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+|   immediate_ex_reg   | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+| link_address_ex_reg  | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+|   forward1_ex_reg    | Flip-flop |   2   |  Y  | N  | N  | N  | N  | N  | N  |
+|   forward2_ex_reg    | Flip-flop |   2   |  Y  | N  | N  | N  | N  | N  | N  |
+|  destination_ex_reg  | Flip-flop |   5   |  Y  | N  | N  | N  | N  | N  | N  |
+================================================================================
+
+Inferred memory devices in process
+	in routine CORE line 278 in file
+		'./rtl/CORE.v'.
+==================================================================================
+|     Register Name      |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+==================================================================================
+|  write_memory_mem_reg  | Flip-flop |   1   |  N  | N  | N  | N  | N  | N  | N  |
+| result_select_mem_reg  | Flip-flop |   2   |  Y  | N  | N  | N  | N  | N  | N  |
+|   alu_result_mem_reg   | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+|   store_data_mem_reg   | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+|  link_address_mem_reg  | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+|  destination_mem_reg   | Flip-flop |   5   |  Y  | N  | N  | N  | N  | N  | N  |
+| write_register_mem_reg | Flip-flop |   1   |  N  | N  | N  | N  | N  | N  | N  |
+==================================================================================
+
+Inferred memory devices in process
+	in routine CORE line 301 in file
+		'./rtl/CORE.v'.
+=================================================================================
+|     Register Name     |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+=================================================================================
+|  writeback_value_reg  | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+|  destination_wb_reg   | Flip-flop |   5   |  Y  | N  | N  | N  | N  | N  | N  |
+| write_register_wb_reg | Flip-flop |   1   |  N  | N  | N  | N  | N  | N  | N  |
+=================================================================================
+
+Inferred memory devices in process
+	in routine CORE line 317 in file
+		'./rtl/CORE.v'.
+===============================================================================
+|    Register Name    |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+===============================================================================
+|    reg_file_reg     | Flip-flop | 1024  |  Y  | N  | N  | N  | N  | N  | N  |
+===============================================================================
+Statistics for MUX_OPs
+======================================================
+| block name/line  | Inputs | Outputs | # sel inputs |
+======================================================
+|     CORE/101     |   32   |   32    |      5       |
+|     CORE/105     |   32   |   32    |      5       |
+======================================================
+Presto compilation completed successfully. (CORE)
+Information: Building the design 'CONTROLLER'. (HDL-193)
+
+Statistics for case statements in always block at line 23 in file
+	'./rtl/CONTROLLER.v'
+===============================================
+|           Line           |  full/ parallel  |
+===============================================
+|            34            |    auto/auto     |
+===============================================
+Presto compilation completed successfully. (CONTROLLER)
+Current design is 'TOP'.
+
+  Linking design 'TOP'
+  Using the following designs and libraries:
+  --------------------------------------------------------------------------
+  * (3 designs)               /home/dice/dice008/DICE/Project1/1110_compare/1110_pipeline_ID/TOP.db, etc
+  saed32rvt_ss0p95v125c (library) /opt/eda/pdk/saed32nm/edk/SAED32_EDK/lib/stdcell_rvt/db_nldm/saed32rvt_ss0p95v125c.db
+
+CPU Load: 6%, Ram Free: 5 GB, Swap Free: 30 GB, Work Disk Free: 7323 GB, Tmp Disk Free: 1384 GB
+Information: Evaluating DesignWare library utilization. (UISN-27)
+
+============================================================================
+| DesignWare Building Block Library  |         Version         | Available |
+============================================================================
+| Basic DW Building Blocks           | V-2023.12-DWBB_202312.5 |     *     |
+| Licensed DW Building Blocks        |                         |           |
+============================================================================
+
+====================================================================================================
+| Flow Information                                                                                 |
+----------------------------------------------------------------------------------------------------
+| Flow         | Design Compiler                                                                   |
+====================================================================================================
+| Design Information                                      | Value                                  |
+====================================================================================================
+| Number of Scenarios                                     | 0                                      |
+| Leaf Cell Count                                         | 2007                                   |
+| Number of User Hierarchies                              | 2                                      |
+| Sequential Cell Count                                   | 1440                                   |
+| Macro Count                                             | 0                                      |
+| Number of Power Domains                                 | 0                                      |
+| Number of Path Groups                                   | 2                                      |
+| Number of VT Class                                      | 1                                      |
+| Number of Clocks                                        | 1                                      |
+| Number of Dont Touch Cells                              | 131                                    |
+| Number of Dont Touch Nets                               | 0                                      |
+| Number of Size Only Cells                               | 0                                      |
+| Design with UPF Data                                    | false                                  |
+====================================================================================================
+
+Information: There are 1937 potential problems in your design. Please run 'check_design' for more information. (LINT-99)
+
+
+
+  Beginning Pass 1 Mapping
+  ------------------------
+  Processing 'CONTROLLER'
+  Processing 'CORE'
+  Processing 'TOP'
+
+  Updating timing information
+Information: Updating design information... (UID-85)
+
+  Beginning Implementation Selection
+  ----------------------------------
+  Processing 'CORE_DW01_add_0'
+  Processing 'CORE_DW01_add_1'
+  Processing 'CORE_DW01_cmp6_0'
+  Processing 'CORE_DW01_sub_0'
+  Processing 'CORE_DW01_add_2'
+  Processing 'CORE_DW01_cmp6_1'
+  Processing 'CORE_DW01_cmp6_2'
+  Processing 'CORE_DW01_cmp6_3'
+  Processing 'CORE_DW01_cmp6_4'
+  Processing 'CORE_DW01_cmp6_5'
+  Processing 'CORE_DW01_cmp6_6'
+
+  Beginning Mapping Optimizations  (Medium effort)
+  -------------------------------
+  Mapping Optimization (Phase 1)
+Information: The register 'u_core/alu_operation_ex_reg[2]' is a constant and will be removed. (OPT-1206)
+
+                                  TOTAL                                      
+   ELAPSED            WORST NEG   SETUP    DESIGN                            
+    TIME      AREA      SLACK     COST    RULE COST         ENDPOINT         
+  --------- --------- --------- --------- --------- -------------------------
+    0:00:13   29543.7      0.15       8.0    5287.0                          
+    0:00:13   29494.2      0.14       7.7    5802.5                          
+    0:00:13   29494.2      0.14       7.7    5802.5                          
+    0:00:13   29494.9      0.14       7.7    5802.5                          
+    0:00:13   29494.9      0.14       7.7    5802.5                          
+    0:00:14   22932.9      0.15       7.9    5738.8                          
+    0:00:15   22930.7      0.13       6.4    5738.1                          
+    0:00:15   22947.4      0.12       6.2    5738.1                          
+    0:00:15   22939.3      0.10       4.5    5738.1                          
+    0:00:15   22953.3      0.09       4.5    5738.1                          
+    0:00:15   22946.9      0.08       4.0    5738.1                          
+    0:00:15   22954.8      0.10       4.8    5738.1                          
+    0:00:15   22957.6      0.07       3.3    5738.1                          
+    0:00:15   22969.3      0.07       3.2    5738.1                          
+    0:00:15   22969.3      0.07       3.4    5738.1                          
+    0:00:15   22971.1      0.07       3.1    5738.1                          
+    0:00:16   22982.5      0.07       3.0    5738.1                          
+    0:00:16   22990.1      0.05       2.2    5738.1                          
+    0:00:16   22991.6      0.05       2.2    5738.1                          
+    0:00:16   22998.8      0.05       2.1    5738.1                          
+    0:00:16   22996.2      0.04       1.9    5738.1                          
+    0:00:16   22996.2      0.04       2.0    5738.1                          
+    0:00:16   22996.2      0.04       2.0    5738.1                          
+    0:00:16   22996.2      0.04       2.0    5738.1                          
+    0:00:16   22996.2      0.04       2.0    5738.1                          
+    0:00:16   23168.5      0.04       2.0     810.3                          
+    0:00:16   23168.5      0.04       2.0     810.3                          
+    0:00:16   23168.5      0.04       2.0     810.3                          
+    0:00:16   23168.5      0.04       2.0     810.3                          
+
+
+
+  Beginning Delay Optimization Phase
+  ----------------------------------
+
+                                  TOTAL                                      
+   ELAPSED            WORST NEG   SETUP    DESIGN                            
+    TIME      AREA      SLACK     COST    RULE COST         ENDPOINT         
+  --------- --------- --------- --------- --------- -------------------------
+    0:00:16   23168.5      0.04       2.0     810.3                          
+    0:00:16   23168.5      0.04       2.0     810.3                          
+    0:00:16   23168.5      0.04       2.0     810.3                          
+    0:00:16   23184.8      0.03       1.0     810.3 u_core/PC_reg[14]/D      
+    0:00:17   23236.9      0.02       0.7     810.3 u_core/PC_reg[14]/D      
+    0:00:17   23241.7      0.02       0.7     810.3 u_core/PC_reg[31]/D      
+    0:00:17   23247.3      0.02       0.5     810.3 u_core/PC_reg[14]/D      
+    0:00:17   23250.9      0.01       0.4     810.3 u_core/PC_reg[14]/D      
+    0:00:17   23254.2      0.01       0.3     810.3 u_core/PC_reg[14]/D      
+    0:00:17   23249.9      0.01       0.2     810.3 u_core/PC_reg[14]/D      
+    0:00:17   23250.1      0.01       0.2     810.3 u_core/PC_reg[14]/D      
+    0:00:17   23249.6      0.01       0.2     810.3 u_core/PC_reg[14]/D      
+    0:00:17   23248.8      0.00       0.1     810.3 u_core/PC_reg[14]/D      
+    0:00:17   23253.7      0.00       0.0     810.3 u_core/PC_reg[31]/D      
+    0:00:17   23257.7      0.00       0.0     810.3 u_core/PC_reg[14]/D      
+    0:00:17   23257.7      0.00       0.0     810.3                          
+    0:00:18   23102.7      0.00       0.0     891.9                          
+
+
+  Beginning Design Rule Fixing  (max_transition)  (max_capacitance)
+  ----------------------------
+
+                                  TOTAL                                      
+   ELAPSED            WORST NEG   SETUP    DESIGN                            
+    TIME      AREA      SLACK     COST    RULE COST         ENDPOINT         
+  --------- --------- --------- --------- --------- -------------------------
+    0:00:18   23102.7      0.00       0.0     891.9                          
+    0:00:18   23151.2      0.00       0.0       0.0                          
+
+
+  Beginning Area-Recovery Phase  (cleanup)
+  -----------------------------
+
+                                  TOTAL                                      
+   ELAPSED            WORST NEG   SETUP    DESIGN                            
+    TIME      AREA      SLACK     COST    RULE COST         ENDPOINT         
+  --------- --------- --------- --------- --------- -------------------------
+    0:00:18   23151.2      0.00       0.0       0.0                          
+    0:00:18   23151.2      0.00       0.0       0.0                          
+    0:00:19   22852.6      0.04       2.0       0.0                          
+    0:00:19   22823.1      0.04       2.0       0.4                          
+    0:00:19   22808.2      0.04       2.0       0.4                          
+    0:00:19   22800.8      0.04       2.0       0.4                          
+    0:00:19   22798.8      0.04       2.0       0.4                          
+    0:00:19   22798.8      0.04       2.0       0.4                          
+    0:00:19   22805.9      0.01       0.2       0.0 u_core/PC_reg[31]/D      
+    0:00:19   22809.2      0.01       0.2       0.0                          
+    0:00:19   22809.7      0.00       0.1       0.0                          
+    0:00:19   22810.2      0.00       0.1       0.0                          
+    0:00:20   22808.9      0.00       0.1       0.0                          
+    0:00:20   22756.6      0.03       1.0       0.0                          
+    0:00:20   22727.6      0.03       1.0       0.0                          
+    0:00:20   22727.6      0.03       1.0       0.0                          
+    0:00:20   22727.6      0.03       1.0       0.0                          
+    0:00:20   22727.6      0.03       1.0       0.0                          
+    0:00:20   22727.6      0.03       1.0       0.0                          
+    0:00:20   22727.6      0.03       1.0       0.0                          
+    0:00:20   22732.9      0.01       0.3       0.0 u_core/PC_reg[31]/D      
+    0:00:20   22752.8      0.01       0.2       0.0 u_core/PC_reg[31]/D      
+    0:00:20   22773.1      0.01       0.1       0.0 u_core/PC_reg[31]/D      
+    0:00:20   22775.1      0.00       0.1       0.0 u_core/PC_reg[31]/D      
+    0:00:21   22778.9      0.00       0.1       0.0 u_core/PC_reg[29]/D      
+    0:00:21   22779.4      0.00       0.0       0.0 u_core/PC_reg[31]/D      
+    0:00:21   22775.4      0.00       0.0       0.0                          
+    0:00:21   22761.1      0.00       0.0       0.0                          
+    0:00:21   22760.6      0.00       0.0       0.0                          
+Loading db file '/opt/eda/pdk/saed32nm/edk/SAED32_EDK/lib/stdcell_rvt/db_nldm/saed32rvt_ss0p95v125c.db'
+
+
+Note: Symbol # after min delay cost means estimated hold TNS across all active scenarios 
+
+
+  Optimization Complete
+  ---------------------
+Warning: Design 'TOP' contains 1 high-fanout nets. A fanout number of 1000 will be used for delay calculations involving these nets. (TIM-134)
+     Net 'CLK': 1439 load(s), 1 driver(s)
+CPU Load: 6%, Ram Free: 5 GB, Swap Free: 30 GB, Work Disk Free: 7323 GB, Tmp Disk Free: 1384 GB
+Information: Total number of MV cells in the design.
+----------------------------------------------------------------------------------------------------
+ MV Cells                                           Total Number                                   
+----------------------------------------------------------------------------------------------------
+ Level Shifter:                                     0                                             
+ Enable Level Shifter:                              0                                             
+ Isolation Cell:                                    0                                             
+ Retention Cell:                                    0                                             
+ Retention Clamp Cell:                              0                                             
+ Switch Cell:                                       0                                             
+ Always-On Cell:                                    0                                             
+ Repeater Cell:                                     0                                             
+
+----------------------------------------------------------------------------------------------------
+Unmapped MV Cells 
+----------------------------------------------------------------------------------------------------
+0 Isolation Cells are unmapped 
+0 Retention Clamp Cells are unmapped 
+----------------------------------------------------------------------------------------------------
+P1_SWEEP period 2.38 ns
+Removing design 'TOP'
+Removing design 'CORE'
+Removing design 'CORE_DW01_add_3'
+Removing design 'CORE_DW01_add_4'
+Removing design 'CORE_DW01_add_5'
+Removing design 'CORE_DW01_sub_3'
+Removing design 'CORE_DW01_cmp6_9'
+Removing design 'CONTROLLER'
+Removing library 'saed32rvt_ss0p95v125c'
+Removing library 'gtech'
+Removing library 'standard.sldb'
+Loading db file '/opt/eda/pdk/saed32nm/edk/SAED32_EDK/lib/stdcell_rvt/db_nldm/saed32rvt_ss0p95v125c.db'
+Loading db file '/opt/eda/synopsys/products/syn/V-2023.12-SP5/libraries/syn/gtech.db'
+Loading db file '/opt/eda/synopsys/products/syn/V-2023.12-SP5/libraries/syn/standard.sldb'
+  Loading link library 'saed32rvt_ss0p95v125c'
+  Loading link library 'gtech'
+Running PRESTO HDLC
+Presto compilation completed successfully. (TOP)
+Elaborated 1 design.
+Current design is now 'TOP'.
+Information: Building the design 'CORE'. (HDL-193)
+Warning:  ./rtl/CORE.v:122: DEFAULT branch of CASE statement cannot be reached. (ELAB-311)
+
+Statistics for case statements in always block at line 111 in file
+	'./rtl/CORE.v'
+===============================================
+|           Line           |  full/ parallel  |
+===============================================
+|           112            |    auto/auto     |
+===============================================
+
+Statistics for case statements in always block at line 269 in file
+	'./rtl/CORE.v'
+===============================================
+|           Line           |  full/ parallel  |
+===============================================
+|           270            |    auto/auto     |
+===============================================
+
+Statistics for case statements in always block at line 301 in file
+	'./rtl/CORE.v'
+===============================================
+|           Line           |  full/ parallel  |
+===============================================
+|           309            |    auto/auto     |
+===============================================
+
+Inferred memory devices in process
+	in routine CORE line 201 in file
+		'./rtl/CORE.v'.
+===============================================================================
+|    Register Name    |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+===============================================================================
+|       PC_reg        | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+===============================================================================
+
+Inferred memory devices in process
+	in routine CORE line 208 in file
+		'./rtl/CORE.v'.
+===============================================================================
+|    Register Name    |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+===============================================================================
+| instruction_id_reg  | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+===============================================================================
+
+Inferred memory devices in process
+	in routine CORE line 215 in file
+		'./rtl/CORE.v'.
+=================================================================================
+|     Register Name     |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+=================================================================================
+| sequential_pc_id_reg  | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+| instruction_pc_id_reg | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+=================================================================================
+
+Inferred memory devices in process
+	in routine CORE line 225 in file
+		'./rtl/CORE.v'.
+=================================================================================
+|     Register Name     |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+=================================================================================
+|  write_memory_ex_reg  | Flip-flop |   1   |  N  | N  | N  | N  | N  | N  | N  |
+| result_select_ex_reg  | Flip-flop |   2   |  Y  | N  | N  | N  | N  | N  | N  |
+| write_register_ex_reg | Flip-flop |   1   |  N  | N  | N  | N  | N  | N  | N  |
+=================================================================================
+
+Inferred memory devices in process
+	in routine CORE line 239 in file
+		'./rtl/CORE.v'.
+================================================================================
+|    Register Name     |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+================================================================================
+| use_immediate_ex_reg | Flip-flop |   1   |  N  | N  | N  | N  | N  | N  | N  |
+| alu_operation_ex_reg | Flip-flop |   3   |  Y  | N  | N  | N  | N  | N  | N  |
+|   operand1_ex_reg    | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+|   operand2_ex_reg    | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+|   immediate_ex_reg   | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+| link_address_ex_reg  | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+|   forward1_ex_reg    | Flip-flop |   2   |  Y  | N  | N  | N  | N  | N  | N  |
+|   forward2_ex_reg    | Flip-flop |   2   |  Y  | N  | N  | N  | N  | N  | N  |
+|  destination_ex_reg  | Flip-flop |   5   |  Y  | N  | N  | N  | N  | N  | N  |
+================================================================================
+
+Inferred memory devices in process
+	in routine CORE line 278 in file
+		'./rtl/CORE.v'.
+==================================================================================
+|     Register Name      |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+==================================================================================
+|  write_memory_mem_reg  | Flip-flop |   1   |  N  | N  | N  | N  | N  | N  | N  |
+| result_select_mem_reg  | Flip-flop |   2   |  Y  | N  | N  | N  | N  | N  | N  |
+|   alu_result_mem_reg   | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+|   store_data_mem_reg   | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+|  link_address_mem_reg  | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+|  destination_mem_reg   | Flip-flop |   5   |  Y  | N  | N  | N  | N  | N  | N  |
+| write_register_mem_reg | Flip-flop |   1   |  N  | N  | N  | N  | N  | N  | N  |
+==================================================================================
+
+Inferred memory devices in process
+	in routine CORE line 301 in file
+		'./rtl/CORE.v'.
+=================================================================================
+|     Register Name     |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+=================================================================================
+|  writeback_value_reg  | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+|  destination_wb_reg   | Flip-flop |   5   |  Y  | N  | N  | N  | N  | N  | N  |
+| write_register_wb_reg | Flip-flop |   1   |  N  | N  | N  | N  | N  | N  | N  |
+=================================================================================
+
+Inferred memory devices in process
+	in routine CORE line 317 in file
+		'./rtl/CORE.v'.
+===============================================================================
+|    Register Name    |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+===============================================================================
+|    reg_file_reg     | Flip-flop | 1024  |  Y  | N  | N  | N  | N  | N  | N  |
+===============================================================================
+Statistics for MUX_OPs
+======================================================
+| block name/line  | Inputs | Outputs | # sel inputs |
+======================================================
+|     CORE/101     |   32   |   32    |      5       |
+|     CORE/105     |   32   |   32    |      5       |
+======================================================
+Presto compilation completed successfully. (CORE)
+Information: Building the design 'CONTROLLER'. (HDL-193)
+
+Statistics for case statements in always block at line 23 in file
+	'./rtl/CONTROLLER.v'
+===============================================
+|           Line           |  full/ parallel  |
+===============================================
+|            34            |    auto/auto     |
+===============================================
+Presto compilation completed successfully. (CONTROLLER)
+Current design is 'TOP'.
+
+  Linking design 'TOP'
+  Using the following designs and libraries:
+  --------------------------------------------------------------------------
+  * (3 designs)               /home/dice/dice008/DICE/Project1/1110_compare/1110_pipeline_ID/TOP.db, etc
+  saed32rvt_ss0p95v125c (library)
+                              /opt/eda/pdk/saed32nm/edk/SAED32_EDK/lib/stdcell_rvt/db_nldm/saed32rvt_ss0p95v125c.db
+
+CPU Load: 6%, Ram Free: 5 GB, Swap Free: 30 GB, Work Disk Free: 7323 GB, Tmp Disk Free: 1384 GB
+====================================================================================================
+| Flow Information                                                                                 |
+----------------------------------------------------------------------------------------------------
+| Flow         | Design Compiler                                                                   |
+====================================================================================================
+| Design Information                                      | Value                                  |
+====================================================================================================
+| Number of Scenarios                                     | 0                                      |
+| Leaf Cell Count                                         | 2007                                   |
+| Number of User Hierarchies                              | 2                                      |
+| Sequential Cell Count                                   | 1440                                   |
+| Macro Count                                             | 0                                      |
+| Number of Power Domains                                 | 0                                      |
+| Number of Path Groups                                   | 2                                      |
+| Number of VT Class                                      | 1                                      |
+| Number of Clocks                                        | 1                                      |
+| Number of Dont Touch Cells                              | 131                                    |
+| Number of Dont Touch Nets                               | 0                                      |
+| Number of Size Only Cells                               | 0                                      |
+| Design with UPF Data                                    | false                                  |
+====================================================================================================
+
+Information: There are 1937 potential problems in your design. Please run 'check_design' for more information. (LINT-99)
+
+
+
+  Beginning Pass 1 Mapping
+  ------------------------
+  Processing 'CONTROLLER'
+  Processing 'CORE'
+  Processing 'TOP'
+
+  Updating timing information
+Information: Updating design information... (UID-85)
+
+  Beginning Implementation Selection
+  ----------------------------------
+  Processing 'CORE_DW01_add_0'
+  Processing 'CORE_DW01_add_1'
+  Processing 'CORE_DW01_cmp6_0'
+  Processing 'CORE_DW01_sub_0'
+  Processing 'CORE_DW01_add_2'
+  Processing 'CORE_DW01_cmp6_1'
+  Processing 'CORE_DW01_cmp6_2'
+  Processing 'CORE_DW01_cmp6_3'
+  Processing 'CORE_DW01_cmp6_4'
+  Processing 'CORE_DW01_cmp6_5'
+  Processing 'CORE_DW01_cmp6_6'
+
+  Beginning Mapping Optimizations  (Medium effort)
+  -------------------------------
+  Mapping Optimization (Phase 2)
+Information: The register 'u_core/alu_operation_ex_reg[2]' is a constant and will be removed. (OPT-1206)
+
+                                  TOTAL                                      
+   ELAPSED            WORST NEG   SETUP    DESIGN                            
+    TIME      AREA      SLACK     COST    RULE COST         ENDPOINT         
+  --------- --------- --------- --------- --------- -------------------------
+    0:00:13   29745.5      0.24      11.8    4239.4                          
+    0:00:13   29743.0      0.25      11.8    4248.2                          
+    0:00:13   29743.0      0.25      11.8    4248.2                          
+    0:00:13   29742.7      0.25      11.8    4244.0                          
+    0:00:13   29742.7      0.25      11.8    4244.0                          
+    0:00:14   23125.1      0.26      12.8    4226.5                          
+    0:00:14   23121.5      0.23      13.5    4226.5                          
+    0:00:14   23119.7      0.21      11.5    4226.5                          
+    0:00:14   23124.3      0.18      10.2    4226.5                          
+    0:00:14   23132.7      0.17      10.0    4226.5                          
+    0:00:14   23131.9      0.17       9.9    4226.5                          
+    0:00:15   23138.0      0.16       9.2    4226.5                          
+    0:00:15   23138.3      0.16       9.5    4226.5                          
+    0:00:15   23141.3      0.16       9.3    4226.5                          
+    0:00:15   23143.9      0.15       8.7    4226.5                          
+    0:00:15   23159.4      0.15       8.5    4226.5                          
+    0:00:15   23164.2      0.13       7.6    4226.5                          
+    0:00:15   23165.5      0.13       7.5    4226.5                          
+    0:00:15   23164.0      0.13       7.2    4226.5                          
+    0:00:15   23169.5      0.13       7.1    4226.5                          
+    0:00:15   23171.6      0.12       6.7    4226.5                          
+    0:00:15   23176.7      0.12       6.7    4226.5                          
+    0:00:15   23183.5      0.12       6.6    4226.5                          
+    0:00:15   23188.6      0.11       6.0    4226.5                          
+    0:00:15   23188.6      0.11       6.0    4226.5                          
+    0:00:15   23188.6      0.11       6.0    4226.5                          
+    0:00:15   23353.3      0.11       6.0      62.0                          
+    0:00:15   23356.6      0.11       6.0       0.0                          
+    0:00:15   23356.6      0.11       6.0       0.0                          
+    0:00:15   23356.6      0.11       6.0       0.0                          
+    0:00:15   23356.6      0.11       6.0       0.0                          
+
+
+
+  Beginning Delay Optimization Phase
+  ----------------------------------
+
+                                  TOTAL                                      
+   ELAPSED            WORST NEG   SETUP    DESIGN                            
+    TIME      AREA      SLACK     COST    RULE COST         ENDPOINT         
+  --------- --------- --------- --------- --------- -------------------------
+    0:00:15   23356.6      0.11       6.0       0.0                          
+    0:00:16   23366.8      0.10       5.2       0.0 u_core/PC_reg[31]/D      
+    0:00:16   23385.8      0.09       4.8       0.0 u_core/PC_reg[31]/D      
+    0:00:16   23387.3      0.08       2.9       0.0 u_core/PC_reg[31]/D      
+    0:00:16   23407.2      0.07       2.2       0.0 u_core/PC_reg[31]/D      
+    0:00:16   23409.5      0.06       2.3       0.0 u_core/PC_reg[31]/D      
+    0:00:16   23413.3      0.06       2.2       0.0 u_core/PC_reg[31]/D      
+    0:00:16   23421.4      0.06       2.1       0.0 u_core/PC_reg[31]/D      
+    0:00:16   23463.1      0.06       2.0       0.0 u_core/PC_reg[31]/D      
+    0:00:16   23471.7      0.06       1.8       0.0 u_core/PC_reg[31]/D      
+    0:00:16   23481.4      0.05       1.8       0.0 u_core/PC_reg[31]/D      
+    0:00:17   23502.2      0.05       1.6       0.0 u_core/PC_reg[31]/D      
+    0:00:17   23501.7      0.05       1.6       0.0 u_core/PC_reg[31]/D      
+    0:00:17   23504.0      0.05       1.6       0.0 u_core/PC_reg[31]/D      
+    0:00:17   23509.8      0.05       1.6       0.0 u_core/PC_reg[31]/D      
+    0:00:17   23535.5      0.05       1.5       0.0 u_core/PC_reg[31]/D      
+    0:00:17   23546.2      0.04       1.5       0.0 u_core/PC_reg[31]/D      
+    0:00:17   23574.9      0.04       1.4       0.0 u_core/PC_reg[31]/D      
+    0:00:17   23575.7      0.04       1.2       0.0 u_core/PC_reg[31]/D      
+    0:00:17   23584.3      0.04       1.2       0.0 u_core/PC_reg[4]/D       
+    0:00:17   23597.3      0.03       1.3       0.0 u_core/PC_reg[31]/D      
+    0:00:17   23648.6      0.03       1.2       0.0 u_core/PC_reg[4]/D       
+    0:00:17   23648.4      0.03       1.2       0.0 u_core/PC_reg[4]/D       
+    0:00:18   23652.7      0.03       1.1       0.0 u_core/PC_reg[4]/D       
+    0:00:18   23699.7      0.03       1.1       0.0 u_core/PC_reg[31]/D      
+    0:00:18   23699.7      0.03       1.1       0.0 u_core/PC_reg[31]/D      
+    0:00:18   23721.3      0.03       1.1       0.0 u_core/PC_reg[31]/D      
+    0:00:18   23730.2      0.02       0.8       0.0 u_core/PC_reg[31]/D      
+    0:00:18   23752.8      0.02       0.6       0.0 u_core/PC_reg[24]/D      
+    0:00:18   23747.5      0.02       0.6       0.0 u_core/PC_reg[31]/D      
+    0:00:18   23762.0      0.02       0.5       0.0 u_core/PC_reg[31]/D      
+    0:00:18   23772.9      0.02       0.4       0.0 u_core/PC_reg[31]/D      
+    0:00:19   23777.0      0.02       0.4       0.0 u_core/PC_reg[31]/D      
+    0:00:19   23795.0      0.01       0.3       0.0 u_core/PC_reg[31]/D      
+    0:00:19   23775.4      0.01       0.3       0.0 u_core/PC_reg[31]/D      
+    0:00:19   23781.5      0.01       0.2       0.0 u_core/PC_reg[31]/D      
+    0:00:19   23782.3      0.01       0.1       0.0 u_core/PC_reg[31]/D      
+    0:00:19   23786.4      0.01       0.1       0.0 u_core/PC_reg[31]/D      
+    0:00:19   23787.6      0.01       0.1       0.0 u_core/PC_reg[31]/D      
+    0:00:19   23784.6      0.00       0.0       0.0 u_core/PC_reg[31]/D      
+    0:00:20   23775.2      0.00       0.0       0.0                          
+    0:00:20   23620.1      0.00       0.0      82.9                          
+
+
+  Beginning Design Rule Fixing  (max_transition)  (max_capacitance)
+  ----------------------------
+
+                                  TOTAL                                      
+   ELAPSED            WORST NEG   SETUP    DESIGN                            
+    TIME      AREA      SLACK     COST    RULE COST         ENDPOINT         
+  --------- --------- --------- --------- --------- -------------------------
+    0:00:20   23620.1      0.00       0.0      82.9                          
+    0:00:20   23628.8      0.00       0.0       0.0                          
+
+
+  Beginning Area-Recovery Phase  (cleanup)
+  -----------------------------
+
+                                  TOTAL                                      
+   ELAPSED            WORST NEG   SETUP    DESIGN                            
+    TIME      AREA      SLACK     COST    RULE COST         ENDPOINT         
+  --------- --------- --------- --------- --------- -------------------------
+    0:00:20   23628.8      0.00       0.0       0.0                          
+    0:00:20   23628.8      0.00       0.0       0.0                          
+    0:00:21   23209.2      0.01       0.4       0.3                          
+    0:00:21   23165.5      0.01       0.4       0.5                          
+    0:00:21   23147.2      0.01       0.4       0.9                          
+    0:00:21   23145.1      0.01       0.4       0.9                          
+    0:00:21   23143.1      0.01       0.4       0.9                          
+    0:00:21   23143.1      0.01       0.4       0.9                          
+    0:00:21   23134.7      0.01       0.4       0.6 u_core/net99548          
+    0:00:22   23135.7      0.01       0.4       0.6                          
+    0:00:22   23148.2      0.01       0.2       0.6                          
+    0:00:22   23150.5      0.00       0.1       0.6                          
+    0:00:22   23150.5      0.00       0.0       0.6                          
+    0:00:22   23150.5      0.00       0.0       0.6                          
+    0:00:22   22996.0      0.07       2.7       0.6                          
+    0:00:22   22982.5      0.08       2.7       0.6                          
+    0:00:22   22982.5      0.08       2.7       0.6                          
+    0:00:22   22982.5      0.08       2.7       0.6                          
+    0:00:22   22982.5      0.08       2.7       0.6                          
+    0:00:22   22982.5      0.08       2.7       0.6                          
+    0:00:22   22982.5      0.08       2.7       0.6                          
+    0:00:22   22996.2      0.01       0.1       0.6 u_core/PC_reg[31]/D      
+    0:00:22   23001.3      0.01       0.1       0.6 u_core/PC_reg[31]/D      
+    0:00:22   23001.8      0.01       0.1       0.6 u_core/PC_reg[31]/D      
+    0:00:23   23001.8      0.00       0.0       0.6 u_core/PC_reg[31]/D      
+    0:00:23   23002.6      0.00       0.0       0.6 u_core/PC_reg[31]/D      
+    0:00:23   23020.4      0.00       0.0       0.6                          
+Loading db file '/opt/eda/pdk/saed32nm/edk/SAED32_EDK/lib/stdcell_rvt/db_nldm/saed32rvt_ss0p95v125c.db'
+
+
+Note: Symbol # after min delay cost means estimated hold TNS across all active scenarios 
+
+
+  Optimization Complete
+  ---------------------
+Warning: Design 'TOP' contains 1 high-fanout nets. A fanout number of 1000 will be used for delay calculations involving these nets. (TIM-134)
+     Net 'CLK': 1439 load(s), 1 driver(s)
+CPU Load: 6%, Ram Free: 4 GB, Swap Free: 30 GB, Work Disk Free: 7323 GB, Tmp Disk Free: 1384 GB
+Information: Total number of MV cells in the design.
+----------------------------------------------------------------------------------------------------
+ MV Cells                                           Total Number                                   
+----------------------------------------------------------------------------------------------------
+ Level Shifter:                                     0                                             
+ Enable Level Shifter:                              0                                             
+ Isolation Cell:                                    0                                             
+ Retention Cell:                                    0                                             
+ Retention Clamp Cell:                              0                                             
+ Switch Cell:                                       0                                             
+ Always-On Cell:                                    0                                             
+ Repeater Cell:                                     0                                             
+
+----------------------------------------------------------------------------------------------------
+Unmapped MV Cells 
+----------------------------------------------------------------------------------------------------
+0 Isolation Cells are unmapped 
+0 Retention Clamp Cells are unmapped 
+----------------------------------------------------------------------------------------------------
+P1_SWEEP period 2.36 ns
+Removing design 'TOP'
+Removing design 'CORE'
+Removing design 'CORE_DW01_add_3'
+Removing design 'CORE_DW01_sub_1'
+Removing design 'CORE_DW01_add_4'
+Removing design 'CORE_DW01_add_5'
+Removing design 'CORE_DW01_cmp6_9'
+Removing design 'CONTROLLER'
+Removing library 'saed32rvt_ss0p95v125c'
+Removing library 'gtech'
+Removing library 'standard.sldb'
+Loading db file '/opt/eda/pdk/saed32nm/edk/SAED32_EDK/lib/stdcell_rvt/db_nldm/saed32rvt_ss0p95v125c.db'
+Loading db file '/opt/eda/synopsys/products/syn/V-2023.12-SP5/libraries/syn/gtech.db'
+Loading db file '/opt/eda/synopsys/products/syn/V-2023.12-SP5/libraries/syn/standard.sldb'
+  Loading link library 'saed32rvt_ss0p95v125c'
+  Loading link library 'gtech'
+Running PRESTO HDLC
+Presto compilation completed successfully. (TOP)
+Elaborated 1 design.
+Current design is now 'TOP'.
+Information: Building the design 'CORE'. (HDL-193)
+Warning:  ./rtl/CORE.v:122: DEFAULT branch of CASE statement cannot be reached. (ELAB-311)
+
+Statistics for case statements in always block at line 111 in file
+	'./rtl/CORE.v'
+===============================================
+|           Line           |  full/ parallel  |
+===============================================
+|           112            |    auto/auto     |
+===============================================
+
+Statistics for case statements in always block at line 269 in file
+	'./rtl/CORE.v'
+===============================================
+|           Line           |  full/ parallel  |
+===============================================
+|           270            |    auto/auto     |
+===============================================
+
+Statistics for case statements in always block at line 301 in file
+	'./rtl/CORE.v'
+===============================================
+|           Line           |  full/ parallel  |
+===============================================
+|           309            |    auto/auto     |
+===============================================
+
+Inferred memory devices in process
+	in routine CORE line 201 in file
+		'./rtl/CORE.v'.
+===============================================================================
+|    Register Name    |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+===============================================================================
+|       PC_reg        | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+===============================================================================
+
+Inferred memory devices in process
+	in routine CORE line 208 in file
+		'./rtl/CORE.v'.
+===============================================================================
+|    Register Name    |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+===============================================================================
+| instruction_id_reg  | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+===============================================================================
+
+Inferred memory devices in process
+	in routine CORE line 215 in file
+		'./rtl/CORE.v'.
+=================================================================================
+|     Register Name     |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+=================================================================================
+| sequential_pc_id_reg  | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+| instruction_pc_id_reg | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+=================================================================================
+
+Inferred memory devices in process
+	in routine CORE line 225 in file
+		'./rtl/CORE.v'.
+=================================================================================
+|     Register Name     |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+=================================================================================
+|  write_memory_ex_reg  | Flip-flop |   1   |  N  | N  | N  | N  | N  | N  | N  |
+| result_select_ex_reg  | Flip-flop |   2   |  Y  | N  | N  | N  | N  | N  | N  |
+| write_register_ex_reg | Flip-flop |   1   |  N  | N  | N  | N  | N  | N  | N  |
+=================================================================================
+
+Inferred memory devices in process
+	in routine CORE line 239 in file
+		'./rtl/CORE.v'.
+================================================================================
+|    Register Name     |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+================================================================================
+| use_immediate_ex_reg | Flip-flop |   1   |  N  | N  | N  | N  | N  | N  | N  |
+| alu_operation_ex_reg | Flip-flop |   3   |  Y  | N  | N  | N  | N  | N  | N  |
+|   operand1_ex_reg    | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+|   operand2_ex_reg    | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+|   immediate_ex_reg   | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+| link_address_ex_reg  | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+|   forward1_ex_reg    | Flip-flop |   2   |  Y  | N  | N  | N  | N  | N  | N  |
+|   forward2_ex_reg    | Flip-flop |   2   |  Y  | N  | N  | N  | N  | N  | N  |
+|  destination_ex_reg  | Flip-flop |   5   |  Y  | N  | N  | N  | N  | N  | N  |
+================================================================================
+
+Inferred memory devices in process
+	in routine CORE line 278 in file
+		'./rtl/CORE.v'.
+==================================================================================
+|     Register Name      |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+==================================================================================
+|  write_memory_mem_reg  | Flip-flop |   1   |  N  | N  | N  | N  | N  | N  | N  |
+| result_select_mem_reg  | Flip-flop |   2   |  Y  | N  | N  | N  | N  | N  | N  |
+|   alu_result_mem_reg   | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+|   store_data_mem_reg   | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+|  link_address_mem_reg  | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+|  destination_mem_reg   | Flip-flop |   5   |  Y  | N  | N  | N  | N  | N  | N  |
+| write_register_mem_reg | Flip-flop |   1   |  N  | N  | N  | N  | N  | N  | N  |
+==================================================================================
+
+Inferred memory devices in process
+	in routine CORE line 301 in file
+		'./rtl/CORE.v'.
+=================================================================================
+|     Register Name     |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+=================================================================================
+|  writeback_value_reg  | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+|  destination_wb_reg   | Flip-flop |   5   |  Y  | N  | N  | N  | N  | N  | N  |
+| write_register_wb_reg | Flip-flop |   1   |  N  | N  | N  | N  | N  | N  | N  |
+=================================================================================
+
+Inferred memory devices in process
+	in routine CORE line 317 in file
+		'./rtl/CORE.v'.
+===============================================================================
+|    Register Name    |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+===============================================================================
+|    reg_file_reg     | Flip-flop | 1024  |  Y  | N  | N  | N  | N  | N  | N  |
+===============================================================================
+Statistics for MUX_OPs
+======================================================
+| block name/line  | Inputs | Outputs | # sel inputs |
+======================================================
+|     CORE/101     |   32   |   32    |      5       |
+|     CORE/105     |   32   |   32    |      5       |
+======================================================
+Presto compilation completed successfully. (CORE)
+Information: Building the design 'CONTROLLER'. (HDL-193)
+
+Statistics for case statements in always block at line 23 in file
+	'./rtl/CONTROLLER.v'
+===============================================
+|           Line           |  full/ parallel  |
+===============================================
+|            34            |    auto/auto     |
+===============================================
+Presto compilation completed successfully. (CONTROLLER)
+Current design is 'TOP'.
+
+  Linking design 'TOP'
+  Using the following designs and libraries:
+  --------------------------------------------------------------------------
+  * (3 designs)               /home/dice/dice008/DICE/Project1/1110_compare/1110_pipeline_ID/TOP.db, etc
+  saed32rvt_ss0p95v125c (library)
+                              /opt/eda/pdk/saed32nm/edk/SAED32_EDK/lib/stdcell_rvt/db_nldm/saed32rvt_ss0p95v125c.db
+
+CPU Load: 6%, Ram Free: 4 GB, Swap Free: 30 GB, Work Disk Free: 7323 GB, Tmp Disk Free: 1384 GB
+====================================================================================================
+| Flow Information                                                                                 |
+----------------------------------------------------------------------------------------------------
+| Flow         | Design Compiler                                                                   |
+====================================================================================================
+| Design Information                                      | Value                                  |
+====================================================================================================
+| Number of Scenarios                                     | 0                                      |
+| Leaf Cell Count                                         | 2007                                   |
+| Number of User Hierarchies                              | 2                                      |
+| Sequential Cell Count                                   | 1440                                   |
+| Macro Count                                             | 0                                      |
+| Number of Power Domains                                 | 0                                      |
+| Number of Path Groups                                   | 2                                      |
+| Number of VT Class                                      | 1                                      |
+| Number of Clocks                                        | 1                                      |
+| Number of Dont Touch Cells                              | 131                                    |
+| Number of Dont Touch Nets                               | 0                                      |
+| Number of Size Only Cells                               | 0                                      |
+| Design with UPF Data                                    | false                                  |
+====================================================================================================
+
+Information: There are 1937 potential problems in your design. Please run 'check_design' for more information. (LINT-99)
+
+
+
+  Beginning Pass 1 Mapping
+  ------------------------
+  Processing 'CONTROLLER'
+  Processing 'CORE'
+  Processing 'TOP'
+
+  Updating timing information
+Information: Updating design information... (UID-85)
+
+  Beginning Implementation Selection
+  ----------------------------------
+  Processing 'CORE_DW01_add_0'
+  Processing 'CORE_DW01_add_1'
+  Processing 'CORE_DW01_cmp6_0'
+  Processing 'CORE_DW01_sub_0'
+  Processing 'CORE_DW01_add_2'
+  Processing 'CORE_DW01_cmp6_1'
+  Processing 'CORE_DW01_cmp6_2'
+  Processing 'CORE_DW01_cmp6_3'
+  Processing 'CORE_DW01_cmp6_4'
+  Processing 'CORE_DW01_cmp6_5'
+  Processing 'CORE_DW01_cmp6_6'
+
+  Beginning Mapping Optimizations  (Medium effort)
+  -------------------------------
+  Mapping Optimization (Phase 3)
+Information: The register 'u_core/alu_operation_ex_reg[2]' is a constant and will be removed. (OPT-1206)
+
+                                  TOTAL                                      
+   ELAPSED            WORST NEG   SETUP    DESIGN                            
+    TIME      AREA      SLACK     COST    RULE COST         ENDPOINT         
+  --------- --------- --------- --------- --------- -------------------------
+    0:00:14   29653.5      0.17       8.0    4306.2                          
+    0:00:14   29651.0      0.18       8.0    4312.8                          
+    0:00:14   29651.0      0.18       8.0    4312.8                          
+    0:00:14   29650.5      0.18       8.0    4308.0                          
+    0:00:14   29650.5      0.18       8.0    4308.0                          
+    0:00:15   23105.0      0.18      10.0    4289.0                          
+    0:00:15   23105.0      0.19      11.1    4289.0                          
+    0:00:15   23107.0      0.16       9.3    4289.0                          
+    0:00:15   23112.6      0.14       8.0    4289.0                          
+    0:00:16   23122.3      0.14       8.0    4289.0                          
+    0:00:16   23124.3      0.13       7.5    4289.0                          
+    0:00:16   23124.3      0.13       7.5    4289.0                          
+    0:00:16   23124.3      0.13       7.5    4289.0                          
+    0:00:16   23124.3      0.13       7.5    4289.0                          
+    0:00:16   23124.3      0.13       7.5    4289.0                          
+    0:00:16   23283.4      0.13       7.5      64.6                          
+    0:00:16   23285.4      0.13       7.5       0.0                          
+    0:00:16   23285.4      0.13       7.5       0.0                          
+    0:00:16   23285.4      0.13       7.5       0.0                          
+    0:00:16   23285.4      0.13       7.5       0.0                          
+
+
+
+  Beginning Delay Optimization Phase
+  ----------------------------------
+
+                                  TOTAL                                      
+   ELAPSED            WORST NEG   SETUP    DESIGN                            
+    TIME      AREA      SLACK     COST    RULE COST         ENDPOINT         
+  --------- --------- --------- --------- --------- -------------------------
+    0:00:16   23285.4      0.13       7.5       0.0                          
+    0:00:16   23291.3      0.12       6.3       0.0 u_core/PC_reg[31]/D      
+    0:00:16   23306.5      0.11       5.8       0.0 u_core/PC_reg[31]/D      
+    0:00:16   23322.5      0.10       5.3       0.0 u_core/PC_reg[31]/D      
+    0:00:16   23350.8      0.10       5.0       0.0 u_core/PC_reg[31]/D      
+    0:00:16   23354.8      0.08       4.3       0.0 u_core/PC_reg[31]/D      
+    0:00:17   23376.4      0.08       3.9       0.0 u_core/PC_reg[31]/D      
+    0:00:17   23399.8      0.07       3.9       0.0 u_core/PC_reg[31]/D      
+    0:00:17   23415.8      0.07       3.7       0.0 u_core/PC_reg[31]/D      
+    0:00:17   23421.7      0.07       3.4       0.0 u_core/PC_reg[31]/D      
+    0:00:17   23427.2      0.06       3.3       0.0 u_core/PC_reg[31]/D      
+    0:00:17   23446.1      0.06       3.0       0.0 u_core/PC_reg[31]/D      
+    0:00:17   23464.6      0.05       2.8       0.0 u_core/PC_reg[31]/D      
+    0:00:17   23473.5      0.05       2.4       0.0 u_core/PC_reg[31]/D      
+    0:00:17   23481.9      0.05       2.3       0.0 u_core/PC_reg[31]/D      
+    0:00:17   23500.2      0.04       2.0       0.0 u_core/PC_reg[31]/D      
+    0:00:17   23499.4      0.04       1.8       0.0 u_core/PC_reg[31]/D      
+    0:00:18   23509.3      0.03       1.4       0.0 u_core/PC_reg[31]/D      
+    0:00:18   23502.5      0.03       1.3       0.0 u_core/PC_reg[31]/D      
+    0:00:18   23502.2      0.03       1.0       0.0 u_core/PC_reg[29]/D      
+    0:00:18   23506.3      0.02       0.7       0.0 u_core/PC_reg[29]/D      
+    0:00:18   23513.4      0.02       0.7       0.0 u_core/PC_reg[31]/D      
+    0:00:18   23514.2      0.02       0.7       0.0 u_core/PC_reg[29]/D      
+    0:00:19   23516.5      0.01       0.3       0.0 u_core/PC_reg[29]/D      
+    0:00:19   23511.9      0.00       0.0       0.0 u_core/PC_reg[30]/D      
+    0:00:19   23511.4      0.00       0.0       0.0                          
+    0:00:20   23362.4      0.00       0.0      81.9                          
+
+
+  Beginning Design Rule Fixing  (max_transition)  (max_capacitance)
+  ----------------------------
+
+                                  TOTAL                                      
+   ELAPSED            WORST NEG   SETUP    DESIGN                            
+    TIME      AREA      SLACK     COST    RULE COST         ENDPOINT         
+  --------- --------- --------- --------- --------- -------------------------
+    0:00:20   23362.4      0.00       0.0      81.9                          
+    0:00:20   23371.1      0.00       0.0       0.0                          
+
+
+  Beginning Area-Recovery Phase  (cleanup)
+  -----------------------------
+
+                                  TOTAL                                      
+   ELAPSED            WORST NEG   SETUP    DESIGN                            
+    TIME      AREA      SLACK     COST    RULE COST         ENDPOINT         
+  --------- --------- --------- --------- --------- -------------------------
+    0:00:20   23371.1      0.00       0.0       0.0                          
+    0:00:20   23371.1      0.00       0.0       0.0                          
+    0:00:20   23051.9      0.03       1.0       0.0                          
+    0:00:20   23008.7      0.03       1.0       0.4                          
+    0:00:20   22990.6      0.03       1.0       0.4                          
+    0:00:20   22988.6      0.03       1.0       0.4                          
+    0:00:20   22986.6      0.03       1.0       0.4                          
+    0:00:20   22986.6      0.03       1.0       0.4                          
+    0:00:21   22989.6      0.01       0.4       0.4 u_core/PC_reg[29]/D      
+    0:00:21   22989.1      0.01       0.2       0.4                          
+    0:00:21   22901.2      0.03       1.1       0.4                          
+    0:00:21   22894.1      0.03       1.1       0.4                          
+    0:00:21   22886.2      0.03       1.1       0.4                          
+    0:00:21   22886.2      0.03       1.1       0.4                          
+    0:00:21   22886.2      0.03       1.1       0.4                          
+    0:00:21   22886.2      0.03       1.1       0.4                          
+    0:00:21   22886.2      0.03       1.1       0.4                          
+    0:00:21   22886.2      0.03       1.1       0.4                          
+    0:00:22   22895.1      0.01       0.4       0.4 u_core/PC_reg[29]/D      
+    0:00:22   22914.6      0.01       0.2       0.4 u_core/PC_reg[29]/D      
+    0:00:22   22912.6      0.01       0.2       0.4 u_core/PC_reg[29]/D      
+    0:00:22   22912.4      0.01       0.2       0.4 u_core/PC_reg[18]/D      
+    0:00:22   22904.2      0.00       0.0       0.4                          
+    0:00:22   22886.4      0.00       0.0       0.4                          
+    0:00:23   22848.6      0.00       0.0       0.4                          
+    0:00:23   22837.4      0.00       0.0       0.4                          
+Loading db file '/opt/eda/pdk/saed32nm/edk/SAED32_EDK/lib/stdcell_rvt/db_nldm/saed32rvt_ss0p95v125c.db'
+
+
+Note: Symbol # after min delay cost means estimated hold TNS across all active scenarios 
+
+
+  Optimization Complete
+  ---------------------
+Warning: Design 'TOP' contains 1 high-fanout nets. A fanout number of 1000 will be used for delay calculations involving these nets. (TIM-134)
+     Net 'CLK': 1439 load(s), 1 driver(s)
+CPU Load: 6%, Ram Free: 4 GB, Swap Free: 30 GB, Work Disk Free: 7323 GB, Tmp Disk Free: 1384 GB
+Information: Total number of MV cells in the design.
+----------------------------------------------------------------------------------------------------
+ MV Cells                                           Total Number                                   
+----------------------------------------------------------------------------------------------------
+ Level Shifter:                                     0                                             
+ Enable Level Shifter:                              0                                             
+ Isolation Cell:                                    0                                             
+ Retention Cell:                                    0                                             
+ Retention Clamp Cell:                              0                                             
+ Switch Cell:                                       0                                             
+ Always-On Cell:                                    0                                             
+ Repeater Cell:                                     0                                             
+
+----------------------------------------------------------------------------------------------------
+Unmapped MV Cells 
+----------------------------------------------------------------------------------------------------
+0 Isolation Cells are unmapped 
+0 Retention Clamp Cells are unmapped 
+----------------------------------------------------------------------------------------------------
+P1_SWEEP period 2.34 ns
+Removing design 'TOP'
+Removing design 'CORE'
+Removing design 'CORE_DW01_add_3'
+Removing design 'CORE_DW01_add_4'
+Removing design 'CORE_DW01_add_5'
+Removing design 'CORE_DW01_cmp6_9'
+Removing design 'CORE_DW01_sub_3'
+Removing design 'CONTROLLER'
+Removing library 'saed32rvt_ss0p95v125c'
+Removing library 'gtech'
+Removing library 'standard.sldb'
+Loading db file '/opt/eda/pdk/saed32nm/edk/SAED32_EDK/lib/stdcell_rvt/db_nldm/saed32rvt_ss0p95v125c.db'
+Loading db file '/opt/eda/synopsys/products/syn/V-2023.12-SP5/libraries/syn/gtech.db'
+Loading db file '/opt/eda/synopsys/products/syn/V-2023.12-SP5/libraries/syn/standard.sldb'
+  Loading link library 'saed32rvt_ss0p95v125c'
+  Loading link library 'gtech'
+Running PRESTO HDLC
+Presto compilation completed successfully. (TOP)
+Elaborated 1 design.
+Current design is now 'TOP'.
+Information: Building the design 'CORE'. (HDL-193)
+Warning:  ./rtl/CORE.v:122: DEFAULT branch of CASE statement cannot be reached. (ELAB-311)
+
+Statistics for case statements in always block at line 111 in file
+	'./rtl/CORE.v'
+===============================================
+|           Line           |  full/ parallel  |
+===============================================
+|           112            |    auto/auto     |
+===============================================
+
+Statistics for case statements in always block at line 269 in file
+	'./rtl/CORE.v'
+===============================================
+|           Line           |  full/ parallel  |
+===============================================
+|           270            |    auto/auto     |
+===============================================
+
+Statistics for case statements in always block at line 301 in file
+	'./rtl/CORE.v'
+===============================================
+|           Line           |  full/ parallel  |
+===============================================
+|           309            |    auto/auto     |
+===============================================
+
+Inferred memory devices in process
+	in routine CORE line 201 in file
+		'./rtl/CORE.v'.
+===============================================================================
+|    Register Name    |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+===============================================================================
+|       PC_reg        | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+===============================================================================
+
+Inferred memory devices in process
+	in routine CORE line 208 in file
+		'./rtl/CORE.v'.
+===============================================================================
+|    Register Name    |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+===============================================================================
+| instruction_id_reg  | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+===============================================================================
+
+Inferred memory devices in process
+	in routine CORE line 215 in file
+		'./rtl/CORE.v'.
+=================================================================================
+|     Register Name     |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+=================================================================================
+| sequential_pc_id_reg  | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+| instruction_pc_id_reg | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+=================================================================================
+
+Inferred memory devices in process
+	in routine CORE line 225 in file
+		'./rtl/CORE.v'.
+=================================================================================
+|     Register Name     |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+=================================================================================
+|  write_memory_ex_reg  | Flip-flop |   1   |  N  | N  | N  | N  | N  | N  | N  |
+| result_select_ex_reg  | Flip-flop |   2   |  Y  | N  | N  | N  | N  | N  | N  |
+| write_register_ex_reg | Flip-flop |   1   |  N  | N  | N  | N  | N  | N  | N  |
+=================================================================================
+
+Inferred memory devices in process
+	in routine CORE line 239 in file
+		'./rtl/CORE.v'.
+================================================================================
+|    Register Name     |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+================================================================================
+| use_immediate_ex_reg | Flip-flop |   1   |  N  | N  | N  | N  | N  | N  | N  |
+| alu_operation_ex_reg | Flip-flop |   3   |  Y  | N  | N  | N  | N  | N  | N  |
+|   operand1_ex_reg    | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+|   operand2_ex_reg    | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+|   immediate_ex_reg   | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+| link_address_ex_reg  | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+|   forward1_ex_reg    | Flip-flop |   2   |  Y  | N  | N  | N  | N  | N  | N  |
+|   forward2_ex_reg    | Flip-flop |   2   |  Y  | N  | N  | N  | N  | N  | N  |
+|  destination_ex_reg  | Flip-flop |   5   |  Y  | N  | N  | N  | N  | N  | N  |
+================================================================================
+
+Inferred memory devices in process
+	in routine CORE line 278 in file
+		'./rtl/CORE.v'.
+==================================================================================
+|     Register Name      |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+==================================================================================
+|  write_memory_mem_reg  | Flip-flop |   1   |  N  | N  | N  | N  | N  | N  | N  |
+| result_select_mem_reg  | Flip-flop |   2   |  Y  | N  | N  | N  | N  | N  | N  |
+|   alu_result_mem_reg   | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+|   store_data_mem_reg   | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+|  link_address_mem_reg  | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+|  destination_mem_reg   | Flip-flop |   5   |  Y  | N  | N  | N  | N  | N  | N  |
+| write_register_mem_reg | Flip-flop |   1   |  N  | N  | N  | N  | N  | N  | N  |
+==================================================================================
+
+Inferred memory devices in process
+	in routine CORE line 301 in file
+		'./rtl/CORE.v'.
+=================================================================================
+|     Register Name     |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+=================================================================================
+|  writeback_value_reg  | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+|  destination_wb_reg   | Flip-flop |   5   |  Y  | N  | N  | N  | N  | N  | N  |
+| write_register_wb_reg | Flip-flop |   1   |  N  | N  | N  | N  | N  | N  | N  |
+=================================================================================
+
+Inferred memory devices in process
+	in routine CORE line 317 in file
+		'./rtl/CORE.v'.
+===============================================================================
+|    Register Name    |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+===============================================================================
+|    reg_file_reg     | Flip-flop | 1024  |  Y  | N  | N  | N  | N  | N  | N  |
+===============================================================================
+Statistics for MUX_OPs
+======================================================
+| block name/line  | Inputs | Outputs | # sel inputs |
+======================================================
+|     CORE/101     |   32   |   32    |      5       |
+|     CORE/105     |   32   |   32    |      5       |
+======================================================
+Presto compilation completed successfully. (CORE)
+Information: Building the design 'CONTROLLER'. (HDL-193)
+
+Statistics for case statements in always block at line 23 in file
+	'./rtl/CONTROLLER.v'
+===============================================
+|           Line           |  full/ parallel  |
+===============================================
+|            34            |    auto/auto     |
+===============================================
+Presto compilation completed successfully. (CONTROLLER)
+Current design is 'TOP'.
+
+  Linking design 'TOP'
+  Using the following designs and libraries:
+  --------------------------------------------------------------------------
+  * (3 designs)               /home/dice/dice008/DICE/Project1/1110_compare/1110_pipeline_ID/TOP.db, etc
+  saed32rvt_ss0p95v125c (library)
+                              /opt/eda/pdk/saed32nm/edk/SAED32_EDK/lib/stdcell_rvt/db_nldm/saed32rvt_ss0p95v125c.db
+
+CPU Load: 6%, Ram Free: 4 GB, Swap Free: 30 GB, Work Disk Free: 7323 GB, Tmp Disk Free: 1384 GB
+====================================================================================================
+| Flow Information                                                                                 |
+----------------------------------------------------------------------------------------------------
+| Flow         | Design Compiler                                                                   |
+====================================================================================================
+| Design Information                                      | Value                                  |
+====================================================================================================
+| Number of Scenarios                                     | 0                                      |
+| Leaf Cell Count                                         | 2007                                   |
+| Number of User Hierarchies                              | 2                                      |
+| Sequential Cell Count                                   | 1440                                   |
+| Macro Count                                             | 0                                      |
+| Number of Power Domains                                 | 0                                      |
+| Number of Path Groups                                   | 2                                      |
+| Number of VT Class                                      | 1                                      |
+| Number of Clocks                                        | 1                                      |
+| Number of Dont Touch Cells                              | 131                                    |
+| Number of Dont Touch Nets                               | 0                                      |
+| Number of Size Only Cells                               | 0                                      |
+| Design with UPF Data                                    | false                                  |
+====================================================================================================
+
+Information: There are 1937 potential problems in your design. Please run 'check_design' for more information. (LINT-99)
+
+
+
+  Beginning Pass 1 Mapping
+  ------------------------
+  Processing 'CONTROLLER'
+  Processing 'CORE'
+  Processing 'TOP'
+
+  Updating timing information
+Information: Updating design information... (UID-85)
+
+  Beginning Implementation Selection
+  ----------------------------------
+  Processing 'CORE_DW01_add_0'
+  Processing 'CORE_DW01_add_1'
+  Processing 'CORE_DW01_cmp6_0'
+  Processing 'CORE_DW01_sub_0'
+  Processing 'CORE_DW01_add_2'
+  Processing 'CORE_DW01_cmp6_1'
+  Processing 'CORE_DW01_cmp6_2'
+  Processing 'CORE_DW01_cmp6_3'
+  Processing 'CORE_DW01_cmp6_4'
+  Processing 'CORE_DW01_cmp6_5'
+  Processing 'CORE_DW01_cmp6_6'
+
+  Beginning Mapping Optimizations  (Medium effort)
+  -------------------------------
+  Mapping Optimization (Phase 4)
+Information: The register 'u_core/alu_operation_ex_reg[2]' is a constant and will be removed. (OPT-1206)
+
+                                  TOTAL                                      
+   ELAPSED            WORST NEG   SETUP    DESIGN                            
+    TIME      AREA      SLACK     COST    RULE COST         ENDPOINT         
+  --------- --------- --------- --------- --------- -------------------------
+    0:00:13   29707.9      0.17       9.3    3933.0                          
+    0:00:14   29642.3      0.20       9.5    5800.4                          
+    0:00:14   29642.3      0.20       9.5    5800.4                          
+    0:00:14   29634.2      0.20       9.5    5849.9                          
+    0:00:14   29634.2      0.20       9.5    5849.9                          
+    0:00:15   23055.7      0.24      12.6    5736.9                          
+    0:00:15   23049.1      0.23      11.8    5735.4                          
+    0:00:15   23055.9      0.19       9.2    5735.4                          
+    0:00:15   23057.7      0.18       8.6    5735.4                          
+    0:00:15   23059.2      0.17      10.2    5735.4                          
+    0:00:15   23067.9      0.16       8.3    5735.4                          
+    0:00:16   23069.7      0.18      10.0    5735.4                          
+    0:00:16   23070.2      0.15       7.8    5735.4                          
+    0:00:16   23072.0      0.16       8.8    5735.4                          
+    0:00:16   23066.9      0.15       7.9    5735.4                          
+    0:00:16   23072.7      0.15       7.8    5735.4                          
+    0:00:16   23076.3      0.15       7.6    5735.4                          
+    0:00:16   23086.4      0.15       7.6    5735.4                          
+    0:00:16   23094.8      0.16       8.4    5735.4                          
+    0:00:16   23095.6      0.15       7.7    5735.4                          
+    0:00:16   23098.1      0.15       7.4    5735.4                          
+    0:00:16   23102.2      0.14       7.3    5735.4                          
+    0:00:16   23105.5      0.14       7.2    5735.4                          
+    0:00:16   23104.7      0.14       7.4    5735.4                          
+    0:00:16   23104.7      0.14       7.4    5735.4                          
+    0:00:16   23104.7      0.14       7.4    5735.4                          
+    0:00:17   23322.0      0.14       7.3     810.3                          
+    0:00:17   23322.0      0.14       7.3     810.3                          
+    0:00:17   23322.0      0.14       7.3     810.3                          
+    0:00:17   23322.0      0.14       7.3     810.3                          
+
+
+
+  Beginning Delay Optimization Phase
+  ----------------------------------
+
+                                  TOTAL                                      
+   ELAPSED            WORST NEG   SETUP    DESIGN                            
+    TIME      AREA      SLACK     COST    RULE COST         ENDPOINT         
+  --------- --------- --------- --------- --------- -------------------------
+    0:00:17   23322.0      0.14       7.3     810.3                          
+    0:00:17   23328.1      0.12       6.0     810.3 u_core/instruction_id_reg[0]/RSTB
+    0:00:17   23362.2      0.11       5.3     810.3 u_core/instruction_id_reg[0]/RSTB
+    0:00:17   23378.7      0.11       5.1     810.3 u_core/instruction_id_reg[0]/RSTB
+    0:00:17   23417.8      0.10       5.1     810.3 u_core/PC_reg[14]/D      
+    0:00:17   23431.8      0.10       4.8     810.3 u_core/PC_reg[14]/D      
+    0:00:17   23443.0      0.09       4.2     810.3 u_core/PC_reg[14]/D      
+    0:00:18   23460.3      0.09       4.1     809.1 u_core/PC_reg[6]/D       
+    0:00:18   23469.7      0.08       3.4     807.9 u_core/PC_reg[14]/D      
+    0:00:18   23486.7      0.06       3.3     807.9 u_core/instruction_id_reg[0]/RSTB
+    0:00:18   23502.2      0.05       3.0     807.9 u_core/instruction_id_reg[0]/RSTB
+    0:00:18   23537.3      0.05       2.7     807.9 u_core/instruction_id_reg[0]/RSTB
+    0:00:18   23550.0      0.04       2.3     807.9 u_core/instruction_id_reg[0]/RSTB
+    0:00:18   23555.3      0.04       2.0     807.9 u_core/instruction_id_reg[0]/RSTB
+    0:00:18   23574.1      0.03       1.6     807.9 u_core/instruction_id_reg[0]/RSTB
+    0:00:18   23591.9      0.03       1.3     807.9 u_core/PC_reg[31]/D      
+    0:00:18   23599.0      0.02       1.1     807.9 u_core/PC_reg[31]/D      
+    0:00:18   23613.0      0.02       0.9     807.9 u_core/PC_reg[31]/D      
+    0:00:18   23613.0      0.02       0.8     807.9 u_core/PC_reg[31]/D      
+    0:00:19   23629.0      0.01       0.5     807.9 u_core/PC_reg[31]/D      
+    0:00:19   23631.3      0.01       0.5     807.9 u_core/PC_reg[31]/D      
+    0:00:19   23618.9      0.01       0.4     807.9 u_core/PC_reg[31]/D      
+    0:00:19   23615.1      0.01       0.4     807.9 u_core/PC_reg[31]/D      
+    0:00:19   23616.8      0.01       0.3     807.9 u_core/PC_reg[31]/D      
+    0:00:19   23616.8      0.01       0.3     807.9 u_core/PC_reg[31]/D      
+    0:00:20   23609.5      0.00       0.0     807.9 u_core/PC_reg[31]/D      
+    0:00:20   23607.2      0.00       0.0     807.9                          
+    0:00:21   23438.2      0.00       0.0     942.9                          
+
+
+  Beginning Design Rule Fixing  (max_transition)  (max_capacitance)
+  ----------------------------
+
+                                  TOTAL                                      
+   ELAPSED            WORST NEG   SETUP    DESIGN                            
+    TIME      AREA      SLACK     COST    RULE COST         ENDPOINT         
+  --------- --------- --------- --------- --------- -------------------------
+    0:00:21   23438.2      0.00       0.0     942.9                          
+    0:00:21   23489.8      0.00       0.0       0.0                          
+
+
+  Beginning Area-Recovery Phase  (cleanup)
+  -----------------------------
+
+                                  TOTAL                                      
+   ELAPSED            WORST NEG   SETUP    DESIGN                            
+    TIME      AREA      SLACK     COST    RULE COST         ENDPOINT         
+  --------- --------- --------- --------- --------- -------------------------
+    0:00:21   23489.8      0.00       0.0       0.0                          
+    0:00:21   23489.8      0.00       0.0       0.0                          
+    0:00:21   23127.9      0.03       0.8       0.0                          
+    0:00:21   23081.9      0.03       1.0       0.0                          
+    0:00:22   23066.9      0.03       1.0       0.0                          
+    0:00:22   23061.0      0.03       1.0       0.0                          
+    0:00:22   23059.0      0.03       1.0       0.0                          
+    0:00:22   23059.0      0.03       1.0       0.0                          
+    0:00:22   23062.3      0.01       0.2       0.0                          
+    0:00:22   23061.5      0.01       0.1       0.0                          
+    0:00:22   22984.5      0.04       0.9       0.0                          
+    0:00:22   22966.0      0.03       0.6       0.0                          
+    0:00:22   22966.0      0.03       0.6       0.0                          
+    0:00:22   22966.0      0.03       0.6       0.0                          
+    0:00:22   22966.0      0.03       0.6       0.0                          
+    0:00:22   22966.0      0.03       0.6       0.0                          
+    0:00:22   22966.0      0.03       0.6       0.0                          
+    0:00:22   22968.3      0.01       0.3       0.0 u_core/PC_reg[31]/D      
+    0:00:23   22995.2      0.01       0.1       0.0 u_core/PC_reg[31]/D      
+    0:00:23   23016.6      0.00       0.0       0.0 u_core/PC_reg[31]/D      
+    0:00:23   23014.5      0.00       0.0       0.0                          
+    0:00:23   22985.8      0.00       0.0       0.0                          
+    0:00:23   22969.3      0.00       0.0       0.0                          
+    0:00:24   22963.2      0.00       0.0       0.0                          
+    0:00:24   22958.6      0.00       0.0       0.0 u_core/PC_reg[31]/D      
+    0:00:24   22958.4      0.00       0.0       0.0                          
+Loading db file '/opt/eda/pdk/saed32nm/edk/SAED32_EDK/lib/stdcell_rvt/db_nldm/saed32rvt_ss0p95v125c.db'
+
+
+Note: Symbol # after min delay cost means estimated hold TNS across all active scenarios 
+
+
+  Optimization Complete
+  ---------------------
+Warning: Design 'TOP' contains 1 high-fanout nets. A fanout number of 1000 will be used for delay calculations involving these nets. (TIM-134)
+     Net 'CLK': 1439 load(s), 1 driver(s)
+CPU Load: 7%, Ram Free: 4 GB, Swap Free: 30 GB, Work Disk Free: 7323 GB, Tmp Disk Free: 1384 GB
+Information: Total number of MV cells in the design.
+----------------------------------------------------------------------------------------------------
+ MV Cells                                           Total Number                                   
+----------------------------------------------------------------------------------------------------
+ Level Shifter:                                     0                                             
+ Enable Level Shifter:                              0                                             
+ Isolation Cell:                                    0                                             
+ Retention Cell:                                    0                                             
+ Retention Clamp Cell:                              0                                             
+ Switch Cell:                                       0                                             
+ Always-On Cell:                                    0                                             
+ Repeater Cell:                                     0                                             
+
+----------------------------------------------------------------------------------------------------
+Unmapped MV Cells 
+----------------------------------------------------------------------------------------------------
+0 Isolation Cells are unmapped 
+0 Retention Clamp Cells are unmapped 
+----------------------------------------------------------------------------------------------------
+P1_SWEEP period 2.32 ns
+Removing design 'TOP'
+Removing design 'CORE'
+Removing design 'CORE_DW01_sub_1'
+Removing design 'CORE_DW01_add_4'
+Removing design 'CORE_DW01_add_5'
+Removing design 'CORE_DW01_cmp6_9'
+Removing design 'CORE_DW01_add_7'
+Removing design 'CONTROLLER'
+Removing library 'saed32rvt_ss0p95v125c'
+Removing library 'gtech'
+Removing library 'standard.sldb'
+Loading db file '/opt/eda/pdk/saed32nm/edk/SAED32_EDK/lib/stdcell_rvt/db_nldm/saed32rvt_ss0p95v125c.db'
+Loading db file '/opt/eda/synopsys/products/syn/V-2023.12-SP5/libraries/syn/gtech.db'
+Loading db file '/opt/eda/synopsys/products/syn/V-2023.12-SP5/libraries/syn/standard.sldb'
+  Loading link library 'saed32rvt_ss0p95v125c'
+  Loading link library 'gtech'
+Running PRESTO HDLC
+Presto compilation completed successfully. (TOP)
+Elaborated 1 design.
+Current design is now 'TOP'.
+Information: Building the design 'CORE'. (HDL-193)
+Warning:  ./rtl/CORE.v:122: DEFAULT branch of CASE statement cannot be reached. (ELAB-311)
+
+Statistics for case statements in always block at line 111 in file
+	'./rtl/CORE.v'
+===============================================
+|           Line           |  full/ parallel  |
+===============================================
+|           112            |    auto/auto     |
+===============================================
+
+Statistics for case statements in always block at line 269 in file
+	'./rtl/CORE.v'
+===============================================
+|           Line           |  full/ parallel  |
+===============================================
+|           270            |    auto/auto     |
+===============================================
+
+Statistics for case statements in always block at line 301 in file
+	'./rtl/CORE.v'
+===============================================
+|           Line           |  full/ parallel  |
+===============================================
+|           309            |    auto/auto     |
+===============================================
+
+Inferred memory devices in process
+	in routine CORE line 201 in file
+		'./rtl/CORE.v'.
+===============================================================================
+|    Register Name    |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+===============================================================================
+|       PC_reg        | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+===============================================================================
+
+Inferred memory devices in process
+	in routine CORE line 208 in file
+		'./rtl/CORE.v'.
+===============================================================================
+|    Register Name    |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+===============================================================================
+| instruction_id_reg  | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+===============================================================================
+
+Inferred memory devices in process
+	in routine CORE line 215 in file
+		'./rtl/CORE.v'.
+=================================================================================
+|     Register Name     |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+=================================================================================
+| sequential_pc_id_reg  | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+| instruction_pc_id_reg | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+=================================================================================
+
+Inferred memory devices in process
+	in routine CORE line 225 in file
+		'./rtl/CORE.v'.
+=================================================================================
+|     Register Name     |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+=================================================================================
+|  write_memory_ex_reg  | Flip-flop |   1   |  N  | N  | N  | N  | N  | N  | N  |
+| result_select_ex_reg  | Flip-flop |   2   |  Y  | N  | N  | N  | N  | N  | N  |
+| write_register_ex_reg | Flip-flop |   1   |  N  | N  | N  | N  | N  | N  | N  |
+=================================================================================
+
+Inferred memory devices in process
+	in routine CORE line 239 in file
+		'./rtl/CORE.v'.
+================================================================================
+|    Register Name     |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+================================================================================
+| use_immediate_ex_reg | Flip-flop |   1   |  N  | N  | N  | N  | N  | N  | N  |
+| alu_operation_ex_reg | Flip-flop |   3   |  Y  | N  | N  | N  | N  | N  | N  |
+|   operand1_ex_reg    | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+|   operand2_ex_reg    | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+|   immediate_ex_reg   | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+| link_address_ex_reg  | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+|   forward1_ex_reg    | Flip-flop |   2   |  Y  | N  | N  | N  | N  | N  | N  |
+|   forward2_ex_reg    | Flip-flop |   2   |  Y  | N  | N  | N  | N  | N  | N  |
+|  destination_ex_reg  | Flip-flop |   5   |  Y  | N  | N  | N  | N  | N  | N  |
+================================================================================
+
+Inferred memory devices in process
+	in routine CORE line 278 in file
+		'./rtl/CORE.v'.
+==================================================================================
+|     Register Name      |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+==================================================================================
+|  write_memory_mem_reg  | Flip-flop |   1   |  N  | N  | N  | N  | N  | N  | N  |
+| result_select_mem_reg  | Flip-flop |   2   |  Y  | N  | N  | N  | N  | N  | N  |
+|   alu_result_mem_reg   | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+|   store_data_mem_reg   | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+|  link_address_mem_reg  | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+|  destination_mem_reg   | Flip-flop |   5   |  Y  | N  | N  | N  | N  | N  | N  |
+| write_register_mem_reg | Flip-flop |   1   |  N  | N  | N  | N  | N  | N  | N  |
+==================================================================================
+
+Inferred memory devices in process
+	in routine CORE line 301 in file
+		'./rtl/CORE.v'.
+=================================================================================
+|     Register Name     |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+=================================================================================
+|  writeback_value_reg  | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+|  destination_wb_reg   | Flip-flop |   5   |  Y  | N  | N  | N  | N  | N  | N  |
+| write_register_wb_reg | Flip-flop |   1   |  N  | N  | N  | N  | N  | N  | N  |
+=================================================================================
+
+Inferred memory devices in process
+	in routine CORE line 317 in file
+		'./rtl/CORE.v'.
+===============================================================================
+|    Register Name    |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+===============================================================================
+|    reg_file_reg     | Flip-flop | 1024  |  Y  | N  | N  | N  | N  | N  | N  |
+===============================================================================
+Statistics for MUX_OPs
+======================================================
+| block name/line  | Inputs | Outputs | # sel inputs |
+======================================================
+|     CORE/101     |   32   |   32    |      5       |
+|     CORE/105     |   32   |   32    |      5       |
+======================================================
+Presto compilation completed successfully. (CORE)
+Information: Building the design 'CONTROLLER'. (HDL-193)
+
+Statistics for case statements in always block at line 23 in file
+	'./rtl/CONTROLLER.v'
+===============================================
+|           Line           |  full/ parallel  |
+===============================================
+|            34            |    auto/auto     |
+===============================================
+Presto compilation completed successfully. (CONTROLLER)
+Current design is 'TOP'.
+
+  Linking design 'TOP'
+  Using the following designs and libraries:
+  --------------------------------------------------------------------------
+  * (3 designs)               /home/dice/dice008/DICE/Project1/1110_compare/1110_pipeline_ID/TOP.db, etc
+  saed32rvt_ss0p95v125c (library)
+                              /opt/eda/pdk/saed32nm/edk/SAED32_EDK/lib/stdcell_rvt/db_nldm/saed32rvt_ss0p95v125c.db
+
+CPU Load: 7%, Ram Free: 4 GB, Swap Free: 30 GB, Work Disk Free: 7323 GB, Tmp Disk Free: 1384 GB
+====================================================================================================
+| Flow Information                                                                                 |
+----------------------------------------------------------------------------------------------------
+| Flow         | Design Compiler                                                                   |
+====================================================================================================
+| Design Information                                      | Value                                  |
+====================================================================================================
+| Number of Scenarios                                     | 0                                      |
+| Leaf Cell Count                                         | 2007                                   |
+| Number of User Hierarchies                              | 2                                      |
+| Sequential Cell Count                                   | 1440                                   |
+| Macro Count                                             | 0                                      |
+| Number of Power Domains                                 | 0                                      |
+| Number of Path Groups                                   | 2                                      |
+| Number of VT Class                                      | 1                                      |
+| Number of Clocks                                        | 1                                      |
+| Number of Dont Touch Cells                              | 131                                    |
+| Number of Dont Touch Nets                               | 0                                      |
+| Number of Size Only Cells                               | 0                                      |
+| Design with UPF Data                                    | false                                  |
+====================================================================================================
+
+Information: There are 1937 potential problems in your design. Please run 'check_design' for more information. (LINT-99)
+
+
+
+  Beginning Pass 1 Mapping
+  ------------------------
+  Processing 'CONTROLLER'
+  Processing 'CORE'
+  Processing 'TOP'
+
+  Updating timing information
+Information: Updating design information... (UID-85)
+
+  Beginning Implementation Selection
+  ----------------------------------
+  Processing 'CORE_DW01_add_0'
+  Processing 'CORE_DW01_add_1'
+  Processing 'CORE_DW01_cmp6_0'
+  Processing 'CORE_DW01_sub_0'
+  Processing 'CORE_DW01_add_2'
+  Processing 'CORE_DW01_cmp6_1'
+  Processing 'CORE_DW01_cmp6_2'
+  Processing 'CORE_DW01_cmp6_3'
+  Processing 'CORE_DW01_cmp6_4'
+  Processing 'CORE_DW01_cmp6_5'
+  Processing 'CORE_DW01_cmp6_6'
+
+  Beginning Mapping Optimizations  (Medium effort)
+  -------------------------------
+  Mapping Optimization (Phase 5)
+Information: The register 'u_core/alu_operation_ex_reg[2]' is a constant and will be removed. (OPT-1206)
+
+                                  TOTAL                                      
+   ELAPSED            WORST NEG   SETUP    DESIGN                            
+    TIME      AREA      SLACK     COST    RULE COST         ENDPOINT         
+  --------- --------- --------- --------- --------- -------------------------
+    0:00:13   29709.2      0.28      12.9    4305.9                          
+    0:00:13   29705.4      0.28      12.9    4316.8                          
+    0:00:13   29705.4      0.28      12.9    4316.8                          
+    0:00:13   29703.8      0.28      12.8    4316.8                          
+    0:00:13   29703.8      0.28      12.8    4316.8                          
+    0:00:14   23137.5      0.30      16.1    4294.4                          
+    0:00:15   23147.2      0.28      17.0    4293.6                          
+    0:00:15   23143.4      0.20      11.6    4293.6                          
+    0:00:15   23148.7      0.19      11.2    4293.6                          
+    0:00:15   23158.1      0.18      10.5    4293.6                          
+    0:00:15   23161.7      0.17      10.2    4293.6                          
+    0:00:15   23164.2      0.18      10.4    4293.6                          
+    0:00:15   23165.2      0.16       9.4    4293.6                          
+    0:00:15   23165.2      0.16       9.4    4293.6                          
+    0:00:15   23165.2      0.16       9.4    4293.6                          
+    0:00:15   23165.2      0.16       9.4    4293.6                          
+    0:00:15   23165.2      0.16       9.4    4293.6                          
+    0:00:15   23165.2      0.16       9.4    4293.6                          
+    0:00:16   23346.2      0.16       9.4      64.6                          
+    0:00:16   23348.2      0.16       9.4       0.0                          
+    0:00:16   23348.2      0.16       9.4       0.0                          
+    0:00:16   23348.2      0.16       9.4       0.0                          
+    0:00:16   23348.2      0.16       9.4       0.0                          
+
+
+
+  Beginning Delay Optimization Phase
+  ----------------------------------
+
+                                  TOTAL                                      
+   ELAPSED            WORST NEG   SETUP    DESIGN                            
+    TIME      AREA      SLACK     COST    RULE COST         ENDPOINT         
+  --------- --------- --------- --------- --------- -------------------------
+    0:00:16   23348.2      0.16       9.4       0.0                          
+    0:00:16   23379.0      0.14       7.8       0.0 u_core/PC_reg[31]/D      
+    0:00:16   23401.6      0.13       7.5       0.0 u_core/PC_reg[31]/D      
+    0:00:16   23423.2      0.13       7.2       0.0 u_core/PC_reg[31]/D      
+    0:00:16   23440.2      0.12       6.9       1.3 u_core/PC_reg[31]/D      
+    0:00:16   23470.5      0.11       6.3       2.6 u_core/PC_reg[31]/D      
+    0:00:16   23479.3      0.10       5.5       0.0 u_core/PC_reg[31]/D      
+    0:00:17   23496.4      0.10       5.3       0.0 u_core/PC_reg[31]/D      
+    0:00:17   23520.0      0.09       4.6       0.0 u_core/PC_reg[31]/D      
+    0:00:17   23553.8      0.08       4.5       0.0 u_core/PC_reg[31]/D      
+    0:00:17   23560.7      0.08       4.2       0.0 u_core/PC_reg[31]/D      
+    0:00:17   23563.2      0.08       4.2       0.0 u_core/PC_reg[31]/D      
+    0:00:17   23583.8      0.07       3.2       0.0 u_core/PC_reg[31]/D      
+    0:00:17   23594.2      0.07       3.1       0.0 u_core/PC_reg[31]/D      
+    0:00:17   23595.2      0.06       3.0       0.0 u_core/PC_reg[31]/D      
+    0:00:17   23598.0      0.06       2.8       0.0 u_core/PC_reg[31]/D      
+    0:00:17   23602.9      0.05       2.5       0.0 u_core/PC_reg[31]/D      
+    0:00:17   23610.5      0.04       1.8       0.0 u_core/PC_reg[31]/D      
+    0:00:18   23639.2      0.04       1.5       0.0 u_core/PC_reg[31]/D      
+    0:00:18   23647.8      0.03       1.4       0.0 u_core/PC_reg[31]/D      
+    0:00:18   23664.4      0.03       1.3       0.0 u_core/PC_reg[31]/D      
+    0:00:18   23678.1      0.03       0.9       0.0 u_core/PC_reg[31]/D      
+    0:00:18   23686.0      0.02       0.8       0.0 u_core/PC_reg[31]/D      
+    0:00:18   23698.7      0.02       0.7       0.0 u_core/PC_reg[31]/D      
+    0:00:18   23712.4      0.02       0.7       0.0 u_core/PC_reg[31]/D      
+    0:00:18   23726.1      0.02       0.6       0.0 u_core/PC_reg[31]/D      
+    0:00:18   23728.9      0.02       0.6       0.0 u_core/PC_reg[31]/D      
+    0:00:18   23722.8      0.02       0.5       0.0 u_core/PC_reg[31]/D      
+    0:00:18   23727.9      0.02       0.5       0.0 u_core/PC_reg[31]/D      
+    0:00:19   23731.0      0.01       0.3       0.0 u_core/PC_reg[31]/D      
+    0:00:19   23731.0      0.01       0.3       0.0 u_core/PC_reg[31]/D      
+    0:00:19   23733.7      0.01       0.3       0.0 u_core/PC_reg[31]/D      
+    0:00:19   23757.4      0.01       0.3       0.0 u_core/PC_reg[31]/D      
+    0:00:19   23755.6      0.01       0.3       0.0 u_core/PC_reg[31]/D      
+    0:00:19   23755.1      0.01       0.2       0.0 u_core/PC_reg[31]/D      
+    0:00:19   23754.8      0.01       0.2       0.0 u_core/PC_reg[31]/D      
+    0:00:19   23755.3      0.01       0.2       0.0 u_core/PC_reg[31]/D      
+    0:00:19   23757.9      0.01       0.2       0.0 u_core/PC_reg[31]/D      
+    0:00:20   23762.2      0.00       0.2       0.0 u_core/PC_reg[31]/D      
+    0:00:20   23759.9      0.00       0.0       0.0                          
+    0:00:21   23604.9      0.00       0.0      80.3                          
+
+
+  Beginning Design Rule Fixing  (max_transition)  (max_capacitance)
+  ----------------------------
+
+                                  TOTAL                                      
+   ELAPSED            WORST NEG   SETUP    DESIGN                            
+    TIME      AREA      SLACK     COST    RULE COST         ENDPOINT         
+  --------- --------- --------- --------- --------- -------------------------
+    0:00:21   23604.9      0.00       0.0      80.3                          
+    0:00:21   23613.3      0.00       0.0       0.0                          
+
+
+  Beginning Area-Recovery Phase  (cleanup)
+  -----------------------------
+
+                                  TOTAL                                      
+   ELAPSED            WORST NEG   SETUP    DESIGN                            
+    TIME      AREA      SLACK     COST    RULE COST         ENDPOINT         
+  --------- --------- --------- --------- --------- -------------------------
+    0:00:21   23613.3      0.00       0.0       0.0                          
+    0:00:21   23613.3      0.00       0.0       0.0                          
+    0:00:21   23195.0      0.03       0.9       0.0                          
+    0:00:21   23167.8      0.03       0.9       0.0                          
+    0:00:21   23148.2      0.03       0.9       0.0                          
+    0:00:21   23146.9      0.03       0.9       0.0                          
+    0:00:21   23144.9      0.03       0.9       0.0                          
+    0:00:21   23144.9      0.03       0.9       0.0                          
+    0:00:21   23156.8      0.01       0.4       0.0                          
+    0:00:22   23155.8      0.01       0.2       0.0                          
+    0:00:22   23155.8      0.01       0.2       0.0                          
+    0:00:22   23057.2      0.03       1.4       0.0                          
+    0:00:22   23038.9      0.03       1.5       0.0                          
+    0:00:22   23038.9      0.03       1.5       0.0                          
+    0:00:22   23038.9      0.03       1.5       0.0                          
+    0:00:22   23038.9      0.03       1.5       0.0                          
+    0:00:22   23038.9      0.03       1.5       0.0                          
+    0:00:22   23038.9      0.03       1.5       0.0                          
+    0:00:22   23048.8      0.01       0.2       0.0 u_core/PC_reg[29]/D      
+    0:00:22   23053.7      0.01       0.2       0.0 u_core/PC_reg[29]/D      
+    0:00:22   23058.7      0.01       0.1       0.0 u_core/PC_reg[31]/D      
+    0:00:23   23058.7      0.01       0.1       0.0                          
+    0:00:23   23046.8      0.01       0.1       0.0                          
+    0:00:23   23047.8      0.01       0.1       0.0 u_core/PC_reg[31]/D      
+Loading db file '/opt/eda/pdk/saed32nm/edk/SAED32_EDK/lib/stdcell_rvt/db_nldm/saed32rvt_ss0p95v125c.db'
+
+
+Note: Symbol # after min delay cost means estimated hold TNS across all active scenarios 
+
+
+  Optimization Complete
+  ---------------------
+Warning: Design 'TOP' contains 1 high-fanout nets. A fanout number of 1000 will be used for delay calculations involving these nets. (TIM-134)
+     Net 'CLK': 1439 load(s), 1 driver(s)
+CPU Load: 7%, Ram Free: 4 GB, Swap Free: 30 GB, Work Disk Free: 7323 GB, Tmp Disk Free: 1384 GB
+Information: Total number of MV cells in the design.
+----------------------------------------------------------------------------------------------------
+ MV Cells                                           Total Number                                   
+----------------------------------------------------------------------------------------------------
+ Level Shifter:                                     0                                             
+ Enable Level Shifter:                              0                                             
+ Isolation Cell:                                    0                                             
+ Retention Cell:                                    0                                             
+ Retention Clamp Cell:                              0                                             
+ Switch Cell:                                       0                                             
+ Always-On Cell:                                    0                                             
+ Repeater Cell:                                     0                                             
+
+----------------------------------------------------------------------------------------------------
+Unmapped MV Cells 
+----------------------------------------------------------------------------------------------------
+0 Isolation Cells are unmapped 
+0 Retention Clamp Cells are unmapped 
+----------------------------------------------------------------------------------------------------
+P1_SWEEP period 2.30 ns
+Removing design 'TOP'
+Removing design 'CORE'
+Removing design 'CORE_DW01_add_3'
+Removing design 'CORE_DW01_add_4'
+Removing design 'CORE_DW01_add_5'
+Removing design 'CORE_DW01_sub_2'
+Removing design 'CORE_DW01_cmp6_9'
+Removing design 'CONTROLLER'
+Removing library 'saed32rvt_ss0p95v125c'
+Removing library 'gtech'
+Removing library 'standard.sldb'
+Loading db file '/opt/eda/pdk/saed32nm/edk/SAED32_EDK/lib/stdcell_rvt/db_nldm/saed32rvt_ss0p95v125c.db'
+Loading db file '/opt/eda/synopsys/products/syn/V-2023.12-SP5/libraries/syn/gtech.db'
+Loading db file '/opt/eda/synopsys/products/syn/V-2023.12-SP5/libraries/syn/standard.sldb'
+  Loading link library 'saed32rvt_ss0p95v125c'
+  Loading link library 'gtech'
+Running PRESTO HDLC
+Presto compilation completed successfully. (TOP)
+Elaborated 1 design.
+Current design is now 'TOP'.
+Information: Building the design 'CORE'. (HDL-193)
+Warning:  ./rtl/CORE.v:122: DEFAULT branch of CASE statement cannot be reached. (ELAB-311)
+
+Statistics for case statements in always block at line 111 in file
+	'./rtl/CORE.v'
+===============================================
+|           Line           |  full/ parallel  |
+===============================================
+|           112            |    auto/auto     |
+===============================================
+
+Statistics for case statements in always block at line 269 in file
+	'./rtl/CORE.v'
+===============================================
+|           Line           |  full/ parallel  |
+===============================================
+|           270            |    auto/auto     |
+===============================================
+
+Statistics for case statements in always block at line 301 in file
+	'./rtl/CORE.v'
+===============================================
+|           Line           |  full/ parallel  |
+===============================================
+|           309            |    auto/auto     |
+===============================================
+
+Inferred memory devices in process
+	in routine CORE line 201 in file
+		'./rtl/CORE.v'.
+===============================================================================
+|    Register Name    |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+===============================================================================
+|       PC_reg        | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+===============================================================================
+
+Inferred memory devices in process
+	in routine CORE line 208 in file
+		'./rtl/CORE.v'.
+===============================================================================
+|    Register Name    |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+===============================================================================
+| instruction_id_reg  | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+===============================================================================
+
+Inferred memory devices in process
+	in routine CORE line 215 in file
+		'./rtl/CORE.v'.
+=================================================================================
+|     Register Name     |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+=================================================================================
+| sequential_pc_id_reg  | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+| instruction_pc_id_reg | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+=================================================================================
+
+Inferred memory devices in process
+	in routine CORE line 225 in file
+		'./rtl/CORE.v'.
+=================================================================================
+|     Register Name     |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+=================================================================================
+|  write_memory_ex_reg  | Flip-flop |   1   |  N  | N  | N  | N  | N  | N  | N  |
+| result_select_ex_reg  | Flip-flop |   2   |  Y  | N  | N  | N  | N  | N  | N  |
+| write_register_ex_reg | Flip-flop |   1   |  N  | N  | N  | N  | N  | N  | N  |
+=================================================================================
+
+Inferred memory devices in process
+	in routine CORE line 239 in file
+		'./rtl/CORE.v'.
+================================================================================
+|    Register Name     |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+================================================================================
+| use_immediate_ex_reg | Flip-flop |   1   |  N  | N  | N  | N  | N  | N  | N  |
+| alu_operation_ex_reg | Flip-flop |   3   |  Y  | N  | N  | N  | N  | N  | N  |
+|   operand1_ex_reg    | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+|   operand2_ex_reg    | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+|   immediate_ex_reg   | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+| link_address_ex_reg  | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+|   forward1_ex_reg    | Flip-flop |   2   |  Y  | N  | N  | N  | N  | N  | N  |
+|   forward2_ex_reg    | Flip-flop |   2   |  Y  | N  | N  | N  | N  | N  | N  |
+|  destination_ex_reg  | Flip-flop |   5   |  Y  | N  | N  | N  | N  | N  | N  |
+================================================================================
+
+Inferred memory devices in process
+	in routine CORE line 278 in file
+		'./rtl/CORE.v'.
+==================================================================================
+|     Register Name      |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+==================================================================================
+|  write_memory_mem_reg  | Flip-flop |   1   |  N  | N  | N  | N  | N  | N  | N  |
+| result_select_mem_reg  | Flip-flop |   2   |  Y  | N  | N  | N  | N  | N  | N  |
+|   alu_result_mem_reg   | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+|   store_data_mem_reg   | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+|  link_address_mem_reg  | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+|  destination_mem_reg   | Flip-flop |   5   |  Y  | N  | N  | N  | N  | N  | N  |
+| write_register_mem_reg | Flip-flop |   1   |  N  | N  | N  | N  | N  | N  | N  |
+==================================================================================
+
+Inferred memory devices in process
+	in routine CORE line 301 in file
+		'./rtl/CORE.v'.
+=================================================================================
+|     Register Name     |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+=================================================================================
+|  writeback_value_reg  | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+|  destination_wb_reg   | Flip-flop |   5   |  Y  | N  | N  | N  | N  | N  | N  |
+| write_register_wb_reg | Flip-flop |   1   |  N  | N  | N  | N  | N  | N  | N  |
+=================================================================================
+
+Inferred memory devices in process
+	in routine CORE line 317 in file
+		'./rtl/CORE.v'.
+===============================================================================
+|    Register Name    |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+===============================================================================
+|    reg_file_reg     | Flip-flop | 1024  |  Y  | N  | N  | N  | N  | N  | N  |
+===============================================================================
+Statistics for MUX_OPs
+======================================================
+| block name/line  | Inputs | Outputs | # sel inputs |
+======================================================
+|     CORE/101     |   32   |   32    |      5       |
+|     CORE/105     |   32   |   32    |      5       |
+======================================================
+Presto compilation completed successfully. (CORE)
+Information: Building the design 'CONTROLLER'. (HDL-193)
+
+Statistics for case statements in always block at line 23 in file
+	'./rtl/CONTROLLER.v'
+===============================================
+|           Line           |  full/ parallel  |
+===============================================
+|            34            |    auto/auto     |
+===============================================
+Presto compilation completed successfully. (CONTROLLER)
+Current design is 'TOP'.
+
+  Linking design 'TOP'
+  Using the following designs and libraries:
+  --------------------------------------------------------------------------
+  * (3 designs)               /home/dice/dice008/DICE/Project1/1110_compare/1110_pipeline_ID/TOP.db, etc
+  saed32rvt_ss0p95v125c (library)
+                              /opt/eda/pdk/saed32nm/edk/SAED32_EDK/lib/stdcell_rvt/db_nldm/saed32rvt_ss0p95v125c.db
+
+CPU Load: 7%, Ram Free: 4 GB, Swap Free: 30 GB, Work Disk Free: 7323 GB, Tmp Disk Free: 1384 GB
+====================================================================================================
+| Flow Information                                                                                 |
+----------------------------------------------------------------------------------------------------
+| Flow         | Design Compiler                                                                   |
+====================================================================================================
+| Design Information                                      | Value                                  |
+====================================================================================================
+| Number of Scenarios                                     | 0                                      |
+| Leaf Cell Count                                         | 2007                                   |
+| Number of User Hierarchies                              | 2                                      |
+| Sequential Cell Count                                   | 1440                                   |
+| Macro Count                                             | 0                                      |
+| Number of Power Domains                                 | 0                                      |
+| Number of Path Groups                                   | 2                                      |
+| Number of VT Class                                      | 1                                      |
+| Number of Clocks                                        | 1                                      |
+| Number of Dont Touch Cells                              | 131                                    |
+| Number of Dont Touch Nets                               | 0                                      |
+| Number of Size Only Cells                               | 0                                      |
+| Design with UPF Data                                    | false                                  |
+====================================================================================================
+
+Information: There are 1937 potential problems in your design. Please run 'check_design' for more information. (LINT-99)
+
+
+
+  Beginning Pass 1 Mapping
+  ------------------------
+  Processing 'CONTROLLER'
+  Processing 'CORE'
+  Processing 'TOP'
+
+  Updating timing information
+Information: Updating design information... (UID-85)
+
+  Beginning Implementation Selection
+  ----------------------------------
+  Processing 'CORE_DW01_add_0'
+  Processing 'CORE_DW01_add_1'
+  Processing 'CORE_DW01_cmp6_0'
+  Processing 'CORE_DW01_sub_0'
+  Processing 'CORE_DW01_add_2'
+  Processing 'CORE_DW01_cmp6_1'
+  Processing 'CORE_DW01_cmp6_2'
+  Processing 'CORE_DW01_cmp6_3'
+  Processing 'CORE_DW01_cmp6_4'
+  Processing 'CORE_DW01_cmp6_5'
+  Processing 'CORE_DW01_cmp6_6'
+
+  Beginning Mapping Optimizations  (Medium effort)
+  -------------------------------
+  Mapping Optimization (Phase 6)
+Information: The register 'u_core/alu_operation_ex_reg[2]' is a constant and will be removed. (OPT-1206)
+
+                                  TOTAL                                      
+   ELAPSED            WORST NEG   SETUP    DESIGN                            
+    TIME      AREA      SLACK     COST    RULE COST         ENDPOINT         
+  --------- --------- --------- --------- --------- -------------------------
+    0:00:14   29761.3      0.29      14.1    3864.3                          
+    0:00:14   29758.7      0.29      14.1    3873.1                          
+    0:00:14   29758.7      0.29      14.1    3873.1                          
+    0:00:14   29759.5      0.29      14.1    3873.1                          
+    0:00:14   29759.5      0.29      14.1    3873.1                          
+    0:00:15   23197.0      0.28      14.3    3863.2                          
+    0:00:15   23186.8      0.24      13.7    3863.2                          
+    0:00:15   23174.1      0.21      12.3    3863.2                          
+    0:00:15   23198.8      0.20      12.0    3863.2                          
+    0:00:16   23198.8      0.19      11.2    3863.2                          
+    0:00:16   23192.7      0.17      10.0    3863.2                          
+    0:00:16   23205.9      0.17       9.8    3863.2                          
+    0:00:16   23205.9      0.16       9.4    3863.2                          
+    0:00:16   23209.2      0.16       9.3    3863.2                          
+    0:00:16   23218.1      0.16       9.2    3863.2                          
+    0:00:16   23229.3      0.15       8.9    3863.2                          
+    0:00:16   23235.6      0.14       8.2    3863.2                          
+    0:00:16   23237.7      0.14       8.1    3863.2                          
+    0:00:16   23237.7      0.14       8.1    3863.2                          
+    0:00:16   23237.7      0.14       8.1    3863.2                          
+    0:00:16   23237.7      0.14       8.1    3863.2                          
+    0:00:16   23237.7      0.14       8.1    3863.2                          
+    0:00:16   23402.3      0.14       8.1       0.0                          
+    0:00:16   23402.3      0.14       8.1       0.0                          
+    0:00:16   23402.3      0.14       8.1       0.0                          
+    0:00:16   23402.3      0.14       8.1       0.0                          
+
+
+
+  Beginning Delay Optimization Phase
+  ----------------------------------
+
+                                  TOTAL                                      
+   ELAPSED            WORST NEG   SETUP    DESIGN                            
+    TIME      AREA      SLACK     COST    RULE COST         ENDPOINT         
+  --------- --------- --------- --------- --------- -------------------------
+    0:00:16   23402.3      0.14       8.1       0.0                          
+    0:00:16   23405.6      0.13       7.4       0.0 u_core/PC_reg[31]/D      
+    0:00:16   23428.3      0.12       6.8       0.0 u_core/PC_reg[31]/D      
+    0:00:17   23444.5      0.11       6.4       0.0 u_core/PC_reg[31]/D      
+    0:00:17   23445.8      0.10       6.0       0.0 u_core/PC_reg[31]/D      
+    0:00:17   23451.1      0.10       5.8       0.0 u_core/PC_reg[31]/D      
+    0:00:17   23470.5      0.10       5.5       0.0 u_core/PC_reg[31]/D      
+    0:00:17   23488.5      0.09       5.1       0.0 u_core/PC_reg[31]/D      
+    0:00:17   23498.9      0.08       4.6       0.0 u_core/PC_reg[31]/D      
+    0:00:17   23505.3      0.08       4.3       0.0 u_core/PC_reg[31]/D      
+    0:00:17   23515.4      0.08       4.3       0.0 u_core/PC_reg[31]/D      
+    0:00:17   23516.7      0.08       4.2       0.0 u_core/PC_reg[31]/D      
+    0:00:17   23521.3      0.07       4.0       0.0 u_core/PC_reg[31]/D      
+    0:00:18   23530.4      0.07       3.9       0.0 u_core/PC_reg[31]/D      
+    0:00:18   23538.8      0.07       3.8       0.0 u_core/PC_reg[31]/D      
+    0:00:18   23559.1      0.07       3.5       0.0 u_core/PC_reg[31]/D      
+    0:00:18   23559.7      0.06       3.4       0.0 u_core/PC_reg[31]/D      
+    0:00:18   23564.2      0.06       3.3       0.0 u_core/PC_reg[31]/D      
+    0:00:18   23568.6      0.06       2.9       0.0 u_core/PC_reg[31]/D      
+    0:00:18   23567.5      0.05       2.8       0.0 u_core/PC_reg[31]/D      
+    0:00:18   23582.3      0.05       2.5       0.0 u_core/PC_reg[31]/D      
+    0:00:18   23605.7      0.04       2.2       0.0 u_core/PC_reg[31]/D      
+    0:00:18   23617.9      0.04       1.6       0.0 u_core/PC_reg[31]/D      
+    0:00:18   23626.8      0.03       1.4       0.0 u_core/PC_reg[31]/D      
+    0:00:18   23634.6      0.03       1.3       0.0 u_core/PC_reg[18]/D      
+    0:00:19   23636.7      0.03       1.3       0.0 u_core/PC_reg[18]/D      
+    0:00:19   23661.8      0.03       1.1       0.0 u_core/PC_reg[18]/D      
+    0:00:19   23666.9      0.02       0.9       0.0 u_core/PC_reg[18]/D      
+    0:00:19   23681.9      0.02       0.6       0.0 u_core/PC_reg[18]/D      
+    0:00:19   23684.2      0.01       0.5       0.0 u_core/PC_reg[18]/D      
+    0:00:19   23683.9      0.01       0.4       0.0 u_core/PC_reg[18]/D      
+    0:00:19   23693.8      0.01       0.3       0.0 u_core/PC_reg[18]/D      
+    0:00:19   23694.9      0.01       0.3       0.0 u_core/PC_reg[18]/D      
+    0:00:19   23695.1      0.01       0.3       0.0 u_core/PC_reg[18]/D      
+    0:00:19   23695.4      0.01       0.3       0.0 u_core/PC_reg[18]/D      
+    0:00:19   23702.0      0.01       0.2       0.0 u_core/PC_reg[18]/D      
+    0:00:20   23704.3      0.01       0.2       0.0 u_core/PC_reg[18]/D      
+    0:00:20   23700.7      0.01       0.2       0.0 u_core/PC_reg[18]/D      
+    0:00:20   23701.5      0.01       0.2       0.0 u_core/PC_reg[18]/D      
+    0:00:20   23701.5      0.01       0.2       0.0 u_core/PC_reg[18]/D      
+    0:00:20   23704.8      0.01       0.2       0.0 u_core/PC_reg[18]/D      
+    0:00:20   23704.8      0.01       0.2       0.0 u_core/PC_reg[18]/D      
+    0:00:21   23695.4      0.00       0.0       0.0 u_core/PC_reg[18]/D      
+    0:00:21   23694.9      0.00       0.0       0.0                          
+    0:00:22   23544.4      0.00       0.0      79.8                          
+
+
+  Beginning Design Rule Fixing  (max_transition)  (max_capacitance)
+  ----------------------------
+
+                                  TOTAL                                      
+   ELAPSED            WORST NEG   SETUP    DESIGN                            
+    TIME      AREA      SLACK     COST    RULE COST         ENDPOINT         
+  --------- --------- --------- --------- --------- -------------------------
+    0:00:22   23544.4      0.00       0.0      79.8                          
+    0:00:22   23552.8      0.00       0.0       0.0                          
+
+
+  Beginning Area-Recovery Phase  (cleanup)
+  -----------------------------
+
+                                  TOTAL                                      
+   ELAPSED            WORST NEG   SETUP    DESIGN                            
+    TIME      AREA      SLACK     COST    RULE COST         ENDPOINT         
+  --------- --------- --------- --------- --------- -------------------------
+    0:00:22   23552.8      0.00       0.0       0.0                          
+    0:00:22   23552.8      0.00       0.0       0.0                          
+    0:00:22   23186.3      0.05       2.7       0.0                          
+    0:00:22   23151.5      0.04       2.0       0.6                          
+    0:00:22   23135.7      0.04       2.0       0.8                          
+    0:00:22   23132.4      0.04       2.0       0.8                          
+    0:00:22   23130.4      0.04       2.0       0.8                          
+    0:00:22   23130.4      0.04       2.0       0.8                          
+    0:00:23   23144.9      0.01       0.3       0.0 u_core/PC_reg[31]/D      
+    0:00:23   23155.6      0.01       0.3       0.0                          
+    0:00:23   23155.8      0.01       0.3       0.0                          
+    0:00:23   23153.8      0.01       0.3       0.0                          
+    0:00:23   23087.5      0.02       0.9       0.0                          
+    0:00:23   23083.1      0.02       0.9       0.0                          
+    0:00:23   23082.6      0.02       0.9       0.0                          
+    0:00:23   23082.6      0.02       0.9       0.0                          
+    0:00:23   23082.6      0.02       0.9       0.0                          
+    0:00:23   23082.6      0.02       0.9       0.0                          
+    0:00:23   23082.6      0.02       0.9       0.0                          
+    0:00:23   23082.6      0.02       0.9       0.0                          
+    0:00:23   23086.9      0.01       0.3       0.0 u_core/PC_reg[18]/D      
+    0:00:24   23100.2      0.01       0.2       0.0 u_core/PC_reg[18]/D      
+    0:00:24   23115.7      0.01       0.2       0.0 u_core/PC_reg[31]/D      
+    0:00:24   23115.2      0.00       0.1       0.0 u_core/PC_reg[18]/D      
+    0:00:24   23113.6      0.00       0.1       0.0 u_core/PC_reg[18]/D      
+    0:00:24   23112.9      0.00       0.1       0.0 u_core/PC_reg[18]/D      
+    0:00:24   23111.6      0.00       0.1       0.0                          
+    0:00:24   23083.6      0.00       0.1       0.0                          
+    0:00:24   23063.6      0.00       0.1       0.0                          
+    0:00:24   23040.7      0.00       0.1       0.0                          
+    0:00:25   23042.0      0.00       0.1       0.0                          
+    0:00:25   23038.4      0.00       0.1       0.0 u_core/PC_reg[18]/D      
+    0:00:25   23038.2      0.00       0.1       0.0                          
+Loading db file '/opt/eda/pdk/saed32nm/edk/SAED32_EDK/lib/stdcell_rvt/db_nldm/saed32rvt_ss0p95v125c.db'
+
+
+Note: Symbol # after min delay cost means estimated hold TNS across all active scenarios 
+
+
+  Optimization Complete
+  ---------------------
+Warning: Design 'TOP' contains 1 high-fanout nets. A fanout number of 1000 will be used for delay calculations involving these nets. (TIM-134)
+     Net 'CLK': 1439 load(s), 1 driver(s)
+CPU Load: 6%, Ram Free: 4 GB, Swap Free: 30 GB, Work Disk Free: 7323 GB, Tmp Disk Free: 1384 GB
+Information: Total number of MV cells in the design.
+----------------------------------------------------------------------------------------------------
+ MV Cells                                           Total Number                                   
+----------------------------------------------------------------------------------------------------
+ Level Shifter:                                     0                                             
+ Enable Level Shifter:                              0                                             
+ Isolation Cell:                                    0                                             
+ Retention Cell:                                    0                                             
+ Retention Clamp Cell:                              0                                             
+ Switch Cell:                                       0                                             
+ Always-On Cell:                                    0                                             
+ Repeater Cell:                                     0                                             
+
+----------------------------------------------------------------------------------------------------
+Unmapped MV Cells 
+----------------------------------------------------------------------------------------------------
+0 Isolation Cells are unmapped 
+0 Retention Clamp Cells are unmapped 
+----------------------------------------------------------------------------------------------------
+close $p1_csv
+puts "P1_SWEEP_COMPLETE"
+P1_SWEEP_COMPLETE
+exit
+
+Memory usage for this session 252 Mbytes.
+Memory usage for this session including child processes 252 Mbytes.
+CPU usage for this session 152 seconds ( 0.04 hours ).
+Elapsed time for this session 155 seconds ( 0.04 hours ).
+
+Thank you...
+LICENSE QUEUE: dc_shell_queue finished (exit=0); slot 2 returned.

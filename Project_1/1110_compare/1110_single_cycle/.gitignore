@@ -1,0 +1,14 @@
+/build/
+/logs/
+/reports/
+/results/
+/comparisons/
+/synth/case_list.tcl
+/command.log
+/default.svf
+/ucli.key
+/DVEfiles/
+/novas*
+*.vcd
+*.saif
+*.ddc

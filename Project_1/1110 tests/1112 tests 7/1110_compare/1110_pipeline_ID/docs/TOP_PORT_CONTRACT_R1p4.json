@@ -1,0 +1,250 @@
+{
+  "interfaceVersion": "1.4",
+  "module": "TOP",
+  "ports": [
+    {
+      "name": "CLK",
+      "direction": "input",
+      "width": 1
+    },
+    {
+      "name": "RESET",
+      "direction": "input",
+      "width": 1
+    },
+    {
+      "name": "INSTR",
+      "direction": "input",
+      "width": 32
+    },
+    {
+      "name": "READDATA",
+      "direction": "input",
+      "width": 32
+    },
+    {
+      "name": "RESERVED_IN0",
+      "direction": "input",
+      "width": 32
+    },
+    {
+      "name": "RESERVED_IN1",
+      "direction": "input",
+      "width": 32
+    },
+    {
+      "name": "RESERVED_IN2",
+      "direction": "input",
+      "width": 32
+    },
+    {
+      "name": "RESERVED_IN3",
+      "direction": "input",
+      "width": 32
+    },
+    {
+      "name": "RESERVED_IN4",
+      "direction": "input",
+      "width": 32
+    },
+    {
+      "name": "RESERVED_IN5",
+      "direction": "input",
+      "width": 32
+    },
+    {
+      "name": "RESERVED_IN6",
+      "direction": "input",
+      "width": 32
+    },
+    {
+      "name": "RESERVED_IN7",
+      "direction": "input",
+      "width": 32
+    },
+    {
+      "name": "RESERVED_IN8",
+      "direction": "input",
+      "width": 32
+    },
+    {
+      "name": "RESERVED_IN9",
+      "direction": "input",
+      "width": 32
+    },
+    {
+      "name": "RESERVED_IN10",
+      "direction": "input",
+      "width": 32
+    },
+    {
+      "name": "RESERVED_IN11",
+      "direction": "input",
+      "width": 32
+    },
+    {
+      "name": "RESERVED_IN12",
+      "direction": "input",
+      "width": 32
+    },
+    {
+      "name": "RESERVED_IN13",
+      "direction": "input",
+      "width": 32
+    },
+    {
+      "name": "RESERVED_IN14",
+      "direction": "input",
+      "width": 32
+    },
+    {
+      "name": "RESERVED_IN15",
+      "direction": "input",
+      "width": 32
+    },
+    {
+      "name": "RESERVED_IN16",
+      "direction": "input",
+      "width": 32
+    },
+    {
+      "name": "RESERVED_IN17",
+      "direction": "input",
+      "width": 32
+    },
+    {
+      "name": "RESERVED_IN18",
+      "direction": "input",
+      "width": 32
+    },
+    {
+      "name": "RESERVED_IN19",
+      "direction": "input",
+      "width": 32
+    },
+    {
+      "name": "PC",
+      "direction": "output",
+      "width": 32
+    },
+    {
+      "name": "MEMWRITE",
+      "direction": "output",
+      "width": 1
+    },
+    {
+      "name": "ALURESULT",
+      "direction": "output",
+      "width": 32
+    },
+    {
+      "name": "WRITEDATA",
+      "direction": "output",
+      "width": 32
+    },
+    {
+      "name": "RESERVED_OUT0",
+      "direction": "output",
+      "width": 32
+    },
+    {
+      "name": "RESERVED_OUT1",
+      "direction": "output",
+      "width": 32
+    },
+    {
+      "name": "RESERVED_OUT2",
+      "direction": "output",
+      "width": 32
+    },
+    {
+      "name": "RESERVED_OUT3",
+      "direction": "output",
+      "width": 32
+    },
+    {
+      "name": "RESERVED_OUT4",
+      "direction": "output",
+      "width": 32
+    },
+    {
+      "name": "RESERVED_OUT5",
+      "direction": "output",
+      "width": 32
+    },
+    {
+      "name": "RESERVED_OUT6",
+      "direction": "output",
+      "width": 32
+    },
+    {
+      "name": "RESERVED_OUT7",
+      "direction": "output",
+      "width": 32
+    },
+    {
+      "name": "RESERVED_OUT8",
+      "direction": "output",
+      "width": 32
+    },
+    {
+      "name": "RESERVED_OUT9",
+      "direction": "output",
+      "width": 32
+    },
+    {
+      "name": "RESERVED_OUT10",
+      "direction": "output",
+      "width": 32
+    },
+    {
+      "name": "RESERVED_OUT11",
+      "direction": "output",
+      "width": 32
+    },
+    {
+      "name": "RESERVED_OUT12",
+      "direction": "output",
+      "width": 32
+    },
+    {
+      "name": "RESERVED_OUT13",
+      "direction": "output",
+      "width": 32
+    },
+    {
+      "name": "RESERVED_OUT14",
+      "direction": "output",
+      "width": 32
+    },
+    {
+      "name": "RESERVED_OUT15",
+      "direction": "output",
+      "width": 32
+    },
+    {
+      "name": "RESERVED_OUT16",
+      "direction": "output",
+      "width": 32
+    },
+    {
+      "name": "RESERVED_OUT17",
+      "direction": "output",
+      "width": 32
+    },
+    {
+      "name": "RESERVED_OUT18",
+      "direction": "output",
+      "width": 32
+    },
+    {
+      "name": "RESERVED_OUT19",
+      "direction": "output",
+      "width": 32
+    }
+  ],
+  "reset": "synchronous active-high",
+  "reservedInputs": "all 20 driven 32-bit zero by fixed TB",
+  "reservedOutputs": "all 20 unconnected at fixed TB",
+  "memoriesInSynthTop": false
+}

@@ -1,0 +1,214 @@
+Information: Updating design information... (UID-85)
+Warning: Design 'TOP' contains 1 high-fanout nets. A fanout number of 1000 will be used for delay calculations involving these nets. (TIM-134)
+ 
+****************************************
+Report : timing
+        -path full
+        -delay max
+        -max_paths 3
+Design : TOP
+Version: V-2023.12-SP5
+Date   : Tue Nov 10 21:26:39 2026
+****************************************
+
+ # A fanout number of 1000 was used for high fanout net computations.
+
+Operating Conditions: ss0p95v125c   Library: saed32rvt_ss0p95v125c
+Wire Load Model Mode: enclosed
+
+  Startpoint: INSTR[23] (input port clocked by CPU_CLK)
+  Endpoint: ALURESULT[31]
+            (output port clocked by CPU_CLK)
+  Path Group: CPU_CLK
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  TOP                35000                 saed32rvt_ss0p95v125c
+  CORE               35000                 saed32rvt_ss0p95v125c
+  CORE_DW01_add_5    8000                  saed32rvt_ss0p95v125c
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock CPU_CLK (rise edge)                             0.0000     0.0000
+  clock network delay (ideal)                           0.0000     0.0000
+  input external delay                                  1.0000     1.0000 f
+  INSTR[23] (in)                                        0.0000     1.0000 f
+  u_core/INSTR[23] (CORE)                               0.0000     1.0000 f
+  u_core/U5/Y (INVX16_RVT)                              0.0261     1.0261 r
+  u_core/U54/Y (INVX8_RVT)                              0.0110     1.0371 f
+  u_core/U1105/Y (AND2X1_RVT)                           0.0573     1.0944 f
+  u_core/U764/Y (AND2X1_RVT)                            0.0563     1.1508 f
+  u_core/U90/Y (NAND2X0_RVT)                            0.0636     1.2144 r
+  u_core/U218/Y (INVX1_RVT)                             0.0672     1.2816 f
+  u_core/U2503/Y (NAND2X0_RVT)                          0.0592     1.3408 r
+  u_core/U1119/Y (AND4X1_RVT)                           0.0912     1.4319 r
+  u_core/U1117/Y (AND2X1_RVT)                           0.0530     1.4849 r
+  u_core/U2489/Y (NAND4X0_RVT)                          0.0591     1.5440 f
+  u_core/U3436/Y (NAND2X0_RVT)                          0.0549     1.5989 r
+  u_core/U25/Y (IBUFFX16_RVT)                           0.0850     1.6840 f
+  u_core/U401/Y (MUX21X2_RVT)                           0.0926     1.7766 f
+  u_core/add_64/B[0] (CORE_DW01_add_5)                  0.0000     1.7766 f
+  u_core/add_64/U251/Y (NAND2X0_RVT)                    0.0624     1.8389 r
+  u_core/add_64/U234/Y (NAND2X0_RVT)                    0.0363     1.8752 f
+  u_core/add_64/U230/Y (AO21X1_RVT)                     0.0833     1.9585 f
+  u_core/add_64/U175/Y (NAND4X0_RVT)                    0.0448     2.0032 r
+  u_core/add_64/U174/Y (OA21X1_RVT)                     0.0683     2.0715 r
+  u_core/add_64/U171/Y (NAND4X0_RVT)                    0.0833     2.1549 f
+  u_core/add_64/U18/Y (NAND2X0_RVT)                     0.0621     2.2170 r
+  u_core/add_64/U142/Y (NAND3X0_RVT)                    0.0793     2.2963 f
+  u_core/add_64/U17/Y (NAND2X0_RVT)                     0.0735     2.3698 r
+  u_core/add_64/U100/Y (NAND3X0_RVT)                    0.0570     2.4268 f
+  u_core/add_64/U84/Y (AO222X1_RVT)                     0.0748     2.5017 f
+  u_core/add_64/U79/Y (AO22X1_RVT)                      0.0660     2.5677 f
+  u_core/add_64/U78/Y (AO22X1_RVT)                      0.0587     2.6263 f
+  u_core/add_64/U8/Y (XOR3X2_RVT)                       0.0674     2.6937 r
+  u_core/add_64/SUM[31] (CORE_DW01_add_5)               0.0000     2.6937 r
+  u_core/U3386/Y (AO222X1_RVT)                          0.1378     2.8315 r
+  u_core/U403/Y (NBUFFX8_RVT)                           0.0678     2.8993 r
+  u_core/ALURESULT[31] (CORE)                           0.0000     2.8993 r
+  ALURESULT[31] (out)                                   0.0000     2.8993 r
+  data arrival time                                                2.8993
+
+  clock CPU_CLK (rise edge)                             4.0000     4.0000
+  clock network delay (ideal)                           0.0000     4.0000
+  clock uncertainty                                    -0.1000     3.9000
+  output external delay                                -1.0000     2.9000
+  data required time                                               2.9000
+  --------------------------------------------------------------------------
+  data required time                                               2.9000
+  data arrival time                                               -2.8993
+  --------------------------------------------------------------------------
+  slack (MET)                                                      0.0007
+
+
+  Startpoint: INSTR[21] (input port clocked by CPU_CLK)
+  Endpoint: ALURESULT[27]
+            (output port clocked by CPU_CLK)
+  Path Group: CPU_CLK
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  TOP                35000                 saed32rvt_ss0p95v125c
+  CORE               35000                 saed32rvt_ss0p95v125c
+  CORE_DW01_sub_1    8000                  saed32rvt_ss0p95v125c
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock CPU_CLK (rise edge)                             0.0000     0.0000
+  clock network delay (ideal)                           0.0000     0.0000
+  input external delay                                  1.0000     1.0000 f
+  INSTR[21] (in)                                        0.0000     1.0000 f
+  u_core/INSTR[21] (CORE)                               0.0000     1.0000 f
+  u_core/U24/Y (INVX32_RVT)                             0.0195     1.0195 r
+  u_core/U761/Y (AND2X1_RVT)                            0.0653     1.0848 r
+  u_core/U760/Y (AND2X1_RVT)                            0.0568     1.1416 r
+  u_core/U3362/Y (NAND2X0_RVT)                          0.0466     1.1882 f
+  u_core/U229/Y (INVX1_RVT)                             0.0389     1.2271 r
+  u_core/U230/Y (NBUFFX2_RVT)                           0.0647     1.2918 r
+  u_core/U2982/Y (AO22X1_RVT)                           0.0844     1.3762 r
+  u_core/U2981/Y (AO221X1_RVT)                          0.0748     1.4510 r
+  u_core/U2976/Y (NOR4X1_RVT)                           0.1096     1.5606 f
+  u_core/U2975/Y (NAND2X0_RVT)                          0.0360     1.5966 r
+  u_core/U3416/Y (NAND2X0_RVT)                          0.0796     1.6762 f
+  u_core/U3/Y (INVX1_RVT)                               0.0374     1.7136 r
+  u_core/U3417/Y (MUX21X2_RVT)                          0.1041     1.8177 r
+  u_core/sub_65/B[11] (CORE_DW01_sub_1)                 0.0000     1.8177 r
+  u_core/sub_65/U277/Y (NAND2X0_RVT)                    0.0556     1.8733 f
+  u_core/sub_65/U51/Y (AND4X1_RVT)                      0.1072     1.9805 f
+  u_core/sub_65/U239/Y (NAND2X0_RVT)                    0.0455     2.0261 r
+  u_core/sub_65/U235/Y (OA22X1_RVT)                     0.0848     2.1108 r
+  u_core/sub_65/U234/Y (NAND4X0_RVT)                    0.0618     2.1726 f
+  u_core/sub_65/U128/Y (NAND2X0_RVT)                    0.0614     2.2341 r
+  u_core/sub_65/U198/Y (NAND3X0_RVT)                    0.0530     2.2870 f
+  u_core/sub_65/U125/Y (NAND2X0_RVT)                    0.0484     2.3355 r
+  u_core/sub_65/U156/Y (NAND3X0_RVT)                    0.0596     2.3950 f
+  u_core/sub_65/U20/Y (DELLN1X2_RVT)                    0.2362     2.6313 f
+  u_core/sub_65/U11/Y (XNOR2X2_RVT)                     0.0988     2.7300 r
+  u_core/sub_65/DIFF[27] (CORE_DW01_sub_1)              0.0000     2.7300 r
+  u_core/U270/Y (AO222X1_RVT)                           0.0840     2.8140 r
+  u_core/U196/Y (NBUFFX4_RVT)                           0.0836     2.8976 r
+  u_core/ALURESULT[27] (CORE)                           0.0000     2.8976 r
+  ALURESULT[27] (out)                                   0.0000     2.8976 r
+  data arrival time                                                2.8976
+
+  clock CPU_CLK (rise edge)                             4.0000     4.0000
+  clock network delay (ideal)                           0.0000     4.0000
+  clock uncertainty                                    -0.1000     3.9000
+  output external delay                                -1.0000     2.9000
+  data required time                                               2.9000
+  --------------------------------------------------------------------------
+  data required time                                               2.9000
+  data arrival time                                               -2.8976
+  --------------------------------------------------------------------------
+  slack (MET)                                                      0.0024
+
+
+  Startpoint: INSTR[23] (input port clocked by CPU_CLK)
+  Endpoint: ALURESULT[28]
+            (output port clocked by CPU_CLK)
+  Path Group: CPU_CLK
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  TOP                35000                 saed32rvt_ss0p95v125c
+  CORE               35000                 saed32rvt_ss0p95v125c
+  CORE_DW01_add_5    8000                  saed32rvt_ss0p95v125c
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock CPU_CLK (rise edge)                             0.0000     0.0000
+  clock network delay (ideal)                           0.0000     0.0000
+  input external delay                                  1.0000     1.0000 f
+  INSTR[23] (in)                                        0.0000     1.0000 f
+  u_core/INSTR[23] (CORE)                               0.0000     1.0000 f
+  u_core/U5/Y (INVX16_RVT)                              0.0261     1.0261 r
+  u_core/U54/Y (INVX8_RVT)                              0.0110     1.0371 f
+  u_core/U1105/Y (AND2X1_RVT)                           0.0573     1.0944 f
+  u_core/U764/Y (AND2X1_RVT)                            0.0563     1.1508 f
+  u_core/U90/Y (NAND2X0_RVT)                            0.0636     1.2144 r
+  u_core/U218/Y (INVX1_RVT)                             0.0672     1.2816 f
+  u_core/U2503/Y (NAND2X0_RVT)                          0.0592     1.3408 r
+  u_core/U1119/Y (AND4X1_RVT)                           0.0912     1.4319 r
+  u_core/U1117/Y (AND2X1_RVT)                           0.0530     1.4849 r
+  u_core/U2489/Y (NAND4X0_RVT)                          0.0591     1.5440 f
+  u_core/U3436/Y (NAND2X0_RVT)                          0.0549     1.5989 r
+  u_core/U25/Y (IBUFFX16_RVT)                           0.0850     1.6840 f
+  u_core/U401/Y (MUX21X2_RVT)                           0.0926     1.7766 f
+  u_core/add_64/B[0] (CORE_DW01_add_5)                  0.0000     1.7766 f
+  u_core/add_64/U251/Y (NAND2X0_RVT)                    0.0624     1.8389 r
+  u_core/add_64/U234/Y (NAND2X0_RVT)                    0.0363     1.8752 f
+  u_core/add_64/U230/Y (AO21X1_RVT)                     0.0833     1.9585 f
+  u_core/add_64/U175/Y (NAND4X0_RVT)                    0.0448     2.0032 r
+  u_core/add_64/U174/Y (OA21X1_RVT)                     0.0683     2.0715 r
+  u_core/add_64/U171/Y (NAND4X0_RVT)                    0.0833     2.1549 f
+  u_core/add_64/U18/Y (NAND2X0_RVT)                     0.0621     2.2170 r
+  u_core/add_64/U142/Y (NAND3X0_RVT)                    0.0793     2.2963 f
+  u_core/add_64/U17/Y (NAND2X0_RVT)                     0.0735     2.3698 r
+  u_core/add_64/U4/Y (NAND3X0_RVT)                      0.0718     2.4416 f
+  u_core/add_64/U99/Y (INVX1_RVT)                       0.0433     2.4848 r
+  u_core/add_64/U88/Y (OA21X1_RVT)                      0.0816     2.5664 r
+  u_core/add_64/U5/Y (XNOR3X1_RVT)                      0.0767     2.6430 r
+  u_core/add_64/SUM[28] (CORE_DW01_add_5)               0.0000     2.6430 r
+  u_core/U287/Y (AO222X1_RVT)                           0.1435     2.7865 r
+  u_core/U49/Y (INVX1_RVT)                              0.0436     2.8301 f
+  u_core/U286/Y (INVX4_RVT)                             0.0545     2.8846 r
+  u_core/ALURESULT[28] (CORE)                           0.0000     2.8846 r
+  ALURESULT[28] (out)                                   0.0000     2.8846 r
+  data arrival time                                                2.8846
+
+  clock CPU_CLK (rise edge)                             4.0000     4.0000
+  clock network delay (ideal)                           0.0000     4.0000
+  clock uncertainty                                    -0.1000     3.9000
+  output external delay                                -1.0000     2.9000
+  data required time                                               2.9000
+  --------------------------------------------------------------------------
+  data required time                                               2.9000
+  data arrival time                                               -2.8846
+  --------------------------------------------------------------------------
+  slack (MET)                                                      0.0154
+
+
+1

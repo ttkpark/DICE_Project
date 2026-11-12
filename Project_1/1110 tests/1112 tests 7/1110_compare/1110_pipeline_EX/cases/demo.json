@@ -1,0 +1,82 @@
+{
+  "name": "demo",
+  "seed": 362,
+  "memory_file": "demo_dmem.hex",
+  "expected_file": "demo_expected.hex",
+  "input": [
+    -3,
+    1,
+    2,
+    -1,
+    0,
+    4,
+    -2,
+    3
+  ],
+  "weights": [
+    [
+      1,
+      -2,
+      3,
+      0,
+      1,
+      -1,
+      2,
+      1
+    ],
+    [
+      -1,
+      1,
+      0,
+      2,
+      -2,
+      3,
+      1,
+      -1
+    ],
+    [
+      0,
+      1,
+      -1,
+      1,
+      2,
+      0,
+      -3,
+      2
+    ],
+    [
+      2,
+      0,
+      -2,
+      1,
+      -1,
+      1,
+      0,
+      -1
+    ]
+  ],
+  "bias": [
+    10,
+    -5,
+    0,
+    100
+  ],
+  "expected_outputs": [
+    6,
+    4,
+    10,
+    90
+  ],
+  "config": {
+    "X_BASE": 1024,
+    "W_BASE": 256,
+    "BIAS_BASE": 0,
+    "Y_BASE": 512,
+    "SCRATCH_BASE": 1280,
+    "N": 8,
+    "M": 4,
+    "DONE_ADDR": 1008,
+    "DONE_TOKEN": 4154349318,
+    "SIGN_MASK": 2147483648
+  }
+}
