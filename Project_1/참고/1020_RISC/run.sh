@@ -13,7 +13,7 @@ set -e
 cd "$(dirname "$0")"
 F_MHZ=${1:-100}
 PROGS="baseline_int8_fc_slow int8_small int8_fast"
-RTL="rtl/TOP.v rtl/CORE.v rtl/CONTROLLER.v rtl/IMEM.v rtl/DMEM.v sim/MEMORY_POWER.v sim/tb_top_demo.v"
+RTL="rtl/TOP.v rtl/CORE.v rtl/CONTROLLER.v sim/mem/IMEM.v sim/mem/DMEM.v sim/MEMORY_POWER.v sim/tb_top_demo.v"
 mkdir -p build results
 VFLAGS="-full64 -timescale=1ns/1ps"   # RTL 에는 `timescale 이 없고 sim/ 에만 있어 VCS 가 Error-[ITSFM] 을 냄
 
@@ -60,6 +60,28 @@ for p in $PROGS; do
   done
 done
 python3 tools/summarize.py $F_MHZ
+
+# ---- 6) tb_pj1 기능검사 : store 순서·최종 DMEM 을 ISA 모델과 비교 + cycle 모델 + PPA (tools/pj1_check.py)
+#      프로그램 x case, random_00 실행 도중 RESET 재인가, sw/hazard_test (파이프라인 해저드 지향 시험)
+python3 tools/rv32i_assembler.py sw/hazard_test.s -o sw/hazard_test.hex --listing sw/hazard_test.lst
+PJ1="rtl/TOP.v rtl/CORE.v rtl/CONTROLLER.v sim/mem/IMEM.v sim/mem/DMEM.v sim/MEMORY_POWER.v sim/tb_pj1.v"
+rm -f build/pj1_*
+[ "$MODE" = direct ] && $VCS $VFLAGS -top TB_PJ1 $PJ1 -o build/simv_pj1 -l build/compile_pj1.log > /dev/null
+pj1_run() {   # $1 프로그램  $2 case  $3 꼬리표  $4.. 추가 plusarg
+  local p=$1 n=$2 b=build/pj1_$1__$2$3; shift 3
+  local args="+PROGRAM=sw/$p.hex +DATA=cases/${n}_dmem.hex +F_MHZ=$F_MHZ +TRACE=$b.trc +MEMOUT=$b.mem $*"
+  if [ "$MODE" = direct ]; then ./build/simv_pj1 $args -l $b.log > /dev/null 2>&1
+  else $VCS $VFLAGS -top TB_PJ1 $PJ1 -o build/simv_pj1 -R $args -l $b.log > /dev/null 2>&1; fi
+}
+for p in $PROGS; do
+  for c in cases/*.json; do
+    n=$(basename "$c" .json)
+    pj1_run $p $n "" +EXPECTED=cases/${n}_expected.hex
+  done
+  pj1_run $p random_00 __rst +EXPECTED=cases/random_00_expected.hex +RESET_AT=200
+done
+pj1_run hazard_test demo ""
+python3 tools/pj1_check.py $F_MHZ
 
 # ---- (선택) 전력 활동률용 VCD -> SAIF
 if [ "${DUMP:-0}" = "1" ]; then

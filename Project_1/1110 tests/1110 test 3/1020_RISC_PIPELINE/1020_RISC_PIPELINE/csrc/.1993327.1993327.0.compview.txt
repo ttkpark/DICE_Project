@@ -1,0 +1,5 @@
+{"vcs1":{"timestamp_begin":1794276151.015824210, "rt":0.26, "ut":0.04, "st":0.03}}
+{"SNPS_VCS_INTERNAL_ROOT_START_TIME": 1794276150.733472419}
+{"VCS_COMP_START_TIME": 1794276150.733472419}
+{"VCS_COMP_END_TIME": 1794276151.312514507}
+{"VCS_USER_OPTIONS": "-full64 -timescale=1ns/1ps -top TB_PJ1 rtl/TOP.v rtl/CORE.v rtl/CONTROLLER.v rtl/IMEM.v rtl/DMEM.v sim/MEMORY_POWER.v sim/tb_pj1.v -o build/simv_pj1 -l build/compile_pj1.log"}

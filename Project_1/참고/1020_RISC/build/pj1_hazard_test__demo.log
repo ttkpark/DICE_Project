@@ -1,0 +1,9 @@
+# vsim +PROGRAM=sw/hazard_test.hex +DATA=cases/demo_dmem.hex +F_MHZ=100 +TRACE=build/pj1_hazard_test__demo.trc +MEMOUT=build/pj1_hazard_test__demo.mem -do {run -all; quit -f} -l build/pj1_hazard_test__demo.log -lib {build\work} -c -quiet TB_PJ1 
+# run -all 
+# MEMORY_PPA cycles=72 LOAD=11 STORE=19 IMEM_words=74 F_MHz=100.000
+# MEMORY_PPA IMEM_area_um2=27352.30 DMEM_area_um2=50667.68
+# MEMORY_PPA P_mem_dynamic_mW=1.240417 P_mem_static_proxy_mW=1.560400
+# MEMORY_PPA P_mem_total_mW=2.800816 T_us=0.720000
+# PASS TB_PJ1: cycles=72 stores=19
+# ** Note: $finish    : sim/tb_pj1.v(156)
+#    Time: 736 ns  Iteration: 0  Instance: /TB_PJ1

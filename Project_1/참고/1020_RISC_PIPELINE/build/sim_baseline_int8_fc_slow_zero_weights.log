@@ -1,0 +1,9 @@
+# vsim +PROGRAM=sw/baseline_int8_fc_slow.hex +DATA=cases/zero_weights_dmem.hex +EXPECTED=cases/zero_weights_expected.hex +F_MHZ=100 -do {run -all; quit -f} -l {build\sim_baseline_int8_fc_slow_zero_weights.log} -lib {build\work} -c -quiet TB_TOP_DEMO 
+# run -all 
+# MEMORY_PPA cycles=1069 LOAD=110 STORE=73 IMEM_words=57 F_MHz=100.000
+# MEMORY_PPA IMEM_area_um2=8713.50 DMEM_area_um2=50667.68
+# MEMORY_PPA P_mem_dynamic_mW=0.445031 P_mem_static_proxy_mW=1.187624
+# MEMORY_PPA P_mem_total_mW=1.632654 T_us=10.690000
+# PASS TB_TOP_DEMO: Y[0..3] match; DONE at cycle 1069
+# ** Note: $finish    : sim/tb_top_demo.v(140)
+#    Time: 10706 ns  Iteration: 0  Instance: /TB_TOP_DEMO

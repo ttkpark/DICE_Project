@@ -1,0 +1,452 @@
+ 
+****************************************
+Report : timing
+        -path full
+        -delay max
+        -nets
+        -max_paths 5
+        -transition_time
+        -capacitance
+Design : CORE
+Version: V-2023.12-SP5
+Date   : Tue Nov 10 11:08:45 2026
+****************************************
+
+ # A fanout number of 1000 was used for high fanout net computations.
+
+Operating Conditions: ss0p95v125c   Library: saed32rvt_ss0p95v125c
+Wire Load Model Mode: enclosed
+
+  Startpoint: ResultSrcW_reg[0]
+              (rising edge-triggered flip-flop clocked by CPU_CLK)
+  Endpoint: PC_reg[0] (rising edge-triggered flip-flop clocked by CPU_CLK)
+  Path Group: CPU_CLK
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  CORE               35000                 saed32rvt_ss0p95v125c
+
+  Point                                       Fanout       Cap     Trans      Incr       Path
+  ----------------------------------------------------------------------------------------------
+  clock CPU_CLK (rise edge)                                                   0.00       0.00
+  clock network delay (ideal)                                                 0.00       0.00
+  ResultSrcW_reg[0]/CLK (DFFSSRX1_RVT)                              0.08      0.00 #     0.00 r
+  ResultSrcW_reg[0]/Q (DFFSSRX1_RVT)                                0.03      0.17       0.17 r
+  ResultSrcW[0] (net)                           1         0.60                0.00       0.17 r
+  U3534/Y (NOR2X2_RVT)                                              0.09      0.14       0.30 f
+  n3323 (net)                                  32        18.74                0.00       0.30 f
+  U4219/Y (AOI22X1_RVT)                                             0.02      0.09       0.40 r
+  n3802 (net)                                   1         0.48                0.00       0.40 r
+  U3496/Y (OAI21X1_RVT)                                             0.07      0.13       0.52 f
+  n3804 (net)                                   8         5.46                0.00       0.52 f
+  U3497/Y (INVX2_RVT)                                               0.09      0.08       0.61 r
+  n3037 (net)                                  28        17.52                0.00       0.61 r
+  U4710/Y (OAI22X1_RVT)                                             0.02      0.10       0.71 f
+  n3805 (net)                                   1         0.67                0.00       0.71 f
+  U4233/Y (NOR3X0_RVT)                                              0.03      0.08       0.80 r
+  n7816 (net)                                   2         1.29                0.00       0.80 r
+  U4711/Y (OA21X1_RVT)                                              0.04      0.07       0.87 r
+  n3994 (net)                                   2         1.38                0.00       0.87 r
+  U3512/Y (INVX1_RVT)                                               0.03      0.03       0.89 f
+  n3808 (net)                                   1         1.28                0.00       0.89 f
+  U4712/Y (XOR2X2_RVT)                                              0.03      0.09       0.99 r
+  n3819 (net)                                   2         1.27                0.00       0.99 r
+  U3696/Y (NOR2X0_RVT)                                              0.03      0.08       1.07 f
+  n4003 (net)                                   3         1.75                0.00       1.07 f
+  U4727/Y (OAI21X1_RVT)                                             0.03      0.11       1.17 r
+  n3820 (net)                                   1         0.54                0.00       1.17 r
+  U3656/Y (AOI21X1_RVT)                                             0.04      0.08       1.26 f
+  n4039 (net)                                   5         2.78                0.00       1.26 f
+  U3650/Y (OAI21X1_RVT)                                             0.03      0.11       1.37 r
+  n4041 (net)                                   1         0.54                0.00       1.37 r
+  U4832/Y (AOI21X1_RVT)                                             0.02      0.07       1.43 f
+  n4044 (net)                                   1         0.48                0.00       1.43 f
+  U3640/Y (OAI21X1_RVT)                                             0.03      0.09       1.52 r
+  n4051 (net)                                   1         0.98                0.00       1.52 r
+  U3438/Y (XOR2X1_RVT)                                              0.04      0.11       1.64 f
+  n4052 (net)                                   1         0.70                0.00       1.64 f
+  U3632/Y (NOR2X0_RVT)                                              0.03      0.08       1.71 r
+  n4053 (net)                                   2         1.33                0.00       1.71 r
+  U4081/Y (OR2X1_RVT)                                               0.02      0.05       1.77 r
+  n3224 (net)                                   1         0.67                0.00       1.77 r
+  U4080/Y (OR3X1_RVT)                                               0.03      0.06       1.83 r
+  n3223 (net)                                   1         0.70                0.00       1.83 r
+  U4079/Y (OR2X1_RVT)                                               0.02      0.05       1.88 r
+  n4055 (net)                                   1         0.67                0.00       1.88 r
+  U4834/Y (OR3X1_RVT)                                               0.04      0.06       1.94 r
+  n4058 (net)                                   2         1.33                0.00       1.94 r
+  U3623/Y (INVX1_RVT)                                               0.02      0.02       1.96 f
+  n3246 (net)                                   1         0.56                0.00       1.96 f
+  U3935/Y (AO21X2_RVT)                                              0.08      0.12       2.08 f
+  n5790 (net)                                  16        11.78                0.00       2.08 f
+  U3503/Y (NBUFFX8_RVT)                                             0.06      0.09       2.17 f
+  n3052 (net)                                  61        39.32                0.00       2.17 f
+  U6354/Y (AND2X1_RVT)                                              0.03      0.07       2.24 f
+  n5489 (net)                                   2         1.40                0.00       2.24 f
+  U6359/Y (NOR2X0_RVT)                                              0.02      0.07       2.31 r
+  n5490 (net)                                   1         0.54                0.00       2.31 r
+  U6360/Y (AO21X1_RVT)                                              0.03      0.04       2.35 r
+  n2004 (net)                                   1         0.55                0.00       2.35 r
+  PC_reg[0]/D (DFFX1_RVT)                                           0.03      0.00       2.35 r
+  data arrival time                                                                      2.35
+
+  clock CPU_CLK (rise edge)                                                   2.50       2.50
+  clock network delay (ideal)                                                 0.00       2.50
+  clock uncertainty                                                          -0.10       2.40
+  PC_reg[0]/CLK (DFFX1_RVT)                                                   0.00       2.40 r
+  library setup time                                                         -0.05       2.35
+  data required time                                                                     2.35
+  ----------------------------------------------------------------------------------------------
+  data required time                                                                     2.35
+  data arrival time                                                                     -2.35
+  ----------------------------------------------------------------------------------------------
+  slack (MET)                                                                            0.00
+
+
+  Startpoint: ResultSrcW_reg[0]
+              (rising edge-triggered flip-flop clocked by CPU_CLK)
+  Endpoint: PC_reg[1] (rising edge-triggered flip-flop clocked by CPU_CLK)
+  Path Group: CPU_CLK
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  CORE               35000                 saed32rvt_ss0p95v125c
+
+  Point                                       Fanout       Cap     Trans      Incr       Path
+  ----------------------------------------------------------------------------------------------
+  clock CPU_CLK (rise edge)                                                   0.00       0.00
+  clock network delay (ideal)                                                 0.00       0.00
+  ResultSrcW_reg[0]/CLK (DFFSSRX1_RVT)                              0.08      0.00 #     0.00 r
+  ResultSrcW_reg[0]/Q (DFFSSRX1_RVT)                                0.03      0.17       0.17 r
+  ResultSrcW[0] (net)                           1         0.60                0.00       0.17 r
+  U3534/Y (NOR2X2_RVT)                                              0.09      0.14       0.30 f
+  n3323 (net)                                  32        18.74                0.00       0.30 f
+  U4219/Y (AOI22X1_RVT)                                             0.02      0.09       0.40 r
+  n3802 (net)                                   1         0.48                0.00       0.40 r
+  U3496/Y (OAI21X1_RVT)                                             0.07      0.13       0.52 f
+  n3804 (net)                                   8         5.46                0.00       0.52 f
+  U3497/Y (INVX2_RVT)                                               0.09      0.08       0.61 r
+  n3037 (net)                                  28        17.52                0.00       0.61 r
+  U4710/Y (OAI22X1_RVT)                                             0.02      0.10       0.71 f
+  n3805 (net)                                   1         0.67                0.00       0.71 f
+  U4233/Y (NOR3X0_RVT)                                              0.03      0.08       0.80 r
+  n7816 (net)                                   2         1.29                0.00       0.80 r
+  U4711/Y (OA21X1_RVT)                                              0.04      0.07       0.87 r
+  n3994 (net)                                   2         1.38                0.00       0.87 r
+  U3512/Y (INVX1_RVT)                                               0.03      0.03       0.89 f
+  n3808 (net)                                   1         1.28                0.00       0.89 f
+  U4712/Y (XOR2X2_RVT)                                              0.03      0.09       0.99 r
+  n3819 (net)                                   2         1.27                0.00       0.99 r
+  U3696/Y (NOR2X0_RVT)                                              0.03      0.08       1.07 f
+  n4003 (net)                                   3         1.75                0.00       1.07 f
+  U4727/Y (OAI21X1_RVT)                                             0.03      0.11       1.17 r
+  n3820 (net)                                   1         0.54                0.00       1.17 r
+  U3656/Y (AOI21X1_RVT)                                             0.04      0.08       1.26 f
+  n4039 (net)                                   5         2.78                0.00       1.26 f
+  U3650/Y (OAI21X1_RVT)                                             0.03      0.11       1.37 r
+  n4041 (net)                                   1         0.54                0.00       1.37 r
+  U4832/Y (AOI21X1_RVT)                                             0.02      0.07       1.43 f
+  n4044 (net)                                   1         0.48                0.00       1.43 f
+  U3640/Y (OAI21X1_RVT)                                             0.03      0.09       1.52 r
+  n4051 (net)                                   1         0.98                0.00       1.52 r
+  U3438/Y (XOR2X1_RVT)                                              0.04      0.11       1.64 f
+  n4052 (net)                                   1         0.70                0.00       1.64 f
+  U3632/Y (NOR2X0_RVT)                                              0.03      0.08       1.71 r
+  n4053 (net)                                   2         1.33                0.00       1.71 r
+  U4081/Y (OR2X1_RVT)                                               0.02      0.05       1.77 r
+  n3224 (net)                                   1         0.67                0.00       1.77 r
+  U4080/Y (OR3X1_RVT)                                               0.03      0.06       1.83 r
+  n3223 (net)                                   1         0.70                0.00       1.83 r
+  U4079/Y (OR2X1_RVT)                                               0.02      0.05       1.88 r
+  n4055 (net)                                   1         0.67                0.00       1.88 r
+  U4834/Y (OR3X1_RVT)                                               0.04      0.06       1.94 r
+  n4058 (net)                                   2         1.33                0.00       1.94 r
+  U3623/Y (INVX1_RVT)                                               0.02      0.02       1.96 f
+  n3246 (net)                                   1         0.56                0.00       1.96 f
+  U3935/Y (AO21X2_RVT)                                              0.08      0.12       2.08 f
+  n5790 (net)                                  16        11.78                0.00       2.08 f
+  U3503/Y (NBUFFX8_RVT)                                             0.06      0.09       2.17 f
+  n3052 (net)                                  61        39.32                0.00       2.17 f
+  U6354/Y (AND2X1_RVT)                                              0.03      0.07       2.24 f
+  n5489 (net)                                   2         1.40                0.00       2.24 f
+  U6355/Y (NOR2X0_RVT)                                              0.02      0.07       2.31 r
+  n5485 (net)                                   1         0.54                0.00       2.31 r
+  U6356/Y (AO21X1_RVT)                                              0.03      0.04       2.35 r
+  n1974 (net)                                   1         0.55                0.00       2.35 r
+  PC_reg[1]/D (DFFX1_RVT)                                           0.03      0.00       2.35 r
+  data arrival time                                                                      2.35
+
+  clock CPU_CLK (rise edge)                                                   2.50       2.50
+  clock network delay (ideal)                                                 0.00       2.50
+  clock uncertainty                                                          -0.10       2.40
+  PC_reg[1]/CLK (DFFX1_RVT)                                                   0.00       2.40 r
+  library setup time                                                         -0.05       2.35
+  data required time                                                                     2.35
+  ----------------------------------------------------------------------------------------------
+  data required time                                                                     2.35
+  data arrival time                                                                     -2.35
+  ----------------------------------------------------------------------------------------------
+  slack (MET)                                                                            0.00
+
+
+  Startpoint: ResultSrcW_reg[0]
+              (rising edge-triggered flip-flop clocked by CPU_CLK)
+  Endpoint: RD2E_reg[17]
+            (rising edge-triggered flip-flop clocked by CPU_CLK)
+  Path Group: CPU_CLK
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  CORE               35000                 saed32rvt_ss0p95v125c
+
+  Point                                       Fanout       Cap     Trans      Incr       Path
+  ----------------------------------------------------------------------------------------------
+  clock CPU_CLK (rise edge)                                                   0.00       0.00
+  clock network delay (ideal)                                                 0.00       0.00
+  ResultSrcW_reg[0]/CLK (DFFSSRX1_RVT)                              0.08      0.00 #     0.00 r
+  ResultSrcW_reg[0]/Q (DFFSSRX1_RVT)                                0.03      0.18       0.18 f
+  ResultSrcW[0] (net)                           1         0.60                0.00       0.18 f
+  U3534/Y (NOR2X2_RVT)                                              0.09      0.14       0.31 r
+  n3323 (net)                                  32        18.82                0.00       0.31 r
+  U4216/Y (AOI22X1_RVT)                                             0.02      0.10       0.41 f
+  n3347 (net)                                   1         0.51                0.00       0.41 f
+  U3595/Y (OAI21X2_RVT)                                             0.05      0.11       0.51 r
+  n3457 (net)                                   8         5.54                0.00       0.51 r
+  U3491/Y (INVX2_RVT)                                               0.09      0.07       0.59 f
+  n3040 (net)                                  28        17.75                0.00       0.59 f
+  U4341/Y (OAI22X1_RVT)                                             0.02      0.12       0.71 r
+  n3349 (net)                                   1         0.61                0.00       0.71 r
+  U3968/Y (OR2X1_RVT)                                               0.03      0.06       0.77 r
+  n9113 (net)                                   2         1.34                0.00       0.77 r
+  U4437/Y (OA21X1_RVT)                                              0.04      0.07       0.84 r
+  n3893 (net)                                   2         1.56                0.00       0.84 r
+  U4438/Y (XOR2X1_RVT)                                              0.04      0.12       0.96 f
+  n3499 (net)                                   2         1.26                0.00       0.96 f
+  U3707/Y (NOR2X0_RVT)                                              0.03      0.08       1.04 r
+  n3887 (net)                                   3         1.75                0.00       1.04 r
+  U4443/Y (NOR2X0_RVT)                                              0.02      0.08       1.12 f
+  n3501 (net)                                   2         1.06                0.00       1.12 f
+  U4486/Y (AOI21X1_RVT)                                             0.02      0.09       1.21 r
+  n3502 (net)                                   1         0.48                0.00       1.21 r
+  U3506/Y (OAI21X1_RVT)                                             0.03      0.09       1.30 f
+  n3035 (net)                                   1         0.54                0.00       1.30 f
+  U4487/Y (AO21X1_RVT)                                              0.04      0.06       1.36 f
+  n4002 (net)                                   2         1.98                0.00       1.36 f
+  U3483/Y (INVX2_RVT)                                               0.05      0.05       1.41 r
+  n4045 (net)                                  16         9.55                0.00       1.41 r
+  U3441/Y (OAI21X1_RVT)                                             0.03      0.11       1.52 f
+  n3906 (net)                                   1         0.98                0.00       1.52 f
+  U3486/Y (XOR2X1_RVT)                                              0.04      0.10       1.62 r
+  n3291 (net)                                   1         0.71                0.00       1.62 r
+  U4776/Y (NOR2X0_RVT)                                              0.02      0.07       1.70 f
+  n3911 (net)                                   1         0.61                0.00       1.70 f
+  U3630/Y (NOR2X0_RVT)                                              0.03      0.08       1.77 r
+  n6141 (net)                                   2         1.32                0.00       1.77 r
+  U4784/Y (AND2X1_RVT)                                              0.02      0.05       1.82 r
+  n3931 (net)                                   1         0.53                0.00       1.82 r
+  U4785/Y (NAND3X0_RVT)                                             0.05      0.05       1.87 f
+  n4056 (net)                                   1         0.61                0.00       1.87 f
+  U4834/Y (OR3X1_RVT)                                               0.03      0.08       1.95 f
+  n4058 (net)                                   2         1.31                0.00       1.95 f
+  U3623/Y (INVX1_RVT)                                               0.02      0.02       1.97 r
+  n3246 (net)                                   1         0.55                0.00       1.97 r
+  U3935/Y (AO21X2_RVT)                                              0.09      0.13       2.10 r
+  n5790 (net)                                  16        11.85                0.00       2.10 r
+  U5105/Y (OR2X2_RVT)                                               0.04      0.09       2.19 r
+  n5370 (net)                                   9         5.28                0.00       2.19 r
+  U3499/Y (NBUFFX2_RVT)                                             0.08      0.09       2.28 r
+  n6946 (net)                                  24        14.46                0.00       2.28 r
+  U4258/Y (OAI22X1_RVT)                                             0.02      0.09       2.38 f
+  N333 (net)                                    1         0.55                0.00       2.38 f
+  RD2E_reg[17]/D (DFFX1_RVT)                                        0.02      0.00       2.38 f
+  data arrival time                                                                      2.38
+
+  clock CPU_CLK (rise edge)                                                   2.50       2.50
+  clock network delay (ideal)                                                 0.00       2.50
+  clock uncertainty                                                          -0.10       2.40
+  RD2E_reg[17]/CLK (DFFX1_RVT)                                                0.00       2.40 r
+  library setup time                                                         -0.02       2.38
+  data required time                                                                     2.38
+  ----------------------------------------------------------------------------------------------
+  data required time                                                                     2.38
+  data arrival time                                                                     -2.38
+  ----------------------------------------------------------------------------------------------
+  slack (MET)                                                                            0.00
+
+
+  Startpoint: ResultSrcW_reg[0]
+              (rising edge-triggered flip-flop clocked by CPU_CLK)
+  Endpoint: RD2E_reg[16]
+            (rising edge-triggered flip-flop clocked by CPU_CLK)
+  Path Group: CPU_CLK
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  CORE               35000                 saed32rvt_ss0p95v125c
+
+  Point                                       Fanout       Cap     Trans      Incr       Path
+  ----------------------------------------------------------------------------------------------
+  clock CPU_CLK (rise edge)                                                   0.00       0.00
+  clock network delay (ideal)                                                 0.00       0.00
+  ResultSrcW_reg[0]/CLK (DFFSSRX1_RVT)                              0.08      0.00 #     0.00 r
+  ResultSrcW_reg[0]/Q (DFFSSRX1_RVT)                                0.03      0.18       0.18 f
+  ResultSrcW[0] (net)                           1         0.60                0.00       0.18 f
+  U3534/Y (NOR2X2_RVT)                                              0.09      0.14       0.31 r
+  n3323 (net)                                  32        18.82                0.00       0.31 r
+  U4216/Y (AOI22X1_RVT)                                             0.02      0.10       0.41 f
+  n3347 (net)                                   1         0.51                0.00       0.41 f
+  U3595/Y (OAI21X2_RVT)                                             0.05      0.11       0.51 r
+  n3457 (net)                                   8         5.54                0.00       0.51 r
+  U3491/Y (INVX2_RVT)                                               0.09      0.07       0.59 f
+  n3040 (net)                                  28        17.75                0.00       0.59 f
+  U4341/Y (OAI22X1_RVT)                                             0.02      0.12       0.71 r
+  n3349 (net)                                   1         0.61                0.00       0.71 r
+  U3968/Y (OR2X1_RVT)                                               0.03      0.06       0.77 r
+  n9113 (net)                                   2         1.34                0.00       0.77 r
+  U4437/Y (OA21X1_RVT)                                              0.04      0.07       0.84 r
+  n3893 (net)                                   2         1.56                0.00       0.84 r
+  U4438/Y (XOR2X1_RVT)                                              0.04      0.12       0.96 f
+  n3499 (net)                                   2         1.26                0.00       0.96 f
+  U3707/Y (NOR2X0_RVT)                                              0.03      0.08       1.04 r
+  n3887 (net)                                   3         1.75                0.00       1.04 r
+  U4443/Y (NOR2X0_RVT)                                              0.02      0.08       1.12 f
+  n3501 (net)                                   2         1.06                0.00       1.12 f
+  U4486/Y (AOI21X1_RVT)                                             0.02      0.09       1.21 r
+  n3502 (net)                                   1         0.48                0.00       1.21 r
+  U3506/Y (OAI21X1_RVT)                                             0.03      0.09       1.30 f
+  n3035 (net)                                   1         0.54                0.00       1.30 f
+  U4487/Y (AO21X1_RVT)                                              0.04      0.06       1.36 f
+  n4002 (net)                                   2         1.98                0.00       1.36 f
+  U3483/Y (INVX2_RVT)                                               0.05      0.05       1.41 r
+  n4045 (net)                                  16         9.55                0.00       1.41 r
+  U3441/Y (OAI21X1_RVT)                                             0.03      0.11       1.52 f
+  n3906 (net)                                   1         0.98                0.00       1.52 f
+  U3486/Y (XOR2X1_RVT)                                              0.04      0.10       1.62 r
+  n3291 (net)                                   1         0.71                0.00       1.62 r
+  U4776/Y (NOR2X0_RVT)                                              0.02      0.07       1.70 f
+  n3911 (net)                                   1         0.61                0.00       1.70 f
+  U3630/Y (NOR2X0_RVT)                                              0.03      0.08       1.77 r
+  n6141 (net)                                   2         1.32                0.00       1.77 r
+  U4784/Y (AND2X1_RVT)                                              0.02      0.05       1.82 r
+  n3931 (net)                                   1         0.53                0.00       1.82 r
+  U4785/Y (NAND3X0_RVT)                                             0.05      0.05       1.87 f
+  n4056 (net)                                   1         0.61                0.00       1.87 f
+  U4834/Y (OR3X1_RVT)                                               0.03      0.08       1.95 f
+  n4058 (net)                                   2         1.31                0.00       1.95 f
+  U3623/Y (INVX1_RVT)                                               0.02      0.02       1.97 r
+  n3246 (net)                                   1         0.55                0.00       1.97 r
+  U3935/Y (AO21X2_RVT)                                              0.09      0.13       2.10 r
+  n5790 (net)                                  16        11.85                0.00       2.10 r
+  U5105/Y (OR2X2_RVT)                                               0.04      0.09       2.19 r
+  n5370 (net)                                   9         5.28                0.00       2.19 r
+  U3499/Y (NBUFFX2_RVT)                                             0.08      0.09       2.28 r
+  n6946 (net)                                  24        14.46                0.00       2.28 r
+  U4127/Y (OAI22X1_RVT)                                             0.02      0.09       2.38 f
+  N332 (net)                                    1         0.55                0.00       2.38 f
+  RD2E_reg[16]/D (DFFX1_RVT)                                        0.02      0.00       2.38 f
+  data arrival time                                                                      2.38
+
+  clock CPU_CLK (rise edge)                                                   2.50       2.50
+  clock network delay (ideal)                                                 0.00       2.50
+  clock uncertainty                                                          -0.10       2.40
+  RD2E_reg[16]/CLK (DFFX1_RVT)                                                0.00       2.40 r
+  library setup time                                                         -0.02       2.38
+  data required time                                                                     2.38
+  ----------------------------------------------------------------------------------------------
+  data required time                                                                     2.38
+  data arrival time                                                                     -2.38
+  ----------------------------------------------------------------------------------------------
+  slack (MET)                                                                            0.00
+
+
+  Startpoint: ResultSrcW_reg[0]
+              (rising edge-triggered flip-flop clocked by CPU_CLK)
+  Endpoint: RD2E_reg[12]
+            (rising edge-triggered flip-flop clocked by CPU_CLK)
+  Path Group: CPU_CLK
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  CORE               35000                 saed32rvt_ss0p95v125c
+
+  Point                                       Fanout       Cap     Trans      Incr       Path
+  ----------------------------------------------------------------------------------------------
+  clock CPU_CLK (rise edge)                                                   0.00       0.00
+  clock network delay (ideal)                                                 0.00       0.00
+  ResultSrcW_reg[0]/CLK (DFFSSRX1_RVT)                              0.08      0.00 #     0.00 r
+  ResultSrcW_reg[0]/Q (DFFSSRX1_RVT)                                0.03      0.18       0.18 f
+  ResultSrcW[0] (net)                           1         0.60                0.00       0.18 f
+  U3534/Y (NOR2X2_RVT)                                              0.09      0.14       0.31 r
+  n3323 (net)                                  32        18.82                0.00       0.31 r
+  U4216/Y (AOI22X1_RVT)                                             0.02      0.10       0.41 f
+  n3347 (net)                                   1         0.51                0.00       0.41 f
+  U3595/Y (OAI21X2_RVT)                                             0.05      0.11       0.51 r
+  n3457 (net)                                   8         5.54                0.00       0.51 r
+  U3491/Y (INVX2_RVT)                                               0.09      0.07       0.59 f
+  n3040 (net)                                  28        17.75                0.00       0.59 f
+  U4341/Y (OAI22X1_RVT)                                             0.02      0.12       0.71 r
+  n3349 (net)                                   1         0.61                0.00       0.71 r
+  U3968/Y (OR2X1_RVT)                                               0.03      0.06       0.77 r
+  n9113 (net)                                   2         1.34                0.00       0.77 r
+  U4437/Y (OA21X1_RVT)                                              0.04      0.07       0.84 r
+  n3893 (net)                                   2         1.56                0.00       0.84 r
+  U4438/Y (XOR2X1_RVT)                                              0.04      0.12       0.96 f
+  n3499 (net)                                   2         1.26                0.00       0.96 f
+  U3707/Y (NOR2X0_RVT)                                              0.03      0.08       1.04 r
+  n3887 (net)                                   3         1.75                0.00       1.04 r
+  U4443/Y (NOR2X0_RVT)                                              0.02      0.08       1.12 f
+  n3501 (net)                                   2         1.06                0.00       1.12 f
+  U4486/Y (AOI21X1_RVT)                                             0.02      0.09       1.21 r
+  n3502 (net)                                   1         0.48                0.00       1.21 r
+  U3506/Y (OAI21X1_RVT)                                             0.03      0.09       1.30 f
+  n3035 (net)                                   1         0.54                0.00       1.30 f
+  U4487/Y (AO21X1_RVT)                                              0.04      0.06       1.36 f
+  n4002 (net)                                   2         1.98                0.00       1.36 f
+  U3483/Y (INVX2_RVT)                                               0.05      0.05       1.41 r
+  n4045 (net)                                  16         9.55                0.00       1.41 r
+  U3441/Y (OAI21X1_RVT)                                             0.03      0.11       1.52 f
+  n3906 (net)                                   1         0.98                0.00       1.52 f
+  U3486/Y (XOR2X1_RVT)                                              0.04      0.10       1.62 r
+  n3291 (net)                                   1         0.71                0.00       1.62 r
+  U4776/Y (NOR2X0_RVT)                                              0.02      0.07       1.70 f
+  n3911 (net)                                   1         0.61                0.00       1.70 f
+  U3630/Y (NOR2X0_RVT)                                              0.03      0.08       1.77 r
+  n6141 (net)                                   2         1.32                0.00       1.77 r
+  U4784/Y (AND2X1_RVT)                                              0.02      0.05       1.82 r
+  n3931 (net)                                   1         0.53                0.00       1.82 r
+  U4785/Y (NAND3X0_RVT)                                             0.05      0.05       1.87 f
+  n4056 (net)                                   1         0.61                0.00       1.87 f
+  U4834/Y (OR3X1_RVT)                                               0.03      0.08       1.95 f
+  n4058 (net)                                   2         1.31                0.00       1.95 f
+  U3623/Y (INVX1_RVT)                                               0.02      0.02       1.97 r
+  n3246 (net)                                   1         0.55                0.00       1.97 r
+  U3935/Y (AO21X2_RVT)                                              0.09      0.13       2.10 r
+  n5790 (net)                                  16        11.85                0.00       2.10 r
+  U5105/Y (OR2X2_RVT)                                               0.04      0.09       2.19 r
+  n5370 (net)                                   9         5.28                0.00       2.19 r
+  U3499/Y (NBUFFX2_RVT)                                             0.08      0.09       2.28 r
+  n6946 (net)                                  24        14.46                0.00       2.28 r
+  U4124/Y (OAI22X1_RVT)                                             0.02      0.09       2.38 f
+  N328 (net)                                    1         0.55                0.00       2.38 f
+  RD2E_reg[12]/D (DFFX1_RVT)                                        0.02      0.00       2.38 f
+  data arrival time                                                                      2.38
+
+  clock CPU_CLK (rise edge)                                                   2.50       2.50
+  clock network delay (ideal)                                                 0.00       2.50
+  clock uncertainty                                                          -0.10       2.40
+  RD2E_reg[12]/CLK (DFFX1_RVT)                                                0.00       2.40 r
+  library setup time                                                         -0.02       2.38
+  data required time                                                                     2.38
+  ----------------------------------------------------------------------------------------------
+  data required time                                                                     2.38
+  data arrival time                                                                     -2.38
+  ----------------------------------------------------------------------------------------------
+  slack (MET)                                                                            0.00
+
+
+1

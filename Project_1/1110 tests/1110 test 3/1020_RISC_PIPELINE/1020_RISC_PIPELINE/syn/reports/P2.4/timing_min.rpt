@@ -1,0 +1,117 @@
+ 
+****************************************
+Report : timing
+        -path full
+        -delay min
+        -max_paths 3
+Design : CORE
+Version: V-2023.12-SP5
+Date   : Tue Nov 10 11:19:40 2026
+****************************************
+
+ # A fanout number of 1000 was used for high fanout net computations.
+
+Operating Conditions: ss0p95v125c   Library: saed32rvt_ss0p95v125c
+Wire Load Model Mode: enclosed
+
+  Startpoint: RegWriteE_reg
+              (rising edge-triggered flip-flop clocked by CPU_CLK)
+  Endpoint: RegWriteM_reg
+            (rising edge-triggered flip-flop clocked by CPU_CLK)
+  Path Group: CPU_CLK
+  Path Type: min
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  CORE               35000                 saed32rvt_ss0p95v125c
+
+  Point                                    Incr       Path
+  -----------------------------------------------------------
+  clock CPU_CLK (rise edge)                0.00       0.00
+  clock network delay (ideal)              0.00       0.00
+  RegWriteE_reg/CLK (DFFX1_RVT)            0.00 #     0.00 r
+  RegWriteE_reg/Q (DFFX1_RVT)              0.17       0.17 f
+  RegWriteM_reg/RSTB (DFFSSRX1_RVT)        0.00       0.17 f
+  data arrival time                                   0.17
+
+  clock CPU_CLK (rise edge)                0.00       0.00
+  clock network delay (ideal)              0.00       0.00
+  clock uncertainty                        0.05       0.05
+  RegWriteM_reg/CLK (DFFSSRX1_RVT)         0.00       0.05 r
+  library hold time                       -0.03       0.02
+  data required time                                  0.02
+  -----------------------------------------------------------
+  data required time                                  0.02
+  data arrival time                                  -0.17
+  -----------------------------------------------------------
+  slack (MET)                                         0.15
+
+
+  Startpoint: ResultSrcE_reg[0]
+              (rising edge-triggered flip-flop clocked by CPU_CLK)
+  Endpoint: ResultSrcM_reg[0]
+            (rising edge-triggered flip-flop clocked by CPU_CLK)
+  Path Group: CPU_CLK
+  Path Type: min
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  CORE               35000                 saed32rvt_ss0p95v125c
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock CPU_CLK (rise edge)                               0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  ResultSrcE_reg[0]/CLK (DFFX1_RVT)                       0.00 #     0.00 r
+  ResultSrcE_reg[0]/Q (DFFX1_RVT)                         0.17       0.17 f
+  ResultSrcM_reg[0]/RSTB (DFFSSRX1_RVT)                   0.00       0.17 f
+  data arrival time                                                  0.17
+
+  clock CPU_CLK (rise edge)                               0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  clock uncertainty                                       0.05       0.05
+  ResultSrcM_reg[0]/CLK (DFFSSRX1_RVT)                    0.00       0.05 r
+  library hold time                                      -0.03       0.02
+  data required time                                                 0.02
+  --------------------------------------------------------------------------
+  data required time                                                 0.02
+  data arrival time                                                 -0.17
+  --------------------------------------------------------------------------
+  slack (MET)                                                        0.15
+
+
+  Startpoint: ALUResultM_reg[0]
+              (rising edge-triggered flip-flop clocked by CPU_CLK)
+  Endpoint: ALUResultW_reg[0]
+            (rising edge-triggered flip-flop clocked by CPU_CLK)
+  Path Group: CPU_CLK
+  Path Type: min
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  CORE               35000                 saed32rvt_ss0p95v125c
+
+  Point                                    Incr       Path
+  -----------------------------------------------------------
+  clock CPU_CLK (rise edge)                0.00       0.00
+  clock network delay (ideal)              0.00       0.00
+  ALUResultM_reg[0]/CLK (DFFX1_RVT)        0.00 #     0.00 r
+  ALUResultM_reg[0]/Q (DFFX1_RVT)          0.17       0.17 f
+  U4104/Y (AND2X1_RVT)                     0.05       0.21 f
+  ALUResultW_reg[0]/D (DFFX1_RVT)          0.00       0.21 f
+  data arrival time                                   0.21
+
+  clock CPU_CLK (rise edge)                0.00       0.00
+  clock network delay (ideal)              0.00       0.00
+  clock uncertainty                        0.05       0.05
+  ALUResultW_reg[0]/CLK (DFFX1_RVT)        0.00       0.05 r
+  library hold time                        0.00       0.05
+  data required time                                  0.05
+  -----------------------------------------------------------
+  data required time                                  0.05
+  data arrival time                                  -0.21
+  -----------------------------------------------------------
+  slack (MET)                                         0.16
+
+
+1

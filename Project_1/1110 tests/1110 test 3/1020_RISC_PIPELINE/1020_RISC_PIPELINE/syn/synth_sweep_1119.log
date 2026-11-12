@@ -1,0 +1,12 @@
+nohup: ignoring input
+DC 실행기: dc_shell_queue
+==== PERIOD 3.8 ns (263.2 MHz) 합성 중 ... (dc_P3.8.log)
+LICENSE QUEUE: acquired slot 2/25 after 0s; starting dc_shell_queue.
+LICENSE QUEUE: dc_shell_queue finished (exit=0); slot 2 returned.
+==== PERIOD 3.6 ns (277.8 MHz) 합성 중 ... (dc_P3.6.log)
+LICENSE QUEUE: acquired slot 2/25 after 0s; starting dc_shell_queue.
+LICENSE QUEUE: dc_shell_queue finished (exit=0); slot 2 returned.
+
+period   MHz       setup_slack hold_slack  area_um2     power
+3.8      263.2     0.34        0.15        24379.526062 Total Dynamic Power = 2.4737 mW (100%) Cell Leakage Power = 1.3747 mW 
+P3.6: 보고서 없음 (dc_P3.6.log 확인)

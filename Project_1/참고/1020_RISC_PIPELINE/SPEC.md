@@ -1,5 +1,7 @@
 # 1020_RISC_PIPELINE — Project 1 INT8 선형계층, 5단 파이프라인 판 명세
 
+> **R1.4 (2026-11-03) 반영, 2026-11-10**: 아래 본문은 R1.3a 시점 기록이다. 지금은 TOP 의 `INSTR`·`READDATA` 가 입력이고 IMEM/DMEM 은 TOP 바깥 `sim/mem/` (TB 가 연결), 합성 top 은 `TOP`, 제약은 R1.4 공통 SDC(`syn/TOP.sdc`), 합성 명령은 `compile` 이다. 본문의 "합성 대상 = CORE", `rtl/IMEM.v`·`rtl/DMEM.v`, "testbench 무수정", 이전 합성 수치는 R1.3a 조건이므로 R1.4 결과와 섞지 않는다. 공식 PPA 는 `Project1_INT8_R1p4_20261103/` 공통 flow 로 낸다.
+
 작성 2026-10-20. 단일 사이클 판 `../1020_RISC/SPEC.md` 의 결정(D2~D10: 기본 8명령, 비트 직렬 곱, 프로그램 2종, SDC, 검증 3단, 멀티코어 안 함)을 그대로 상속하고, **D1(CORE 무수정)만 뒤집어 CORE 를 5단 파이프라인으로 바꿨다.** 바뀐 파일은 `rtl/CORE.v` 와 `sw/*.s` 의 `done:` 블록(lw 3개 선행)뿐. TOP/CONTROLLER/IMEM/DMEM/sim 은 byte 단위로 동일.
 
 ## 0. 결론 한눈에 (로컬 RTL, 공개 16 case)

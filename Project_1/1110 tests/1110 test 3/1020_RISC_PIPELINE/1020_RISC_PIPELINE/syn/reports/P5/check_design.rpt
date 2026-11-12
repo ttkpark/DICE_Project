@@ -1,0 +1,39 @@
+ 
+****************************************
+check_design summary:
+Version:     V-2023.12-SP5
+Date:        Tue Nov 10 11:05:32 2026
+****************************************
+
+                   Name                                            Total
+--------------------------------------------------------------------------------
+Inputs/Outputs                                                     16
+    Unconnected ports (LINT-28)                                    15
+    Constant outputs (LINT-52)                                      1
+
+Cells                                                               3
+    Cells do not drive (LINT-1)                                     2
+    Connected to power or ground (LINT-32)                          1
+--------------------------------------------------------------------------------
+
+Warning: In design 'CORE', cell 'C3588' does not drive any nets. (LINT-1)
+Warning: In design 'CORE', cell 'C3589' does not drive any nets. (LINT-1)
+Warning: In design 'CONTROLLER', port 'INSTR[24]' is not connected to any nets. (LINT-28)
+Warning: In design 'CONTROLLER', port 'INSTR[23]' is not connected to any nets. (LINT-28)
+Warning: In design 'CONTROLLER', port 'INSTR[22]' is not connected to any nets. (LINT-28)
+Warning: In design 'CONTROLLER', port 'INSTR[21]' is not connected to any nets. (LINT-28)
+Warning: In design 'CONTROLLER', port 'INSTR[20]' is not connected to any nets. (LINT-28)
+Warning: In design 'CONTROLLER', port 'INSTR[19]' is not connected to any nets. (LINT-28)
+Warning: In design 'CONTROLLER', port 'INSTR[18]' is not connected to any nets. (LINT-28)
+Warning: In design 'CONTROLLER', port 'INSTR[17]' is not connected to any nets. (LINT-28)
+Warning: In design 'CONTROLLER', port 'INSTR[16]' is not connected to any nets. (LINT-28)
+Warning: In design 'CONTROLLER', port 'INSTR[15]' is not connected to any nets. (LINT-28)
+Warning: In design 'CONTROLLER', port 'INSTR[11]' is not connected to any nets. (LINT-28)
+Warning: In design 'CONTROLLER', port 'INSTR[10]' is not connected to any nets. (LINT-28)
+Warning: In design 'CONTROLLER', port 'INSTR[9]' is not connected to any nets. (LINT-28)
+Warning: In design 'CONTROLLER', port 'INSTR[8]' is not connected to any nets. (LINT-28)
+Warning: In design 'CONTROLLER', port 'INSTR[7]' is not connected to any nets. (LINT-28)
+Warning: In design 'CORE', a pin on submodule 'u_controller' is connected to logic 1 or logic 0. (LINT-32)
+   Pin 'ZERO' is connected to logic 1. 
+Warning: In design 'CONTROLLER', output port 'ALUCTRL[2]' is connected directly to 'logic 0'. (LINT-52)
+1

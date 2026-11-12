@@ -1,0 +1,15 @@
+Command: /home/dice/dice008/DICE/Project1/1020_RISC_PIPELINE/./build/simv +PROGRAM=sw/int8_fast.hex +DATA=cases/random_03_dmem.hex +EXPECTED=cases/random_03_expected.hex +F_MHZ=100 -l build/sim_int8_fast_random_03.log
+Chronologic VCS simulator copyright 1991-2023
+Contains Synopsys proprietary information.
+Compiler version V-2023.12-SP2-1_Full64; Runtime version V-2023.12-SP2-1_Full64;  Nov 10 11:02 2026
+MEMORY_PPA cycles=634 LOAD=62 STORE=5 IMEM_words=192 F_MHz=100.000
+MEMORY_PPA IMEM_area_um2=27352.30 DMEM_area_um2=50667.68
+MEMORY_PPA P_mem_dynamic_mW=0.837065 P_mem_static_proxy_mW=1.560400
+MEMORY_PPA P_mem_total_mW=2.397464 T_us=6.340000
+PASS TB_TOP_DEMO: Y[0..3] match; DONE at cycle 634
+$finish called from file "sim/tb_top_demo.v", line 133.
+$finish at simulation time              6356000
+           V C S   S i m u l a t i o n   R e p o r t 
+Time: 6356000 ps
+CPU Time:      0.180 seconds;       Data structure size:   0.0Mb
+Tue Nov 10 11:02:25 2026

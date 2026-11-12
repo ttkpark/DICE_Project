@@ -1,0 +1,9 @@
+# vsim +PROGRAM=sw/baseline_int8_fc_slow.hex +DATA=cases/random_00_dmem.hex +F_MHZ=100 +TRACE=build/pj1_baseline_int8_fc_slow__random_00.trc +MEMOUT=build/pj1_baseline_int8_fc_slow__random_00.mem +EXPECTED=cases/random_00_expected.hex -do {run -all; quit -f} -l build/pj1_baseline_int8_fc_slow__random_00.log -lib {build\work} -c -quiet TB_PJ1 
+# run -all 
+# MEMORY_PPA cycles=9663 LOAD=110 STORE=37 IMEM_words=57 F_MHz=100.000
+# MEMORY_PPA IMEM_area_um2=8713.50 DMEM_area_um2=50667.68
+# MEMORY_PPA P_mem_dynamic_mW=0.242731 P_mem_static_proxy_mW=1.187624
+# MEMORY_PPA P_mem_total_mW=1.430354 T_us=96.630000
+# PASS TB_PJ1: cycles=9663 stores=37
+# ** Note: $finish    : sim/tb_pj1.v(156)
+#    Time: 96646 ns  Iteration: 0  Instance: /TB_PJ1

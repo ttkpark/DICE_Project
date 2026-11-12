@@ -1,0 +1,5 @@
+# vsim -do {run -all; quit -f} -l {build\tb_ctrl.log} -lib {build\work} -c -quiet TB_CTRL 
+# run -all 
+# ==== TB_CTRL RESULT : PASS=34 FAIL=0 ====
+# ** Note: $finish    : sim/tb_ctrl.v(83)
+#    Time: 34 ns  Iteration: 0  Instance: /TB_CTRL

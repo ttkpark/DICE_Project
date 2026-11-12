@@ -1,0 +1,103 @@
+ 
+****************************************
+Report : reference
+Design : CORE
+Version: V-2023.12-SP5
+Date   : Tue Nov 10 11:07:19 2026
+****************************************
+
+Attributes:
+    b - black box (unknown)
+   bo - allows boundary optimization
+    d - dont_touch
+   mo - map_only
+    h - hierarchical
+    n - noncombinational
+    r - removable
+    s - synthetic operator
+    u - contains unmapped logic
+
+Reference          Library       Unit Area   Count    Total Area   Attributes
+-----------------------------------------------------------------------------
+AND2X1_RVT         saed32rvt_ss0p95v125c
+                                  2.033152      89    180.950537  
+AND2X2_RVT         saed32rvt_ss0p95v125c
+                                  2.287296       1      2.287296  
+AND2X4_RVT         saed32rvt_ss0p95v125c
+                                  2.795584       1      2.795584  
+AO21X1_RVT         saed32rvt_ss0p95v125c
+                                  2.541440     146    371.050241  
+AO22X1_RVT         saed32rvt_ss0p95v125c
+                                  2.541440     560   1423.206406  
+AOI21X1_RVT        saed32rvt_ss0p95v125c
+                                  3.049728      20     60.994558  
+AOI22X1_RVT        saed32rvt_ss0p95v125c
+                                  3.049728      33    100.641021  
+CONTROLLER                       92.000129       1     92.000129  h
+DFFSSRX1_RVT       saed32rvt_ss0p95v125c
+                                  7.116032     127    903.736080  n
+DFFSSRX2_RVT       saed32rvt_ss0p95v125c
+                                  7.624320       6     45.745920  n
+DFFX1_RVT          saed32rvt_ss0p95v125c
+                                  6.607744    1369   9046.001833  n
+FADDX1_RVT         saed32rvt_ss0p95v125c
+                                  4.828736      23    111.060924  r
+INVX0_RVT          saed32rvt_ss0p95v125c
+                                  1.270720     191    242.707521  
+INVX1_RVT          saed32rvt_ss0p95v125c
+                                  1.270720      13     16.519360  
+INVX2_RVT          saed32rvt_ss0p95v125c
+                                  1.524864      41     62.519422  
+INVX4_RVT          saed32rvt_ss0p95v125c
+                                  2.033152     128    260.243469  
+MUX21X1_RVT        saed32rvt_ss0p95v125c
+                                  3.303872       5     16.519361  
+NAND2X0_RVT        saed32rvt_ss0p95v125c
+                                  1.524864      68    103.690749  
+NAND3X0_RVT        saed32rvt_ss0p95v125c
+                                  1.779008      67    119.193538  
+NAND4X0_RVT        saed32rvt_ss0p95v125c
+                                  2.033152      64    130.121735  
+NBUFFX2_RVT        saed32rvt_ss0p95v125c
+                                  2.033152       9     18.298369  
+NOR2X0_RVT         saed32rvt_ss0p95v125c
+                                  2.541440    1848   4696.581139  
+NOR2X2_RVT         saed32rvt_ss0p95v125c
+                                  2.795584      20     55.911679  
+NOR2X4_RVT         saed32rvt_ss0p95v125c
+                                  3.303872       1      3.303872  
+NOR3X0_RVT         saed32rvt_ss0p95v125c
+                                  2.795584     136    380.199419  
+NOR4X1_RVT         saed32rvt_ss0p95v125c
+                                  3.049728      32     97.591293  
+OA21X1_RVT         saed32rvt_ss0p95v125c
+                                  2.541440      33     83.867520  
+OA22X1_RVT         saed32rvt_ss0p95v125c
+                                  2.541440     352    894.586884  
+OAI21X1_RVT        saed32rvt_ss0p95v125c
+                                  3.049728      58    176.884219  
+OAI22X1_RVT        saed32rvt_ss0p95v125c
+                                  3.049728     521   1588.908245  
+OR2X1_RVT          saed32rvt_ss0p95v125c
+                                  2.033152    1310   2663.429255  
+OR2X2_RVT          saed32rvt_ss0p95v125c
+                                  2.287296      25     57.182401  
+OR2X4_RVT          saed32rvt_ss0p95v125c
+                                  2.795584      55    153.757118  
+OR3X1_RVT          saed32rvt_ss0p95v125c
+                                  2.541440      56    142.320641  
+OR3X2_RVT          saed32rvt_ss0p95v125c
+                                  2.541440       1      2.541440  
+OR4X1_RVT          saed32rvt_ss0p95v125c
+                                  3.558016       1      3.558016  
+XNOR2X1_RVT        saed32rvt_ss0p95v125c
+                                  4.320448      35    151.215677  
+XNOR3X1_RVT        saed32rvt_ss0p95v125c
+                                  6.099456       2     12.198912  
+XOR2X1_RVT         saed32rvt_ss0p95v125c
+                                  4.320448      81    349.956282  
+XOR3X1_RVT         saed32rvt_ss0p95v125c
+                                  7.116032       1      7.116032  
+-----------------------------------------------------------------------------
+Total 40 references                                 24831.394098
+1

@@ -1,14 +1,24 @@
-# CORE 제약. 지난 학기 수업 RISCVSINGLE.sdc 구조(입출력 지연 = 주기의 40%)를 따르고
-# 주기($PERIOD)와 입출력 비율($IO_FRAC)만 synth.tcl 의 변수로 뺐다.
-# 조교가 공식 SDC 를 배포하면 이 파일을 그 내용으로 바꾸고 PERIOD 만 맞춘다.   단위: ns / fF
-create_clock -name CLOCK -period $PERIOD [get_ports CLK]
-set_clock_latency [expr $PERIOD * 0.005] [get_clocks CLOCK]
-set_clock_uncertainty -setup [expr $PERIOD * 0.0025] [get_clocks CLOCK]
-set_clock_uncertainty -hold  [expr $PERIOD * 0.0005] [get_clocks CLOCK]
-set_clock_transition [expr $PERIOD * 0.0025] [get_clocks CLOCK]
-set_false_path -from [get_ports RESET] -to [all_registers]
-set data_inputs [remove_from_collection [all_inputs] [get_ports {CLK RESET}]]
-set_input_delay  [expr $PERIOD * $IO_FRAC] -clock CLOCK $data_inputs
-set_input_transition 0.1 $data_inputs
-set_output_delay [expr $PERIOD * $IO_FRAC] -clock CLOCK [all_outputs]
+# [비공식, DESIGN=CORE 전용] R1.4 공식 합성 top 은 TOP (TOP.sdc). 이 파일은 같은 숫자를 CORE 포트에 건 예전 비교용.
+#   공식 SDC 는 TOP 기준(입력 delay 대상 RESERVED_IN*) 인데 TOP 안의 IMEM/DMEM 은 시뮬레이션 모델이라 합성하지 않고
+#   CORE 를 합성한다 (TOP 합성 시 메모리 처리 방법은 조교 확인 중, HANDOVER §8-1).
+#   원문과 다른 점은 입력 delay 대상 하나: RESERVED_IN* 대신 CORE 데이터 입력 INSTR, READDATA
+#   -> CORE 바깥의 IMEM/DMEM 이 입력·출력 쪽에서 각각 1.00 ns 를 쓴다고 보는 셈. 단일 사이클/파이프라인을 같은 조건으로 비교.
+#   주기는 $PERIOD (run_synth.sh 인자). 나머지 숫자는 원문 그대로 - 바꾸지 말 것.
+#   RESET 은 여기서 고정하지 않는다. synth.tcl 이 compile 뒤 timing report 직전에 set_case_analysis 0 을 건다 (R1.4 도 같은 순서).
+
+# 1. Clock
+create_clock -name CPU_CLK -period $PERIOD [get_ports CLK]
+set_clock_uncertainty -setup 0.10 [get_clocks CPU_CLK]
+set_clock_uncertainty -hold 0.05 [get_clocks CPU_CLK]
+set_clock_transition 0.08 [get_clocks CPU_CLK]
+
+# 2. Data inputs (CORE: INSTR, READDATA)
+set_input_delay -clock [get_clocks CPU_CLK] -min 1.00 [get_ports {INSTR* READDATA*}]
+set_input_delay -clock [get_clocks CPU_CLK] -max 1.00 [get_ports {INSTR* READDATA*}]
+set_input_transition 0.10 [get_ports {INSTR* READDATA*}]
+
+# 3. Data outputs
+set_output_delay -clock [get_clocks CPU_CLK] -min 1.00 [all_outputs]
+set_output_delay -clock [get_clocks CPU_CLK] -max 1.00 [all_outputs]
 set_load 20.0 [all_outputs]
+set_max_transition 0.25 [all_outputs]

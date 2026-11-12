@@ -1,5 +1,7 @@
 # 1020_RISC — Project 1 INT8 선형계층 결정사항·명세서
 
+> **R1.4 (2026-11-03) 반영, 2026-11-10**: 아래 본문은 R1.3a 시점 기록이다. 지금은 TOP 의 `INSTR`·`READDATA` 가 입력이고 IMEM/DMEM 은 TOP 바깥 `sim/mem/` (TB 가 연결), 합성 top 은 `TOP`, 제약은 R1.4 공통 SDC(`syn/TOP.sdc`), 합성 명령은 `compile` 이다. 본문의 "합성 대상 = CORE", `rtl/IMEM.v`·`rtl/DMEM.v`, "testbench 무수정", 이전 합성 수치는 R1.3a 조건이므로 R1.4 결과와 섞지 않는다. 공식 PPA 는 `Project1_INT8_R1p4_20261103/` 공통 flow 로 낸다.
+
 작성 2026-10-20. 근거 문서는 `디지털집적회로모델링실험/Project1/Project1_INT8_Starter_20261020/PROJECT_CONTRACT_KO.md`(R1.2).
 채점 문구가 충돌하면 계약서가 우선이다. 이 문서는 **우리 팀이 무엇을 어떻게 만들기로 했는지**를 고정한다.
 

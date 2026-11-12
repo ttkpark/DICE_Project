@@ -1,0 +1,7 @@
+# GitHub 파일당 100MB 한도 초과 결과 묶음 (로컬 보관)
+/Project_1/1110_compare.tar
+/Project_1/1110 tests/1112 tests 7/1110_compare.tar
+
+# 이 PC 전용 Claude Code / MCP 설정
+/.mcp.json
+/.claude/settings.local.json

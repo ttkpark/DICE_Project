@@ -1,5 +1,5 @@
 `timescale 1ns/1ps
-// Public demonstration testbench. Do not modify it for grading.
+// Public demonstration testbench (R1.3a starter), re-wired for the R1.4 boundary: memories outside TOP.
 // The official testbench is maintained separately and student edits to
 // this file are never used in official grading.
 module TB_TOP_DEMO;
@@ -7,6 +7,7 @@ module TB_TOP_DEMO;
     reg RESET;
     wire [31:0] PC;
     wire [31:0] INSTR;
+    wire [31:0] READDATA;
     wire MEMWRITE;
     wire [31:0] ALURESULT;
     wire [31:0] WRITEDATA;
@@ -44,6 +45,7 @@ module TB_TOP_DEMO;
         .RESERVED_IN19(32'b0),
         .PC(PC),
         .INSTR(INSTR),
+        .READDATA(READDATA),
         .MEMWRITE(MEMWRITE),
         .ALURESULT(ALURESULT),
         .WRITEDATA(WRITEDATA),
@@ -69,6 +71,11 @@ module TB_TOP_DEMO;
         .RESERVED_OUT19()
     );
 
+    // R1.4: simulation-only memories live outside the synthesized dut (TOP). Same wiring as official sim/TB_TOP.v.
+    IMEM u_imem (.ADDR(PC), .INSTR(INSTR));
+    DMEM u_dmem (.CLK(CLK), .MEMWRITE(MEMWRITE && !RESET), .ADDR(ALURESULT),
+                 .WRITEDATA(WRITEDATA), .READDATA(READDATA));
+
     MEMORY_POWER u_memory_power (
         .CLK(CLK),
         .RESET(RESET),
@@ -78,7 +85,7 @@ module TB_TOP_DEMO;
         .WRITEDATA(WRITEDATA),
         .DONE_ADDR(DONE_ADDR),
         .DONE_TOKEN(DONE_TOKEN),
-        .IMEM_WORDS(dut.u_imem.LOADED_WORDS)
+        .IMEM_WORDS(u_imem.LOADED_WORDS)
     );
 
     always #5 CLK = ~CLK;
@@ -91,10 +98,10 @@ module TB_TOP_DEMO;
             expected_file = "cases/demo_expected.hex";
         $readmemh(expected_file, EXPECTED);
         #1;
-        Y_BASE = dut.u_dmem.RAM['h30c >> 2];
-        SCRATCH_BASE = dut.u_dmem.RAM['h310 >> 2];
-        DONE_ADDR = dut.u_dmem.RAM['h31c >> 2];
-        DONE_TOKEN = dut.u_dmem.RAM['h320 >> 2];
+        Y_BASE = u_dmem.RAM['h30c >> 2];
+        SCRATCH_BASE = u_dmem.RAM['h310 >> 2];
+        DONE_ADDR = u_dmem.RAM['h31c >> 2];
+        DONE_TOKEN = u_dmem.RAM['h320 >> 2];
         repeat (2) @(negedge CLK);
         RESET = 1'b0;
     end
@@ -122,9 +129,9 @@ module TB_TOP_DEMO;
                     end
                     #1;
                     for (i = 0; i < 4; i = i + 1) begin
-                        if (dut.u_dmem.RAM[(Y_BASE >> 2) + i] !== EXPECTED[i]) begin
+                        if (u_dmem.RAM[(Y_BASE >> 2) + i] !== EXPECTED[i]) begin
                             $display("FAIL TB_TOP_DEMO: Y[%0d] got=%08x expected=%08x",
-                                     i, dut.u_dmem.RAM[(Y_BASE >> 2) + i],
+                                     i, u_dmem.RAM[(Y_BASE >> 2) + i],
                                      EXPECTED[i]);
                             $finish;
                         end

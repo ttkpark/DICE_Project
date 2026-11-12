@@ -1,0 +1,20 @@
+ 
+****************************************
+Report : constraint
+        -all_violators
+Design : CORE
+Version: V-2023.12-SP5
+Date   : Tue Nov 10 11:20:47 2026
+****************************************
+
+
+   max_leakage_power
+
+                             Required        Actual
+   Design                   Leakage Power  Leakage Power     Slack
+   -----------------------------------------------------------------
+   CORE                         0.00       1604934784.00  -1604934784.00
+                                                                    (VIOLATED)
+
+
+1

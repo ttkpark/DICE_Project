@@ -1,0 +1,15 @@
+Command: /home/dice/dice008/DICE/Project1/1020_RISC_PIPELINE/./build/simv_pj1 +PROGRAM=sw/int8_fast.hex +DATA=cases/negative_extreme_dmem.hex +F_MHZ=100 +TRACE=build/pj1_int8_fast__negative_extreme.trc +MEMOUT=build/pj1_int8_fast__negative_extreme.mem +EXPECTED=cases/negative_extreme_expected.hex -l build/pj1_int8_fast__negative_extreme.log
+Chronologic VCS simulator copyright 1991-2023
+Contains Synopsys proprietary information.
+Compiler version V-2023.12-SP2-1_Full64; Runtime version V-2023.12-SP2-1_Full64;  Nov 10 11:02 2026
+MEMORY_PPA cycles=592 LOAD=62 STORE=5 IMEM_words=192 F_MHz=100.000
+MEMORY_PPA IMEM_area_um2=27352.30 DMEM_area_um2=50667.68
+MEMORY_PPA P_mem_dynamic_mW=0.846789 P_mem_static_proxy_mW=1.560400
+MEMORY_PPA P_mem_total_mW=2.407188 T_us=5.920000
+PASS TB_PJ1: cycles=592 stores=5
+$finish called from file "sim/tb_pj1.v", line 150.
+$finish at simulation time              5936000
+           V C S   S i m u l a t i o n   R e p o r t 
+Time: 5936000 ps
+CPU Time:      0.180 seconds;       Data structure size:   0.0Mb
+Tue Nov 10 11:02:47 2026

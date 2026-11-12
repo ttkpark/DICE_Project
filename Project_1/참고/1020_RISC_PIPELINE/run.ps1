@@ -20,7 +20,7 @@ foreach ($p in $Progs) {
 
 if (Test-Path build\work) { Remove-Item -Recurse -Force build\work }
 vlib build\work
-vlog -quiet -work build\work rtl\TOP.v rtl\CORE.v rtl\CONTROLLER.v rtl\IMEM.v rtl\DMEM.v sim\MEMORY_POWER.v sim\tb_top_demo.v
+vlog -quiet -work build\work rtl\TOP.v rtl\CORE.v rtl\CONTROLLER.v sim\mem\IMEM.v sim\mem\DMEM.v sim\MEMORY_POWER.v sim\tb_top_demo.v
 if ($LASTEXITCODE) { throw "vlog failed" }
 
 vlog -quiet -work build\work sim\tb_ctrl.v
@@ -38,3 +38,24 @@ foreach ($p in $Progs) {
   }
 }
 python tools\summarize.py $F_MHZ
+
+# ---- tb_pj1 functional check: store trace + final DMEM vs ISA model, cycle model, PPA (tools/pj1_check.py)
+#      programs x cases, + reset-in-the-middle run on random_00, + sw/hazard_test (directed pipeline hazards)
+python tools\rv32i_assembler.py sw\hazard_test.s -o sw\hazard_test.hex --listing sw\hazard_test.lst
+if ($LASTEXITCODE) { throw "assemble failed: hazard_test" }
+vlog -quiet -work build\work sim\tb_pj1.v
+if ($LASTEXITCODE) { throw "vlog failed: tb_pj1" }
+Remove-Item build\pj1_* -ErrorAction SilentlyContinue
+$runs = @()
+foreach ($p in $Progs) {
+  foreach ($c in Get-ChildItem cases\*.json) { $runs += ,@($p, $c.BaseName, "", @("+EXPECTED=cases/$($c.BaseName)_expected.hex")) }
+  $runs += ,@($p, "random_00", "__rst", @("+EXPECTED=cases/random_00_expected.hex", "+RESET_AT=200"))
+}
+$runs += ,@("hazard_test", "demo", "", @())
+foreach ($r in $runs) {
+  $p, $n, $tag, $extra = $r
+  $b = "build/pj1_${p}__${n}${tag}"
+  vsim -c -quiet -lib build\work TB_PJ1 "+PROGRAM=sw/$p.hex" "+DATA=cases/${n}_dmem.hex" "+F_MHZ=$F_MHZ" `
+       "+TRACE=$b.trc" "+MEMOUT=$b.mem" @extra -l "$b.log" -do "run -all; quit -f" | Out-Null
+}
+python tools\pj1_check.py $F_MHZ

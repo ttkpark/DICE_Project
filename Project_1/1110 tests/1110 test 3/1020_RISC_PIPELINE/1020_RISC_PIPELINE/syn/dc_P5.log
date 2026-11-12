@@ -1,0 +1,683 @@
+Current time:       Tue Nov 10 11:05:31 2026
+Hostname:           dice
+CPU Model:          Intel(R) Xeon(R) Gold 6242R CPU @ 3.10GHz
+CPU Details:        Cores = 80 : Sockets = 2 : Cache Size = 36608 KB : Freq = 4.10 GHz
+OS:                 Linux 4.18.0-553.134.1.el8_10.x86_64
+RAM:                251 GB (Free   3 GB)
+Swap:                31 GB (Free  30 GB)
+Work Filesystem:    /home/dice mounted to /dev/sdc1
+Tmp Filesystem:     / mounted to /dev/nvme0n1p1
+Work Disk:          7450 GB (Free 7331 GB)
+Tmp Disk:           1862 GB (Free 1385 GB)
+
+CPU Load: 4%, Ram Free: 3 GB, Swap Free: 30 GB, Work Disk Free: 7331 GB, Tmp Disk Free: 1385 GB
+# =============================================================================
+# 1020_RISC_PIPELINE CPU(CORE, 5단 파이프라인) 합성 — 보통은 run_synth.sh 가 부른다 (syn/ 폴더에서)
+#   합성 대상은 CORE(CONTROLLER 포함)뿐. IMEM/DMEM 은 시뮬레이션 모델이고 SRAM 비용은
+#   PROJECT_CONTRACT_KO.md 산식으로 가산한다 (tools/pj1_check.py 가 계산).
+#   제약 = R1.3a 공통 SDC 숫자 (CORE.sdc 설명 참조), corner = SS 0.95 V 125 C (setup.tcl)
+#
+#   PERIOD : 목표 클럭 주기 ns (선언 주파수 = 1000/PERIOD). run_synth.sh 가 period.tcl 에 써 준다.
+#            dc_shell 에서 직접 source 할 때는 period.tcl 이 없으면 아래 기본값.
+#   GATE_CLK: 1 이면 clock gating (레지스터파일 FF 전력 절감, 면적 약간 증가)
+#   결과: reports/P<PERIOD>/{qor,timing_max,timing_min,area,power,power_total,...}.rpt, results/P<PERIOD>/
+# =============================================================================
+set PERIOD   4.0
+4.0
+set GATE_CLK 0
+0
+if {[file exists period.tcl]} { source period.tcl }
+5
+set R reports/P$PERIOD
+reports/P5
+set O results/P$PERIOD
+results/P5
+source setup.tcl
+* /opt/eda/pdk/saed32nm/edk/SAED32_EDK/lib/stdcell_rvt/db_nldm/saed32rvt_ss0p95v125c.db
+file mkdir work $R $O
+define_design_lib WORK -path work
+1
+analyze -format verilog {../rtl/CONTROLLER.v ../rtl/CORE.v}
+Running PRESTO HDLC
+Compiling source file ../rtl/CONTROLLER.v
+Compiling source file ../rtl/CORE.v
+Presto compilation completed successfully.
+Loading db file '/opt/eda/pdk/saed32nm/edk/SAED32_EDK/lib/stdcell_rvt/db_nldm/saed32rvt_ss0p95v125c.db'
+1
+elaborate CORE
+Loading db file '/opt/eda/synopsys/products/syn/V-2023.12-SP5/libraries/syn/gtech.db'
+Loading db file '/opt/eda/synopsys/products/syn/V-2023.12-SP5/libraries/syn/standard.sldb'
+  Loading link library 'saed32rvt_ss0p95v125c'
+  Loading link library 'gtech'
+Running PRESTO HDLC
+Warning:  ../rtl/CORE.v:90: DEFAULT branch of CASE statement cannot be reached. (ELAB-311)
+
+Statistics for case statements in always block at line 82 in file
+        '../rtl/CORE.v'
+===============================================
+|           Line           |  full/ parallel  |
+===============================================
+|            83            |    auto/auto     |
+===============================================
+
+Statistics for case statements in always block at line 139 in file
+        '../rtl/CORE.v'
+===============================================
+|           Line           |  full/ parallel  |
+===============================================
+|           140            |    auto/auto     |
+===============================================
+
+Statistics for case statements in always block at line 187 in file
+        '../rtl/CORE.v'
+===============================================
+|           Line           |  full/ parallel  |
+===============================================
+|           188            |    auto/auto     |
+===============================================
+
+Inferred memory devices in process
+        in routine CORE line 30 in file
+                '../rtl/CORE.v'.
+===============================================================================
+|    Register Name    |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+===============================================================================
+|       PC_reg        | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+===============================================================================
+
+Inferred memory devices in process
+        in routine CORE line 38 in file
+                '../rtl/CORE.v'.
+===============================================================================
+|    Register Name    |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+===============================================================================
+|    PCPlus4D_reg     | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+|     InstrD_reg      | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+|       PCD_reg       | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+===============================================================================
+
+Inferred memory devices in process
+        in routine CORE line 101 in file
+                '../rtl/CORE.v'.
+===============================================================================
+|    Register Name    |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+===============================================================================
+|       RdE_reg       | Flip-flop |   5   |  Y  | N  | N  | N  | N  | N  | N  |
+|    RegWriteE_reg    | Flip-flop |   1   |  N  | N  | N  | N  | N  | N  | N  |
+|    MemWriteE_reg    | Flip-flop |   1   |  N  | N  | N  | N  | N  | N  | N  |
+|     ALUSrcE_reg     | Flip-flop |   1   |  N  | N  | N  | N  | N  | N  | N  |
+|   BranchJumpE_reg   | Flip-flop |   1   |  N  | N  | N  | N  | N  | N  | N  |
+|      JumpE_reg      | Flip-flop |   1   |  N  | N  | N  | N  | N  | N  | N  |
+|   ResultSrcE_reg    | Flip-flop |   2   |  Y  | N  | N  | N  | N  | N  | N  |
+|   ALUControlE_reg   | Flip-flop |   3   |  Y  | N  | N  | N  | N  | N  | N  |
+|      RD1E_reg       | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+|      RD2E_reg       | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+|       PCE_reg       | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+|     ImmExtE_reg     | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+|    PCPlus4E_reg     | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+|      Rs1E_reg       | Flip-flop |   5   |  Y  | N  | N  | N  | N  | N  | N  |
+|      Rs2E_reg       | Flip-flop |   5   |  Y  | N  | N  | N  | N  | N  | N  |
+===============================================================================
+
+Inferred memory devices in process
+        in routine CORE line 153 in file
+                '../rtl/CORE.v'.
+===============================================================================
+|    Register Name    |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+===============================================================================
+|    PCPlus4M_reg     | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+|       RdM_reg       | Flip-flop |   5   |  Y  | N  | N  | N  | N  | N  | N  |
+|    RegWriteM_reg    | Flip-flop |   1   |  N  | N  | N  | N  | N  | N  | N  |
+|    MemWriteM_reg    | Flip-flop |   1   |  N  | N  | N  | N  | N  | N  | N  |
+|   ResultSrcM_reg    | Flip-flop |   2   |  Y  | N  | N  | N  | N  | N  | N  |
+|   ALUResultM_reg    | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+|   WriteDataM_reg    | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+===============================================================================
+
+Inferred memory devices in process
+        in routine CORE line 176 in file
+                '../rtl/CORE.v'.
+===============================================================================
+|    Register Name    |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+===============================================================================
+|    PCPlus4W_reg     | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+|      RdW_r_reg      | Flip-flop |   5   |  Y  | N  | N  | N  | N  | N  | N  |
+|   RegWriteW_r_reg   | Flip-flop |   1   |  N  | N  | N  | N  | N  | N  | N  |
+|   ResultSrcW_reg    | Flip-flop |   2   |  Y  | N  | N  | N  | N  | N  | N  |
+|   ALUResultW_reg    | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+|    ReadDataW_reg    | Flip-flop |  32   |  Y  | N  | N  | N  | N  | N  | N  |
+===============================================================================
+
+Inferred memory devices in process
+        in routine CORE line 196 in file
+                '../rtl/CORE.v'.
+===============================================================================
+|    Register Name    |   Type    | Width | Bus | MB | AR | AS | SR | SS | ST |
+===============================================================================
+|       rf_reg        | Flip-flop | 1024  |  Y  | N  | N  | N  | N  | N  | N  |
+===============================================================================
+Statistics for MUX_OPs
+======================================================
+| block name/line  | Inputs | Outputs | # sel inputs |
+======================================================
+|     CORE/78      |   32   |   32    |      5       |
+|     CORE/79      |   32   |   32    |      5       |
+======================================================
+Presto compilation completed successfully. (CORE)
+Elaborated 1 design.
+Current design is now 'CORE'.
+Information: Building the design 'CONTROLLER'. (HDL-193)
+
+Statistics for case statements in always block at line 24 in file
+        '../rtl/CONTROLLER.v'
+===============================================
+|           Line           |  full/ parallel  |
+===============================================
+|            34            |    auto/auto     |
+===============================================
+Presto compilation completed successfully. (CONTROLLER)
+1
+current_design CORE
+Current design is 'CORE'.
+{CORE}
+link
+
+  Linking design 'CORE'
+  Using the following designs and libraries:
+  --------------------------------------------------------------------------
+  * (2 designs)               /home/dice/dice008/DICE/Project1/1020_RISC_PIPELINE/syn/CORE.db, etc
+  saed32rvt_ss0p95v125c (library) /opt/eda/pdk/saed32nm/edk/SAED32_EDK/lib/stdcell_rvt/db_nldm/saed32rvt_ss0p95v125c.db
+
+1
+check_design > $R/check_design.rpt
+report_units
+************************************
+Report : units
+Design : CORE
+Version: V-2023.12-SP5
+Date   : Tue Nov 10 11:05:32 2026
+
+************************************
+Units
+------------------------------------
+Time_unit            : 1.0e-09 Second(ns)
+Capacitive_load_unit : 1.0e-15 Farad(fF)
+Resistance_unit      : 1.0e+6 Ohm(MOhm)
+Voltage_unit         : 1 Volt
+Power_unit           : N/A
+Current_unit         : 1.0e-06 Amp(uA)
+1
+source CORE.sdc
+1
+report_clock
+Information: Changed wire load model for 'CONTROLLER' from '(none)' to 'ForQA'. (OPT-170)
+Information: Updating graph... (UID-83)
+Warning: Design 'CORE' contains 2 high-fanout nets. A fanout number of 1000 will be used for delay calculations involving these nets. (TIM-134)
+ 
+****************************************
+Report : clocks
+Design : CORE
+Version: V-2023.12-SP5
+Date   : Tue Nov 10 11:05:32 2026
+****************************************
+
+Attributes:
+    d - dont_touch_network
+    f - fix_hold
+    p - propagated_clock
+    G - generated_clock
+    g - lib_generated_clock
+
+Clock          Period   Waveform            Attrs     Sources
+--------------------------------------------------------------------------------
+CPU_CLK          5.00   {0 2.5}                       {CLK}
+--------------------------------------------------------------------------------
+1
+check_timing
+Information: Changed wire load model for 'DW01_sub_width32' from '(none)' to 'ForQA'. (OPT-170)
+Information: Changed wire load model for '*SUB_UNS_OP_32_32_32' from '(none)' to 'ForQA'. (OPT-170)
+Information: Changed wire load model for 'DW01_add_width32' from '(none)' to 'ForQA'. (OPT-170)
+Information: Changed wire load model for '*ADD_UNS_OP_32_32_32' from '(none)' to 'ForQA'. (OPT-170)
+Information: Changed wire load model for 'DW01_add_width32' from '(none)' to 'ForQA'. (OPT-170)
+Information: Changed wire load model for '*ADD_UNS_OP_32_3_32' from '(none)' to 'ForQA'. (OPT-170)
+Information: Changed wire load model for 'DW01_add_width32' from '(none)' to 'ForQA'. (OPT-170)
+Information: Changed wire load model for '*ADD_UNS_OP_32_32_32' from '(none)' to 'ForQA'. (OPT-170)
+Information: Changed wire load model for 'DW01_cmp6_width5' from '(none)' to 'ForQA'. (OPT-170)
+Information: Changed wire load model for '*EQ_UNS_OP_5_5_1' from '(none)' to 'ForQA'. (OPT-170)
+Information: Changed wire load model for 'DW01_cmp6_width5' from '(none)' to 'ForQA'. (OPT-170)
+Information: Changed wire load model for '*EQ_UNS_OP_5_5_1' from '(none)' to 'ForQA'. (OPT-170)
+Information: Changed wire load model for 'DW01_cmp6_width5' from '(none)' to 'ForQA'. (OPT-170)
+Information: Changed wire load model for '*EQ_UNS_OP_5_5_1' from '(none)' to 'ForQA'. (OPT-170)
+Information: Changed wire load model for 'DW01_cmp6_width5' from '(none)' to 'ForQA'. (OPT-170)
+Information: Changed wire load model for '*EQ_UNS_OP_5_5_1' from '(none)' to 'ForQA'. (OPT-170)
+Information: Changed wire load model for 'DW01_cmp6_width5' from '(none)' to 'ForQA'. (OPT-170)
+Information: Changed wire load model for '*EQ_UNS_OP_5_5_1' from '(none)' to 'ForQA'. (OPT-170)
+Information: Changed wire load model for 'DW01_cmp6_width5' from '(none)' to 'ForQA'. (OPT-170)
+Information: Changed wire load model for '*EQ_UNS_OP_5_5_1' from '(none)' to 'ForQA'. (OPT-170)
+Information: Changed wire load model for 'DW01_cmp6_width5' from '(none)' to 'ForQA'. (OPT-170)
+Information: Changed wire load model for '*EQ_UNS_OP_5_5_1' from '(none)' to 'ForQA'. (OPT-170)
+Information: Changed wire load model for 'DW01_cmp6_width5' from '(none)' to 'ForQA'. (OPT-170)
+Information: Changed wire load model for '*EQ_UNS_OP_5_5_1' from '(none)' to 'ForQA'. (OPT-170)
+Information: Updating design information... (UID-85)
+Warning: Design 'CORE' contains 2 high-fanout nets. A fanout number of 1000 will be used for delay calculations involving these nets. (TIM-134)
+
+Information: Checking generated_clocks...
+
+Information: Checking loops...
+
+Information: Checking no_input_delay...
+Warning: The following input ports have no clock_relative delay specified, the command set_input_delay without -clock option will be ignored. (TIM-216)
+--------------------
+RESET
+
+Information: Checking unconstrained_endpoints...
+
+Information: Checking pulse_clock_cell_type...
+
+Information: Checking no_driving_cell...
+
+Information: Checking partial_input_delay...
+1
+# 전력 활동률: run.sh 를 DUMP=1 로 돌리면 core.saif 가 생긴다 (int8_fast, random_00)
+if {[file exists core.saif]} {
+    read_saif -input core.saif -instance TB_TOP_DEMO/dut/u_core -verbose
+} else {
+    puts "synth.tcl: core.saif 없음 -> DC 기본 활동률로 전력 추정 (DUMP=1 bash run.sh 로 생성 가능)"
+}
+synth.tcl: core.saif ?? -> DC ?? ???? ?? ?? (DUMP=1 bash run.sh ? ?? ??)
+if {$GATE_CLK} {
+    set_clock_gating_style -sequential_cell latch -minimum_bitwidth 4
+    compile_ultra -no_autoungroup -gate_clock
+} else {
+    compile_ultra -no_autoungroup
+}
+Loading db file '/opt/eda/synopsys/products/syn/V-2023.12-SP5/libraries/syn/dw_foundation.sldb'
+Warning: DesignWare synthetic library dw_foundation.sldb is added to the synthetic_library in the current command. (UISN-40)
+Information: Performing leakage power optimization. (PWR-850)
+CPU Load: 4%, Ram Free: 3 GB, Swap Free: 30 GB, Work Disk Free: 7331 GB, Tmp Disk Free: 1385 GB
+Alib files are up-to-date.
+Warning: DesignWare synthetic library dw_foundation.sldb is added to the synthetic_library in the current command. (UISN-40)
+Information: Evaluating DesignWare library utilization. (UISN-27)
+
+============================================================================
+| DesignWare Building Block Library  |         Version         | Available |
+============================================================================
+| Basic DW Building Blocks           | V-2023.12-DWBB_202312.5 |     *     |
+| Licensed DW Building Blocks        | V-2023.12-DWBB_202312.5 |     *     |
+============================================================================
+
+====================================================================================================
+| Flow Information                                                                                 |
+----------------------------------------------------------------------------------------------------
+| Flow         | Design Compiler WLM                                                               |
+| Command Line | compile_ultra -no_autoungroup                                                     |
+====================================================================================================
+| Design Information                                      | Value                                  |
+====================================================================================================
+| Number of Scenarios                                     | 0                                      |
+| Leaf Cell Count                                         | 1997                                   |
+| Number of User Hierarchies                              | 1                                      |
+| Sequential Cell Count                                   | 1546                                   |
+| Macro Count                                             | 0                                      |
+| Number of Power Domains                                 | 0                                      |
+| Number of Path Groups                                   | 2                                      |
+| Number of VT Class                                      | 1                                      |
+| Number of Clocks                                        | 1                                      |
+| Number of Dont Touch Cells                              | 117                                    |
+| Number of Dont Touch Nets                               | 0                                      |
+| Number of Size Only Cells                               | 0                                      |
+| Design with UPF Data                                    | false                                  |
+====================================================================================================
+Information: Sequential output inversion is enabled.  SVF file must be used for formal verification. (OPT-1208)
+
+Information: There are 19 potential problems in your design. Please run 'check_design' for more information. (LINT-99)
+
+  Simplifying Design 'CORE'
+
+Loaded alib file './alib-52/saed32rvt_ss0p95v125c.db.alib'
+CPU Load: 4%, Ram Free: 3 GB, Swap Free: 30 GB, Work Disk Free: 7331 GB, Tmp Disk Free: 1385 GB
+Information: State dependent leakage is now switched from on to off.
+
+  Beginning Pass 1 Mapping
+  ------------------------
+  Processing 'CORE'
+Information: Added key list 'DesignWare' to design 'CORE'. (DDB-72)
+Information: The register 'ALUControlE_reg[2]' is a constant and will be removed. (OPT-1206)
+ Implement Synthetic for 'CORE'.
+Information: The register 'rf_reg[0][1]' will be removed. (OPT-1207)
+Information: The register 'rf_reg[0][2]' will be removed. (OPT-1207)
+Information: The register 'rf_reg[0][3]' will be removed. (OPT-1207)
+Information: The register 'rf_reg[0][4]' will be removed. (OPT-1207)
+Information: The register 'rf_reg[0][5]' will be removed. (OPT-1207)
+Information: The register 'rf_reg[0][6]' will be removed. (OPT-1207)
+Information: The register 'rf_reg[0][7]' will be removed. (OPT-1207)
+Information: The register 'rf_reg[0][8]' will be removed. (OPT-1207)
+Information: The register 'rf_reg[0][9]' will be removed. (OPT-1207)
+Information: The register 'rf_reg[0][10]' will be removed. (OPT-1207)
+Information: The register 'rf_reg[0][11]' will be removed. (OPT-1207)
+Information: The register 'rf_reg[0][12]' will be removed. (OPT-1207)
+Information: The register 'rf_reg[0][13]' will be removed. (OPT-1207)
+Information: The register 'rf_reg[0][14]' will be removed. (OPT-1207)
+Information: The register 'rf_reg[0][15]' will be removed. (OPT-1207)
+Information: The register 'rf_reg[0][16]' will be removed. (OPT-1207)
+Information: The register 'rf_reg[0][17]' will be removed. (OPT-1207)
+Information: The register 'rf_reg[0][18]' will be removed. (OPT-1207)
+Information: The register 'rf_reg[0][19]' will be removed. (OPT-1207)
+Information: The register 'rf_reg[0][20]' will be removed. (OPT-1207)
+Information: The register 'rf_reg[0][21]' will be removed. (OPT-1207)
+Information: The register 'rf_reg[0][22]' will be removed. (OPT-1207)
+Information: The register 'rf_reg[0][23]' will be removed. (OPT-1207)
+Information: The register 'rf_reg[0][24]' will be removed. (OPT-1207)
+Information: The register 'rf_reg[0][25]' will be removed. (OPT-1207)
+Information: The register 'rf_reg[0][26]' will be removed. (OPT-1207)
+Information: The register 'rf_reg[0][27]' will be removed. (OPT-1207)
+Information: The register 'rf_reg[0][28]' will be removed. (OPT-1207)
+Information: The register 'rf_reg[0][29]' will be removed. (OPT-1207)
+Information: The register 'rf_reg[0][30]' will be removed. (OPT-1207)
+Information: The register 'rf_reg[0][31]' will be removed. (OPT-1207)
+Information: The register 'rf_reg[0][0]' will be removed. (OPT-1207)
+  Processing 'CONTROLLER'
+CPU Load: 4%, Ram Free: 3 GB, Swap Free: 30 GB, Work Disk Free: 7331 GB, Tmp Disk Free: 1385 GB
+
+  Updating timing information
+Information: Updating design information... (UID-85)
+Information: The library cell 'PMT3_RVT' in the library 'saed32rvt_ss0p95v125c' is not characterized for internal power. (PWR-536)
+Information: The library cell 'PMT2_RVT' in the library 'saed32rvt_ss0p95v125c' is not characterized for internal power. (PWR-536)
+Information: The library cell 'PMT1_RVT' in the library 'saed32rvt_ss0p95v125c' is not characterized for internal power. (PWR-536)
+Information: The library cell 'NMT3_RVT' in the library 'saed32rvt_ss0p95v125c' is not characterized for internal power. (PWR-536)
+Information: The library cell 'NMT2_RVT' in the library 'saed32rvt_ss0p95v125c' is not characterized for internal power. (PWR-536)
+Information: The library cell 'NMT1_RVT' in the library 'saed32rvt_ss0p95v125c' is not characterized for internal power. (PWR-536)
+Information: The target library(s) contains cell(s), other than black boxes, that are not characterized for internal power. (PWR-24)
+Information: In design 'CORE', the register 'ImmExtE_reg[21]' is removed because it is merged to 'ImmExtE_reg[20]'. (OPT-1215)
+Information: In design 'CORE', the register 'ImmExtE_reg[22]' is removed because it is merged to 'ImmExtE_reg[20]'. (OPT-1215)
+Information: In design 'CORE', the register 'ImmExtE_reg[23]' is removed because it is merged to 'ImmExtE_reg[20]'. (OPT-1215)
+Information: In design 'CORE', the register 'ImmExtE_reg[24]' is removed because it is merged to 'ImmExtE_reg[20]'. (OPT-1215)
+Information: In design 'CORE', the register 'ImmExtE_reg[25]' is removed because it is merged to 'ImmExtE_reg[20]'. (OPT-1215)
+Information: In design 'CORE', the register 'ImmExtE_reg[26]' is removed because it is merged to 'ImmExtE_reg[20]'. (OPT-1215)
+Information: In design 'CORE', the register 'ImmExtE_reg[27]' is removed because it is merged to 'ImmExtE_reg[20]'. (OPT-1215)
+Information: In design 'CORE', the register 'ImmExtE_reg[28]' is removed because it is merged to 'ImmExtE_reg[20]'. (OPT-1215)
+Information: In design 'CORE', the register 'ImmExtE_reg[29]' is removed because it is merged to 'ImmExtE_reg[20]'. (OPT-1215)
+Information: In design 'CORE', the register 'ImmExtE_reg[30]' is removed because it is merged to 'ImmExtE_reg[20]'. (OPT-1215)
+Information: In design 'CORE', the register 'ImmExtE_reg[31]' is removed because it is merged to 'ImmExtE_reg[20]'. (OPT-1215)
+
+Threshold voltage group cell usage:
+>> saed32cell_svt 100.00%
+
+  Beginning Mapping Optimizations  (Ultra High effort)
+  -------------------------------
+  Mapping Optimization (Phase 1)
+
+                                  TOTAL                                                
+   ELAPSED            WORST NEG   SETUP    DESIGN                              LEAKAGE 
+    TIME      AREA      SLACK     COST    RULE COST         ENDPOINT            POWER  
+  --------- --------- --------- --------- --------- ------------------------- ---------
+    0:00:19   29486.6      0.01       0.2    5882.5                           3899643136.0000
+    0:00:19   29486.6      0.01       0.2    5882.5                           3899643136.0000
+
+Threshold voltage group cell usage:
+>> saed32cell_svt 100.00%
+
+  Beginning Constant Register Removal
+  -----------------------------------
+
+Threshold voltage group cell usage:
+>> saed32cell_svt 100.00%
+
+  Beginning Global Optimizations
+  ------------------------------
+  Numerical Synthesis (Phase 1)
+  Numerical Synthesis (Phase 2)
+  Global Optimization (Phase 1)
+  Global Optimization (Phase 2)
+  Global Optimization (Phase 3)
+  Global Optimization (Phase 4)
+  Global Optimization (Phase 5)
+  Global Optimization (Phase 6)
+  Global Optimization (Phase 7)
+  Global Optimization (Phase 8)
+  Global Optimization (Phase 9)
+  Global Optimization (Phase 10)
+  Global Optimization (Phase 11)
+  Global Optimization (Phase 12)
+  Global Optimization (Phase 13)
+  Global Optimization (Phase 14)
+  Global Optimization (Phase 15)
+  Global Optimization (Phase 16)
+  Global Optimization (Phase 17)
+  Global Optimization (Phase 18)
+  Global Optimization (Phase 19)
+  Global Optimization (Phase 20)
+  Global Optimization (Phase 21)
+  Global Optimization (Phase 22)
+  Global Optimization (Phase 23)
+  Global Optimization (Phase 24)
+  Global Optimization (Phase 25)
+  Global Optimization (Phase 26)
+  Global Optimization (Phase 27)
+  Global Optimization (Phase 28)
+  Global Optimization (Phase 29)
+  Global Optimization (Phase 30)
+  Global Optimization (Phase 31)
+  Mapping 'CORE_DP_OP_95J1_122_119_0'
+
+Threshold voltage group cell usage:
+>> saed32cell_svt 100.00%
+
+  Beginning Isolate Ports
+  -----------------------
+
+Threshold voltage group cell usage:
+>> saed32cell_svt 100.00%
+
+  Beginning Delay Optimization
+  ----------------------------
+    0:00:21   20476.1      0.04       0.7    5759.0                           1305540096.0000
+    0:00:21   20566.1      0.00       0.0    5759.0                           1313565056.0000
+    0:00:21   20566.1      0.00       0.0    5759.0                           1313565056.0000
+    0:00:22   20428.3      0.00       0.0    5762.8                           1306012928.0000
+
+Threshold voltage group cell usage:
+>> saed32cell_svt 100.00%
+    0:00:22   20428.3      0.00       0.0    5762.8                           1306012928.0000
+    0:00:22   20428.3      0.00       0.0    5762.8                           1306012928.0000
+
+  Beginning WLM Backend Optimization
+  --------------------------------------
+    0:00:24   20343.2      0.00       0.0    5755.1                           1289667456.0000
+    0:00:24   20343.2      0.00       0.0    5755.1                           1289667456.0000
+    0:00:24   20343.2      0.00       0.0    5755.1                           1289667456.0000
+    0:00:24   20343.2      0.00       0.0    5755.1                           1289667456.0000
+    0:00:24   20343.2      0.00       0.0    5755.1                           1289667456.0000
+    0:00:24   20281.5      0.00       0.0    5755.2                           1274566144.0000
+    0:00:24   20281.5      0.00       0.0    5755.2                           1274566144.0000
+    0:00:24   20281.5      0.00       0.0    5755.2                           1274566144.0000
+    0:00:24   20281.5      0.00       0.0    5755.2                           1274566144.0000
+    0:00:24   20281.5      0.00       0.0    5755.2                           1274566144.0000
+    0:00:24   20281.5      0.00       0.0    5755.2                           1274566144.0000
+    0:00:24   20281.5      0.00       0.0    5755.2                           1274566144.0000
+    0:00:24   20281.5      0.00       0.0    5755.2                           1274566144.0000
+    0:00:24   20281.5      0.00       0.0    5755.2                           1274566144.0000
+    0:00:24   20281.5      0.00       0.0    5755.2                           1274566144.0000
+    0:00:24   20281.5      0.00       0.0    5755.2                           1274566144.0000
+    0:00:24   20281.5      0.00       0.0    5755.2                           1274566144.0000
+    0:00:24   20281.5      0.00       0.0    5755.2                           1274566144.0000
+    0:00:24   20281.5      0.00       0.0    5755.2                           1274566144.0000
+    0:00:24   20281.5      0.00       0.0    5755.2                           1274566144.0000
+    0:00:24   20281.5      0.00       0.0    5755.2                           1274566144.0000
+    0:00:24   20281.5      0.00       0.0    5755.2                           1274566144.0000
+    0:00:24   20281.5      0.00       0.0    5755.2                           1274566144.0000
+    0:00:24   20281.5      0.00       0.0    5755.2                           1274566144.0000
+
+
+  Beginning Design Rule Fixing  (max_transition)  (max_capacitance)
+  ----------------------------
+
+                                  TOTAL                                                
+   ELAPSED            WORST NEG   SETUP    DESIGN                              LEAKAGE 
+    TIME      AREA      SLACK     COST    RULE COST         ENDPOINT            POWER  
+  --------- --------- --------- --------- --------- ------------------------- ---------
+    0:00:24   20281.5      0.00       0.0    5755.2                           1274566144.0000
+  Global Optimization (Phase 32)
+  Global Optimization (Phase 33)
+  Global Optimization (Phase 34)
+    0:00:24   20537.4      0.00       0.0       0.0                           1303531136.0000
+    0:00:24   20537.4      0.00       0.0       0.0                           1303531136.0000
+    0:00:24   20537.4      0.00       0.0       0.0                           1303531136.0000
+    0:00:24   20537.4      0.00       0.0       0.0                           1303531136.0000
+    0:00:24   20537.4      0.00       0.0       0.0                           1303531136.0000
+    0:00:25   20514.2      0.00       0.0       0.0                           1291822592.0000
+    0:00:25   20514.2      0.00       0.0       0.0                           1291822592.0000
+    0:00:25   20514.2      0.00       0.0       0.0                           1291822592.0000
+    0:00:25   20514.2      0.00       0.0       0.0                           1291822592.0000
+    0:00:25   20514.2      0.00       0.0       0.0                           1291822592.0000
+    0:00:25   20514.2      0.00       0.0       0.0                           1291822592.0000
+    0:00:25   20514.2      0.00       0.0       0.0                           1291822592.0000
+    0:00:25   20514.2      0.00       0.0       0.0                           1291822592.0000
+    0:00:25   20514.2      0.00       0.0       0.0                           1291822592.0000
+    0:00:25   20514.2      0.00       0.0       0.0                           1291822592.0000
+    0:00:25   20514.2      0.00       0.0       0.0                           1291822592.0000
+    0:00:25   20514.2      0.00       0.0       0.0                           1291822592.0000
+    0:00:25   20514.2      0.00       0.0       0.0                           1291822592.0000
+    0:00:25   20514.2      0.00       0.0       0.0                           1291822592.0000
+    0:00:25   20514.2      0.00       0.0       0.0                           1291822592.0000
+    0:00:25   20514.2      0.00       0.0       0.0                           1291822592.0000
+    0:00:25   20514.2      0.00       0.0       0.0                           1291822592.0000
+    0:00:25   20514.2      0.00       0.0       0.0                           1291822592.0000
+    0:00:25   20514.2      0.00       0.0       0.0                           1291822592.0000
+
+                                  TOTAL                                                
+   ELAPSED            WORST NEG   SETUP    DESIGN                              LEAKAGE 
+    TIME      AREA      SLACK     COST    RULE COST         ENDPOINT            POWER  
+  --------- --------- --------- --------- --------- ------------------------- ---------
+    0:00:25   20514.2      0.00       0.0       0.0                           1291822592.0000
+    0:00:25   20152.1      0.00       0.0       0.0                           1261465728.0000
+    0:00:25   20152.1      0.00       0.0       0.0                           1261465728.0000
+    0:00:25   20152.1      0.00       0.0       0.0                           1261465728.0000
+    0:00:25   20151.6      0.00       0.0       0.0                           1261263872.0000
+    0:00:26   20140.4      0.00       0.0       0.0                           1258628736.0000
+    0:00:26   20140.4      0.00       0.0       0.0                           1258628736.0000
+    0:00:26   20140.4      0.00       0.0       0.0                           1258628736.0000
+    0:00:26   20140.4      0.00       0.0       0.0                           1258628736.0000
+    0:00:26   20140.4      0.00       0.0       0.0                           1258628736.0000
+    0:00:26   20140.4      0.00       0.0       0.0                           1258628736.0000
+    0:00:26   20108.9      0.00       0.0       0.0                           1248756352.0000
+CPU Load: 4%, Ram Free: 3 GB, Swap Free: 30 GB, Work Disk Free: 7331 GB, Tmp Disk Free: 1385 GB
+Loading db file '/opt/eda/pdk/saed32nm/edk/SAED32_EDK/lib/stdcell_rvt/db_nldm/saed32rvt_ss0p95v125c.db'
+
+
+Note: Symbol # after min delay cost means estimated hold TNS across all active scenarios 
+
+
+  Optimization Complete
+  ---------------------
+Warning: Design 'CORE' contains 1 high-fanout nets. A fanout number of 1000 will be used for delay calculations involving these nets. (TIM-134)
+     Net 'CLK': 1502 load(s), 1 driver(s)
+Information: State dependent leakage is now switched from off to on.
+Information: Propagating switching activity (low effort zero delay simulation). (PWR-6)
+CPU Load: 4%, Ram Free: 3 GB, Swap Free: 30 GB, Work Disk Free: 7331 GB, Tmp Disk Free: 1385 GB
+Information: Total number of MV cells in the design.
+----------------------------------------------------------------------------------------------------
+ MV Cells                                           Total Number                                   
+----------------------------------------------------------------------------------------------------
+ Level Shifter:                                     0                                             
+ Enable Level Shifter:                              0                                             
+ Isolation Cell:                                    0                                             
+ Retention Cell:                                    0                                             
+ Retention Clamp Cell:                              0                                             
+ Switch Cell:                                       0                                             
+ Always-On Cell:                                    0                                             
+ Repeater Cell:                                     0                                             
+
+----------------------------------------------------------------------------------------------------
+Unmapped MV Cells 
+----------------------------------------------------------------------------------------------------
+0 Isolation Cells are unmapped 
+0 Retention Clamp Cells are unmapped 
+----------------------------------------------------------------------------------------------------
+1
+check_design
+ 
+****************************************
+check_design summary:
+Version:     V-2023.12-SP5
+Date:        Tue Nov 10 11:06:01 2026
+****************************************
+
+                   Name                                            Total
+--------------------------------------------------------------------------------
+Inputs/Outputs                                                     18
+    Unconnected ports (LINT-28)                                    18
+
+Cells                                                              16
+    Hier pins without driver and load (LINT-60)                    16
+--------------------------------------------------------------------------------
+
+Warning: In design 'CONTROLLER', port 'INSTR[24]' is not connected to any nets. (LINT-28)
+Warning: In design 'CONTROLLER', port 'INSTR[23]' is not connected to any nets. (LINT-28)
+Warning: In design 'CONTROLLER', port 'INSTR[22]' is not connected to any nets. (LINT-28)
+Warning: In design 'CONTROLLER', port 'INSTR[21]' is not connected to any nets. (LINT-28)
+Warning: In design 'CONTROLLER', port 'INSTR[20]' is not connected to any nets. (LINT-28)
+Warning: In design 'CONTROLLER', port 'INSTR[19]' is not connected to any nets. (LINT-28)
+Warning: In design 'CONTROLLER', port 'INSTR[18]' is not connected to any nets. (LINT-28)
+Warning: In design 'CONTROLLER', port 'INSTR[17]' is not connected to any nets. (LINT-28)
+Warning: In design 'CONTROLLER', port 'INSTR[16]' is not connected to any nets. (LINT-28)
+Warning: In design 'CONTROLLER', port 'INSTR[15]' is not connected to any nets. (LINT-28)
+Warning: In design 'CONTROLLER', port 'INSTR[11]' is not connected to any nets. (LINT-28)
+Warning: In design 'CONTROLLER', port 'INSTR[10]' is not connected to any nets. (LINT-28)
+Warning: In design 'CONTROLLER', port 'INSTR[9]' is not connected to any nets. (LINT-28)
+Warning: In design 'CONTROLLER', port 'INSTR[8]' is not connected to any nets. (LINT-28)
+Warning: In design 'CONTROLLER', port 'INSTR[7]' is not connected to any nets. (LINT-28)
+Warning: In design 'CONTROLLER', port 'ZERO' is not connected to any nets. (LINT-28)
+Warning: In design 'CONTROLLER', port 'ALUCTRL[2]' is not connected to any nets. (LINT-28)
+Warning: In design 'CONTROLLER', port 'PCSRC' is not connected to any nets. (LINT-28)
+Warning: In design 'CORE', input pin 'INSTR[24]' of hierarchical cell 'u_controller' has no internal loads and is not connected to any nets. (LINT-60)
+Warning: In design 'CORE', input pin 'INSTR[23]' of hierarchical cell 'u_controller' has no internal loads and is not connected to any nets. (LINT-60)
+Warning: In design 'CORE', input pin 'INSTR[22]' of hierarchical cell 'u_controller' has no internal loads and is not connected to any nets. (LINT-60)
+Warning: In design 'CORE', input pin 'INSTR[21]' of hierarchical cell 'u_controller' has no internal loads and is not connected to any nets. (LINT-60)
+Warning: In design 'CORE', input pin 'INSTR[20]' of hierarchical cell 'u_controller' has no internal loads and is not connected to any nets. (LINT-60)
+Warning: In design 'CORE', input pin 'INSTR[19]' of hierarchical cell 'u_controller' has no internal loads and is not connected to any nets. (LINT-60)
+Warning: In design 'CORE', input pin 'INSTR[18]' of hierarchical cell 'u_controller' has no internal loads and is not connected to any nets. (LINT-60)
+Warning: In design 'CORE', input pin 'INSTR[17]' of hierarchical cell 'u_controller' has no internal loads and is not connected to any nets. (LINT-60)
+Warning: In design 'CORE', input pin 'INSTR[16]' of hierarchical cell 'u_controller' has no internal loads and is not connected to any nets. (LINT-60)
+Warning: In design 'CORE', input pin 'INSTR[15]' of hierarchical cell 'u_controller' has no internal loads and is not connected to any nets. (LINT-60)
+Warning: In design 'CORE', input pin 'INSTR[11]' of hierarchical cell 'u_controller' has no internal loads and is not connected to any nets. (LINT-60)
+Warning: In design 'CORE', input pin 'INSTR[10]' of hierarchical cell 'u_controller' has no internal loads and is not connected to any nets. (LINT-60)
+Warning: In design 'CORE', input pin 'INSTR[9]' of hierarchical cell 'u_controller' has no internal loads and is not connected to any nets. (LINT-60)
+Warning: In design 'CORE', input pin 'INSTR[8]' of hierarchical cell 'u_controller' has no internal loads and is not connected to any nets. (LINT-60)
+Warning: In design 'CORE', input pin 'INSTR[7]' of hierarchical cell 'u_controller' has no internal loads and is not connected to any nets. (LINT-60)
+Warning: In design 'CORE', input pin 'ZERO' of hierarchical cell 'u_controller' has no internal loads and is not connected to any nets. (LINT-60)
+1
+get_attribute [current_design] is_mapped
+Current design is 'CORE'.
+true
+# R1.3a: 합성·link 가 끝난 뒤, 정상 모드 timing report 직전에 RESET 고정
+set_case_analysis 0 [get_ports RESET]
+1
+report_qor                                                 > $R/qor.rpt
+report_timing -delay_type max -max_paths 5 -nets -transition_time -capacitance > $R/timing_max.rpt
+report_timing -delay_type min -max_paths 3                 > $R/timing_min.rpt
+report_constraint -all_violators                           > $R/violators.rpt
+report_area -hierarchy                                     > $R/area.rpt
+report_power                                               > $R/power_total.rpt
+report_power -hierarchy                                    > $R/power.rpt
+report_reference                                           > $R/reference.rpt
+if {$GATE_CLK} { report_clock_gating                       > $R/clock_gating.rpt }
+change_names -rules verilog -hierarchy
+1
+write -format verilog -hierarchy -output $O/CORE_mapped.v
+Writing verilog file '/home/dice/dice008/DICE/Project1/1020_RISC_PIPELINE/syn/results/P5/CORE_mapped.v'.
+1
+write -format ddc -hierarchy -output $O/CORE.ddc
+Writing ddc file 'results/P5/CORE.ddc'.
+1
+write_sdc $O/CORE.sdc
+1
+exit
+
+Memory usage for this session 234 Mbytes.
+Memory usage for this session including child processes 265 Mbytes.
+CPU usage for this session 31 seconds ( 0.01 hours ).
+Elapsed time for this session 35 seconds ( 0.01 hours ).
+
+Thank you...
+

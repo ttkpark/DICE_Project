@@ -1,9 +1,11 @@
 // Project 1 TOP port contract. Verilog-2001 only.
-// Do not rename, resize, reorder, add, or remove ports.
-// T1~T4 internal connections completed (1020_RISC). Ports untouched.
+// R1.4 CPU-only boundary. INSTR and READDATA are driven by TB memories.
+// R1.4 port contract: INSTR/READDATA are inputs, memories are outside TOP (sim/mem/).
 module TOP (
     input  wire        CLK,
     input  wire        RESET,
+    input  wire [31:0] INSTR,
+    input  wire [31:0] READDATA,
     input  wire [31:0] RESERVED_IN0,
     input  wire [31:0] RESERVED_IN1,
     input  wire [31:0] RESERVED_IN2,
@@ -25,7 +27,6 @@ module TOP (
     input  wire [31:0] RESERVED_IN18,
     input  wire [31:0] RESERVED_IN19,
     output wire [31:0] PC,
-    output wire [31:0] INSTR,
     output wire        MEMWRITE,
     output wire [31:0] ALURESULT,
     output wire [31:0] WRITEDATA,
@@ -50,7 +51,6 @@ module TOP (
     output wire [31:0] RESERVED_OUT18,
     output wire [31:0] RESERVED_OUT19
 );
-    wire [31:0] readdata;
 
     // The official testbench drives every RESERVED_IN pin with 32'b0.
     // It leaves every RESERVED_OUT pin unconnected. Never rely on a
@@ -79,24 +79,12 @@ module TOP (
     CORE u_core (
         .CLK        (CLK),
         .RESET      (RESET),
-        .INSTR      (INSTR),    // T1: IMEM -> CORE
-        .READDATA   (readdata), // T2: DMEM -> CORE
+        .INSTR      (INSTR),
+        .READDATA   (READDATA),
         .PC         (PC),
         .MEMWRITE   (MEMWRITE),
         .ALURESULT  (ALURESULT),
         .WRITEDATA  (WRITEDATA)
     );
 
-    IMEM u_imem (
-        .ADDR       (PC),       // T3: CORE PC -> IMEM
-        .INSTR      (INSTR)
-    );
-
-    DMEM u_dmem (
-        .CLK        (CLK),
-        .MEMWRITE   (MEMWRITE), // T4: CORE -> DMEM
-        .ADDR       (ALURESULT),
-        .WRITEDATA  (WRITEDATA),
-        .READDATA   (readdata)
-    );
 endmodule

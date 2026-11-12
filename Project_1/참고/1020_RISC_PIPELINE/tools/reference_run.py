@@ -16,7 +16,7 @@ def run(imem, initial_dmem, max_steps=100000):
     mem = initial_dmem.copy()
     regs = [0] * 32
     pc = steps = loads = stores = 0
-    events = []
+    events, pcs = [], []          # pcs: 실행된 명령 PC 순서 (tools/pj1_check.py 의 파이프라인 cycle 모델용)
     done_addr, token = mem[0x31c // 4], mem[0x320 // 4]
     ybase, count = mem[0x30c // 4], mem[0x318 // 4]
     # 메모리 범위와 4바이트 정렬을 검사. word index는 byte_address >> 2.
@@ -29,6 +29,7 @@ def run(imem, initial_dmem, max_steps=100000):
         if pc % 4 or not 0 <= pc // 4 < len(imem):
             raise ValueError(f"잘못된 PC: 0x{pc:08x}")
         ins = imem[pc >> 2]
+        pcs.append(pc)
         op, f3, f7 = ins & 0x7f, (ins >> 12) & 7, ins >> 25
         rd, rs1, rs2 = (ins >> 7) & 31, (ins >> 15) & 31, (ins >> 20) & 31
         a, b = regs[rs1], regs[rs2]
@@ -63,7 +64,7 @@ def run(imem, initial_dmem, max_steps=100000):
                 return {"steps_to_done": steps, "instruction_fetches": steps,
                         "data_loads": loads, "data_stores": stores,
                         "outputs": [signed(mem[index(ybase + 4*j)], 32) for j in range(count)],
-                        "store_events": events, "memory": mem}
+                        "store_events": events, "memory": mem, "pcs": pcs}
         elif op == 0x63 and f3 == 0:
             imm = ((ins >> 31) << 12) | (((ins >> 7) & 1) << 11) | (((ins >> 25) & 63) << 5) | (((ins >> 8) & 15) << 1)
             if a == b:
@@ -97,6 +98,7 @@ def main():
     if result["outputs"] != expected:
         raise SystemExit(f"FAIL: got {result['outputs']}, expected {expected}")
     result.pop("memory")
+    result.pop("pcs")
     result.update(case=case["name"], expected_outputs=expected, functional_pass=True,
                   metric_scope="기능 모델의 실행 명령 수. DC 실측 PPA가 아님")
     if args.report:

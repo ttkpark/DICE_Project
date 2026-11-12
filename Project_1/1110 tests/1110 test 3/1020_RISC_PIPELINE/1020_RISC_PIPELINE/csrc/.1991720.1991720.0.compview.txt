@@ -1,0 +1,5 @@
+{"vcs1":{"timestamp_begin":1794276120.201667120, "rt":0.24, "ut":0.04, "st":0.03}}
+{"SNPS_VCS_INTERNAL_ROOT_START_TIME": 1794276119.958386032}
+{"VCS_COMP_START_TIME": 1794276119.958386032}
+{"VCS_COMP_END_TIME": 1794276120.845701613}
+{"VCS_USER_OPTIONS": "-full64 -timescale=1ns/1ps -top TB_CTRL rtl/CONTROLLER.v sim/tb_ctrl.v -o build/simv_ctrl -R -l build/tb_ctrl.log"}

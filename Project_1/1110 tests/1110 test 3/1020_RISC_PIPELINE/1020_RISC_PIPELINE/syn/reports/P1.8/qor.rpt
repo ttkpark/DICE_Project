@@ -1,0 +1,85 @@
+Information: Updating design information... (UID-85)
+Warning: Design 'CORE' contains 1 high-fanout nets. A fanout number of 1000 will be used for delay calculations involving these nets. (TIM-134)
+ 
+****************************************
+Report : qor
+Design : CORE
+Version: V-2023.12-SP5
+Date   : Tue Nov 10 11:48:51 2026
+****************************************
+
+
+  Timing Path Group 'CPU_CLK'
+  -----------------------------------
+  Levels of Logic:              26.00
+  Critical Path Length:          1.93
+  Critical Path Slack:          -0.28
+  Critical Path Clk Period:      1.80
+  Total Negative Slack:        -75.65
+  No. of Violating Paths:      301.00
+  Worst Hold Violation:          0.00
+  Total Hold Violation:          0.00
+  No. of Hold Violations:        0.00
+  -----------------------------------
+
+
+  Cell Count
+  -----------------------------------
+  Hierarchical Cell Count:          1
+  Hierarchical Port Count:         45
+  Leaf Cell Count:               6773
+  Buf/Inv Cell Count:             634
+  Buf Cell Count:                  57
+  Inv Cell Count:                 577
+  CT Buf/Inv Cell Count:            0
+  Combinational Cell Count:      5271
+  Sequential Cell Count:         1502
+  Macro Count:                      0
+  -----------------------------------
+
+
+  Area
+  -----------------------------------
+  Combinational Area:    12691.443181
+  Noncombinational Area:  9938.555587
+  Buf/Inv Area:            989.128461
+  Total Buffer Area:           154.52
+  Total Inverter Area:         834.61
+  Macro/Black Box Area:      0.000000
+  Net Area:               9762.810793
+  -----------------------------------
+  Cell Area:             22629.998768
+  Design Area:           32392.809561
+
+
+  Design Rules
+  -----------------------------------
+  Total Number of Nets:          7619
+  Nets With Violations:             0
+  Max Trans Violations:             0
+  Max Cap Violations:               0
+  -----------------------------------
+
+
+  Hostname: dice
+
+  Compile CPU Statistics
+  -----------------------------------------
+  Resource Sharing:                    1.13
+  Logic Optimization:                 21.64
+  Mapping Optimization:              101.38
+  -----------------------------------------
+  Overall Compile Time:              146.66
+  Overall Compile Wall Clock Time:   147.91
+
+  --------------------------------------------------------------------
+
+  Design  WNS: 0.28  TNS: 75.65  Number of Violating Paths: 301
+
+
+  Design (Hold)  WNS: 0.00  TNS: 0.00  Number of Violating Paths: 0
+
+  --------------------------------------------------------------------
+
+
+1
