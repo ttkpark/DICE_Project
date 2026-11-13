@@ -1,5 +1,17 @@
 # 팀 EX 작업본 · R1.7
 
+## 현재 상태 (2026-11-14, 박기호)
+
+- **R1.7 서버 측정 완료.** 이 폴더를 DICE에서 그대로 돌렸다(`int8_opt64v2` 먼저, `int8_fastv2` 마지막). 결과·명령·요약: [`measurements/R1p7_20261114/`](measurements/R1p7_20261114/README.md)
+  - `int8_fastv2` (최종): 16/16 PASS, timing PASS (setup +0.0026 ns), T 1.021005 µs, A 100342.97 µm², P 15.4104 mW, DDC 416 KB, 계층 TOP > CORE > CONTROLLER
+  - `int8_opt64v2`: 16/16 PASS, T 1.2589 µs, A 81704.17 µm², P 11.8581 mW
+  - 두 값 모두 R1.4·R1.6 측정과 끝자리까지 같다.
+- **제출본:** [`submission/Project1_TEAM_ID.zip`](submission/Project1_TEAM_ID.zip) — 위 `int8_fastv2` 실행의 results·reports·logs·DDC + RTL·asm·SDC·도구·재현 스크립트·발표 슬라이드. 안의 `TEAM_ID` 폴더 이름만 팀 번호로 바꿔 다시 묶는다.
+- **발표:** [`presentation/project1.pptx`](presentation/project1.pptx) / `.pdf` 19장 (R1.7 명령·fingerprint 반영, 부록 E는 수업 명령만으로 재현). 다시 만들기: `cd presentation/build && npm install && node build_deck.js ../project1.pptx apply_theme.js` (PDF는 Windows PowerPoint에서 `powershell -File export.ps1 -Pptx ..\project1.pptx -Pdf <절대경로>\project1.pdf`)
+- **문서:** [팀 실험 정리 HTML](docs/PRESENTATION_1110_KO.html)에 "최종 실행·제출본", "서버에서 재현하기"(공식 2줄 판 + 수업 명령만으로 하는 판) 추가. [발표 지침](docs/발표_지침_KO.md), [통합 컨텍스트](docs/PROJECT1_CONTEXT_KO.md)(옛 자료 링크는 커밋 `ffaa3cd`).
+- **남은 일:** ① 제출 ZIP의 `TEAM_ID` → 팀 번호, ② 기준본 P 서버 측정(슬라이드 8 빈칸, 명령은 [발표 지침 §9](docs/발표_지침_KO.md)), ③ 발표 시간·피어리뷰 양식 확인. 마감 11-17(화) 09:00.
+- Windows에서 작업할 때: 저장소 루트 `.gitattributes`가 스크립트·RTL·HEX를 LF로 고정한다. 서버에는 `git clone`이나 GitHub ZIP으로 옮긴다.
+
 이 폴더에는 test 6 `1110_pipeline_EX`의 5단 EX 분기 CPU와 교수님 R1.7 업데이트가 적용되어 있습니다. RTL과 두 `v2` 프로그램의 내용은 GitHub `ffaa3cd`의 서버 측정 사본과 일치합니다.
 
 | 파일 | 용도 |
@@ -16,8 +28,10 @@
 | `archive/pipeline_ID/CORE.v` | 팀원의 개선 ID 분기판. 이전 R1.4 측정 주기 2.36 ns |
 | `archive/single_cycle/CORE.v` | 팀원이 비교에 사용한 단일 사이클판. 이전 R1.4 측정 주기 3.82 ns |
 | `docs/` | 교수님 배포 명세, 평가 계약, 릴리즈 노트와 공통 실행 안내 |
-| [발표 PPTX](presentation/project1.pptx) | 팀원이 작성한 18장 발표 초안 |
-| [팀 실험 정리 HTML](docs/PRESENTATION_1110_KO.html) | 팀원의 R1.4 비교 결과와 개선 과정 |
+| [발표 PPTX](presentation/project1.pptx) | 발표 슬라이드 19장 (PDF 같이 있음, 생성기 `presentation/build/`) |
+| [팀 실험 정리 HTML](docs/PRESENTATION_1110_KO.html) | R1.4 비교 결과·개선 과정, R1.7 최종 실행·제출본, 서버 재현 절차 |
+| `measurements/R1p7_20261114/` | R1.7 서버 측정 기록 (fastv2·opt64v2의 results·reports·logs) |
+| `submission/Project1_TEAM_ID.zip` | 제출본 |
 
 공통 시뮬레이션과 합성은 `synth/rtl.f`에 등록된 `rtl/`의 EX판을 사용합니다. 보관 CORE를 시험할 때는 프로젝트 사본에서 `rtl/CORE.v`를 선택한 판으로 교체합니다. 위의 ID·단일 사이클 주기는 이전 실험값이므로 R1.7에서 기능과 STA를 다시 확인합니다. TOP과 CONTROLLER는 세 판에서 공통으로 사용합니다.
 
@@ -34,6 +48,6 @@ bash run_sim.sh --program programs/int8_fastv2.hex && bash run_ppa.sh
 
 현재 `fastv2`와 `opt64v2`는 기본 8개 명령을 사용하며 선택 명령은 없습니다. 팀 제출 ZIP에는 최종 실행의 DDC·기능 로그·STA·면적·전력 보고서와 재현 자료, 발표 슬라이드 1부(PPTX 또는 PDF)를 포함합니다.
 
-발표 초안 8쪽의 기준본 전력은 미측정입니다. 제출 전에 12쪽의 재현 명령과 18쪽의 제출 파일 목록을 R1.7에 맞추고, DICE에서 새로 측정한 수치를 반영합니다. 이전 실험 원본은 [팀 GitHub 커밋 `ffaa3cd`](https://github.com/ttkpark/DICE_Project/commit/ffaa3cd75b9272a143e9ec0c0d0af60c23005ebc)에 보관되어 있습니다. 최종 제출 ZIP을 만들 때는 이번 실행의 `results/`, `reports/`, `logs/`를 함께 넣습니다. 이 생성 폴더들은 Git에서 기본으로 제외됩니다.
+발표 8쪽의 기준본 전력은 아직 미측정입니다. 12쪽 재현 명령과 18쪽 제출 파일 목록은 R1.7 기준으로 맞췄고, 수치는 2026-11-14 R1.7 측정과 같습니다. 이전 실험 원본은 [팀 GitHub 커밋 `ffaa3cd`](https://github.com/ttkpark/DICE_Project/commit/ffaa3cd75b9272a143e9ec0c0d0af60c23005ebc)에 보관되어 있습니다. 최종 제출 ZIP을 만들 때는 이번 실행의 `results/`, `reports/`, `logs/`를 함께 넣습니다. 이 생성 폴더들은 Git에서 기본으로 제외됩니다.
 
 교수님 배포 문서는 [릴리즈 노트](docs/RELEASE_NOTES_KO.md), [공통 실행 안내](docs/COMMON_FLOW_KO.md), [평가 계약](docs/PROJECT_CONTRACT_KO.md)에서 볼 수 있습니다. `MANIFEST.json`과 `RELEASE_VALIDATION.json`은 배포본 기록입니다.

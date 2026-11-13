@@ -1,0 +1,141 @@
+ 
+****************************************
+Report : hierarchy
+Design : TOP
+Version: V-2023.12-SP5
+Date   : Sat Nov 14 08:40:21 2026
+****************************************
+
+TOP
+    CORE
+        AND2X1_RVT               saed32rvt_ss0p95v125c
+        AND2X2_RVT               saed32rvt_ss0p95v125c
+        AND3X1_RVT               saed32rvt_ss0p95v125c
+        AND4X1_RVT               saed32rvt_ss0p95v125c
+        AO21X1_RVT               saed32rvt_ss0p95v125c
+        AO22X1_RVT               saed32rvt_ss0p95v125c
+        AO221X1_RVT              saed32rvt_ss0p95v125c
+        AO222X1_RVT              saed32rvt_ss0p95v125c
+        AOI21X1_RVT              saed32rvt_ss0p95v125c
+        AOI221X1_RVT             saed32rvt_ss0p95v125c
+        CONTROLLER
+            AND2X1_RVT           saed32rvt_ss0p95v125c
+            AND3X1_RVT           saed32rvt_ss0p95v125c
+            AND4X1_RVT           saed32rvt_ss0p95v125c
+            AO21X1_RVT           saed32rvt_ss0p95v125c
+            INVX1_RVT            saed32rvt_ss0p95v125c
+            NAND2X0_RVT          saed32rvt_ss0p95v125c
+            NAND3X0_RVT          saed32rvt_ss0p95v125c
+            NAND4X0_RVT          saed32rvt_ss0p95v125c
+            NOR3X0_RVT           saed32rvt_ss0p95v125c
+            NOR4X0_RVT           saed32rvt_ss0p95v125c
+            NOR4X1_RVT           saed32rvt_ss0p95v125c
+            OA21X1_RVT           saed32rvt_ss0p95v125c
+            OR3X1_RVT            saed32rvt_ss0p95v125c
+        CORE_DW01_add_3
+            AND2X1_RVT           saed32rvt_ss0p95v125c
+            AND4X1_RVT           saed32rvt_ss0p95v125c
+            AO21X1_RVT           saed32rvt_ss0p95v125c
+            AO21X2_RVT           saed32rvt_ss0p95v125c
+            AOI21X1_RVT          saed32rvt_ss0p95v125c
+            IBUFFX2_RVT          saed32rvt_ss0p95v125c
+            INVX0_RVT            saed32rvt_ss0p95v125c
+            INVX1_RVT            saed32rvt_ss0p95v125c
+            NAND2X0_RVT          saed32rvt_ss0p95v125c
+            NAND3X0_RVT          saed32rvt_ss0p95v125c
+            NAND4X0_RVT          saed32rvt_ss0p95v125c
+            NBUFFX2_RVT          saed32rvt_ss0p95v125c
+            OA21X1_RVT           saed32rvt_ss0p95v125c
+            OA221X1_RVT          saed32rvt_ss0p95v125c
+            OR2X1_RVT            saed32rvt_ss0p95v125c
+            XNOR2X1_RVT          saed32rvt_ss0p95v125c
+            XNOR3X1_RVT          saed32rvt_ss0p95v125c
+            XOR2X1_RVT           saed32rvt_ss0p95v125c
+            XOR3X2_RVT           saed32rvt_ss0p95v125c
+        CORE_DW01_add_4
+            AND2X1_RVT           saed32rvt_ss0p95v125c
+            AND4X1_RVT           saed32rvt_ss0p95v125c
+            AO21X1_RVT           saed32rvt_ss0p95v125c
+            AO22X1_RVT           saed32rvt_ss0p95v125c
+            AOI21X1_RVT          saed32rvt_ss0p95v125c
+            INVX0_RVT            saed32rvt_ss0p95v125c
+            INVX1_RVT            saed32rvt_ss0p95v125c
+            NAND2X0_RVT          saed32rvt_ss0p95v125c
+            NAND3X0_RVT          saed32rvt_ss0p95v125c
+            NAND4X0_RVT          saed32rvt_ss0p95v125c
+            NBUFFX2_RVT          saed32rvt_ss0p95v125c
+            OA21X1_RVT           saed32rvt_ss0p95v125c
+            OR2X1_RVT            saed32rvt_ss0p95v125c
+            OR2X2_RVT            saed32rvt_ss0p95v125c
+            XNOR2X1_RVT          saed32rvt_ss0p95v125c
+            XNOR3X1_RVT          saed32rvt_ss0p95v125c
+            XOR2X1_RVT           saed32rvt_ss0p95v125c
+            XOR3X1_RVT           saed32rvt_ss0p95v125c
+            XOR3X2_RVT           saed32rvt_ss0p95v125c
+        CORE_DW01_add_5
+            AND2X1_RVT           saed32rvt_ss0p95v125c
+            AND3X1_RVT           saed32rvt_ss0p95v125c
+            AND4X1_RVT           saed32rvt_ss0p95v125c
+            INVX1_RVT            saed32rvt_ss0p95v125c
+            NAND2X0_RVT          saed32rvt_ss0p95v125c
+            NOR2X0_RVT           saed32rvt_ss0p95v125c
+            OR2X1_RVT            saed32rvt_ss0p95v125c
+            XNOR2X1_RVT          saed32rvt_ss0p95v125c
+            XOR2X1_RVT           saed32rvt_ss0p95v125c
+        CORE_DW01_cmp6_0
+            AND2X1_RVT           saed32rvt_ss0p95v125c
+            AND4X1_RVT           saed32rvt_ss0p95v125c
+            INVX0_RVT            saed32rvt_ss0p95v125c
+            INVX1_RVT            saed32rvt_ss0p95v125c
+            NAND2X0_RVT          saed32rvt_ss0p95v125c
+            NAND4X0_RVT          saed32rvt_ss0p95v125c
+            NOR2X0_RVT           saed32rvt_ss0p95v125c
+            NOR4X0_RVT           saed32rvt_ss0p95v125c
+            OA22X1_RVT           saed32rvt_ss0p95v125c
+            XNOR2X1_RVT          saed32rvt_ss0p95v125c
+        CORE_DW01_sub_1
+            AND2X1_RVT           saed32rvt_ss0p95v125c
+            AND3X1_RVT           saed32rvt_ss0p95v125c
+            AO21X1_RVT           saed32rvt_ss0p95v125c
+            AO22X1_RVT           saed32rvt_ss0p95v125c
+            AOI22X1_RVT          saed32rvt_ss0p95v125c
+            INVX0_RVT            saed32rvt_ss0p95v125c
+            INVX1_RVT            saed32rvt_ss0p95v125c
+            INVX2_RVT            saed32rvt_ss0p95v125c
+            NAND2X0_RVT          saed32rvt_ss0p95v125c
+            NAND3X0_RVT          saed32rvt_ss0p95v125c
+            NAND3X2_RVT          saed32rvt_ss0p95v125c
+            NAND4X0_RVT          saed32rvt_ss0p95v125c
+            OA21X1_RVT           saed32rvt_ss0p95v125c
+            OA21X2_RVT           saed32rvt_ss0p95v125c
+            OA222X1_RVT          saed32rvt_ss0p95v125c
+            OR2X1_RVT            saed32rvt_ss0p95v125c
+            OR2X2_RVT            saed32rvt_ss0p95v125c
+            XNOR2X1_RVT          saed32rvt_ss0p95v125c
+            XOR2X1_RVT           saed32rvt_ss0p95v125c
+            XOR2X2_RVT           saed32rvt_ss0p95v125c
+            XOR3X1_RVT           saed32rvt_ss0p95v125c
+        DELLN3X2_RVT             saed32rvt_ss0p95v125c
+        DFFSSRX1_RVT             saed32rvt_ss0p95v125c
+        DFFX1_RVT                saed32rvt_ss0p95v125c
+        INVX0_RVT                saed32rvt_ss0p95v125c
+        INVX1_RVT                saed32rvt_ss0p95v125c
+        INVX2_RVT                saed32rvt_ss0p95v125c
+        INVX4_RVT                saed32rvt_ss0p95v125c
+        MUX21X1_RVT              saed32rvt_ss0p95v125c
+        MUX21X2_RVT              saed32rvt_ss0p95v125c
+        NAND2X0_RVT              saed32rvt_ss0p95v125c
+        NAND3X0_RVT              saed32rvt_ss0p95v125c
+        NAND4X0_RVT              saed32rvt_ss0p95v125c
+        NBUFFX2_RVT              saed32rvt_ss0p95v125c
+        NOR2X0_RVT               saed32rvt_ss0p95v125c
+        NOR3X0_RVT               saed32rvt_ss0p95v125c
+        NOR4X0_RVT               saed32rvt_ss0p95v125c
+        NOR4X1_RVT               saed32rvt_ss0p95v125c
+        OAI21X1_RVT              saed32rvt_ss0p95v125c
+        OAI22X1_RVT              saed32rvt_ss0p95v125c
+        OR2X2_RVT                saed32rvt_ss0p95v125c
+        OR3X1_RVT                saed32rvt_ss0p95v125c
+        XNOR2X1_RVT              saed32rvt_ss0p95v125c
+        XOR2X1_RVT               saed32rvt_ss0p95v125c
+1

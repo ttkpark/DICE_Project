@@ -1,0 +1,23 @@
+# 서버(Linux)에서 실행·읽는 파일은 Windows(core.autocrlf=true)에서 받아도 LF 로 유지한다.
+# CRLF 가 되면 run_sim.sh / run_ppa.sh 가 서버 bash 에서 깨진다.
+*.sh    text eol=lf
+*.py    text eol=lf
+*.tcl   text eol=lf
+*.sdc   text eol=lf
+*.v     text eol=lf
+*.f     text eol=lf
+*.s     text eol=lf
+*.hex   text eol=lf
+*.lst   text eol=lf
+*.json  text eol=lf
+*.js    text eol=lf
+*.md    text eol=lf
+*.html  text eol=lf
+*.rpt   text eol=lf
+*.log   text eol=lf
+# 바이너리: 줄바꿈 변환 금지
+*.ddc   binary
+*.pptx  binary
+*.pdf   binary
+*.zip   binary
+*.tar   binary

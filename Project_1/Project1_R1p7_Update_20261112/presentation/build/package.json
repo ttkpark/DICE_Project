@@ -1,0 +1,9 @@
+{
+  "name": "project1-deck",
+  "private": true,
+  "description": "Project 1 발표 슬라이드 생성기 의존성 (node build_deck.js ../project1.pptx apply_theme.js)",
+  "dependencies": {
+    "jszip": "3.10.2",
+    "pptxgenjs": "3.12.0"
+  }
+}
