@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Project 1 PPA 비교 정리</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+/* layout: one reading column (max 1040px), sticky section nav on top, every table in its own scroll box */
+:root {
+  --bg: #f3f5f8; --surface: #ffffff; --ink: #18212d; --muted: #5b6878; --line: #d9dfe7;
+  --accent: #0d5fb8; --accent-soft: #e3eefb; --ok: #17794a; --ok-soft: #e0f3e8; --bad: #b3372b; --bad-soft: #fbe6e3;
+  --bar: #9db9da;
+  --sans: "IBM Plex Sans KR", "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", Consolas, "Courier New", monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #10151c; --surface: #19202a; --ink: #e6ebf2; --muted: #9aa7b8; --line: #2c3644;
+  --accent: #6fb1ff; --accent-soft: #1b2f49; --ok: #5fd39a; --ok-soft: #173426; --bad: #ff8f82; --bad-soft: #40201c;
+  --bar: #3d5b80; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #10151c; --surface: #19202a; --ink: #e6ebf2; --muted: #9aa7b8; --line: #2c3644;
+  --accent: #6fb1ff; --accent-soft: #1b2f49; --ok: #5fd39a; --ok-soft: #173426; --bad: #ff8f82; --bad-soft: #40201c;
+  --bar: #3d5b80; color-scheme: dark }
+
+body { background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 15px; line-height: 1.65; }
+.wrap { max-width: 1040px; margin: 0 auto; padding-block: 28px 64px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+header h1 { font-size: 28px; line-height: 1.25; margin: 0 0 6px; font-weight: 700; text-wrap: balance; }
+header p { margin: 0; color: var(--muted); max-width: 70ch; }
+nav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg); border-bottom: 1px solid var(--line);
+  margin-top: 18px; padding-block: 8px; display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 13.5px; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+nav a { color: var(--muted); text-decoration: none; padding: 2px 0; }
+nav a:hover, nav a:focus-visible { color: var(--accent); outline: none; text-decoration: underline; }
+section { margin-top: 44px; scroll-margin-top: 64px; display: flex; flex-direction: column; gap: 14px; }
+h2 { font-size: 20px; margin: 0; font-weight: 700; text-wrap: balance; }
+h3 { font-size: 15.5px; margin: 10px 0 0; font-weight: 600; }
+p { margin: 0; max-width: 72ch; }
+.note { color: var(--muted); font-size: 13.5px; }
+code { font-family: var(--mono); font-size: 0.9em; background: var(--accent-soft); padding: 1px 5px; border-radius: 4px; overflow-wrap: anywhere; }
+ul { margin: 0; padding-left: 20px; max-width: 74ch; display: flex; flex-direction: column; gap: 8px; }
+
+.lead { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 20px; display: flex; flex-direction: column; gap: 16px; }
+.lead .pick { font-size: 18px; font-weight: 600; margin: 0; max-width: none; }
+.lead .pick b { color: var(--accent); }
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px 20px; }
+.tile .k { font-size: 12.5px; color: var(--muted); letter-spacing: 0.02em; }
+.tile .v { font-family: var(--mono); font-size: 24px; font-weight: 600; line-height: 1.3; }
+.tile .v small { font-size: 13px; font-weight: 400; color: var(--muted); }
+.tile .s { font-size: 12.5px; color: var(--muted); }
+
+.tbl { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; }
+table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+th, td { padding: 7px 12px; text-align: left; border-bottom: 1px solid var(--line); vertical-align: top; }
+tr:last-child td { border-bottom: 0; }
+th { font-weight: 600; color: var(--muted); font-size: 12.5px; white-space: nowrap; background: var(--bg); }
+td.n, th.n { text-align: right; font-family: var(--mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+td.c, th.c { text-align: center; }
+td.nw { white-space: nowrap; }
+tr.best td { background: var(--accent-soft); font-weight: 600; }
+tr.grp td { border-top: 2px solid var(--line); }
+.bar { display: inline-block; height: 8px; background: var(--bar); border-radius: 2px; vertical-align: middle; margin-left: 8px; }
+tr.best .bar { background: var(--accent); }
+.barcell { white-space: nowrap; min-width: 190px; }
+.barcell span.num { font-family: var(--mono); font-variant-numeric: tabular-nums; display: inline-block; width: 52px; text-align: right; }
+.pill { display: inline-block; font-size: 12px; font-weight: 600; padding: 0 8px; border-radius: 999px; }
+.pill.ok { color: var(--ok); background: var(--ok-soft); }
+.pill.bad { color: var(--bad); background: var(--bad-soft); }
+.cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+.cols > div { min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+.cols h3 { margin: 0; }
+.warn { border-left: 3px solid var(--bad); padding: 2px 0 2px 12px; }
+body { margin: 0; }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+<header>
+  <h1>Project 1 PPA 비교 정리</h1>
+  <p>세 CPU(단일 사이클, ID 분기 파이프라인, EX 분기 파이프라인)를 R1.4 공통 flow로 잰 결과다. 2026-11-10 ~ 11 수업 서버 측정, <b>공개 16 case</b> 기준이고 공식 24 case 성적이 아니다.</p>
+</header>
+
+<nav aria-label="목차">
+  <a href="#result">결론</a><a href="#cpu">세 CPU</a><a href="#program">프로그램</a><a href="#ppa">PPA 표</a><a href="#path">최악 경로</a>
+  <a href="#reading">해석</a><a href="#period">주기 탐색</a><a href="#verify">검증</a><a href="#caution">주의</a><a href="#todo">남은 일</a><a href="#source">원본</a>
+</nav>
+
+<section id="result">
+  <h2>결론</h2>
+  <div class="lead">
+    <p class="pick"><b>EX 분기 5단 파이프라인 + <code>int8_fastv2</code>, 주기 1.62 ns</b> 가 15개 조합 중 가장 좋다.</p>
+    <div class="tiles">
+      <div class="tile"><div class="k">실행시간 T</div><div class="v">1.0210 <small>µs</small></div><div class="s">630.2500 cycle × 1.62 ns</div></div>
+      <div class="tile"><div class="k">주파수</div><div class="v">617.28 <small>MHz</small></div><div class="s">setup +0.0026 / hold +0.1148 ns</div></div>
+      <div class="tile"><div class="k">면적 A</div><div class="v">100342.97 <small>µm²</small></div><div class="s">CPU 22322.99 + IMEM 256 + DMEM</div></div>
+      <div class="tile"><div class="k">전력 P</div><div class="v">15.4104 <small>mW</small></div><div class="s">CPU 8.8303 + 메모리</div></div>
+      <div class="tile"><div class="k">기능</div><div class="v">16/16</div><div class="s">공개 case 모두 PASS</div></div>
+    </div>
+  </div>
+  <p>배포 기준(단일 사이클 CPU + 기준 프로그램, 4.00 ns)의 T는 약 32.54 µs라서 <b>약 31.9배</b> 빨라졌다.</p>
+  <div class="tbl"><table>
+    <tr><th>31.9배의 내역</th><th class="n">배수</th><th>근거</th></tr>
+    <tr><td>프로그램 (기준 → <code>int8_fastv2</code>)</td><td class="n">14.75</td><td>단일 사이클 기준 8135.6875 → 551.5000 cycle</td></tr>
+    <tr><td>단일 사이클 주기 탐색</td><td class="n">1.05</td><td>4.00 → 3.82 ns</td></tr>
+    <tr><td>CPU 구조 (단일 → EX 파이프라인)</td><td class="n">2.06</td><td>T 2.1067 → 1.0210 µs</td></tr>
+  </table></div>
+  <p class="note">기준 T는 로컬 시뮬레이션의 평균 8135.6875 cycle에 4.00 ns를 곱한 값이다. 기준 조합의 PPA는 서버에서 재지 않았다.</p>
+</section>
+
+<section id="cpu">
+  <h2>비교한 세 CPU</h2>
+  <p>세 폴더는 <code>rtl/CORE.v</code>만 다르다. TOP, CONTROLLER, TB, 메모리, 공통 SDC, 측정 도구, 프로그램 HEX는 같다.</p>
+  <div class="tbl"><table>
+    <tr><th>폴더</th><th>구조</th><th>분기 판정</th><th class="n">taken 분기·JAL 손실</th><th>lw 직후 사용</th></tr>
+    <tr><td class="nw"><code>1110_single_cycle</code></td><td>배포 기준 단일 사이클 (무수정)</td><td>같은 cycle</td><td class="n">0</td><td>손실 없음</td></tr>
+    <tr><td class="nw"><code>1110_pipeline_ID</code></td><td>5단 파이프라인</td><td>ID 단</td><td class="n">1 cycle</td><td>1 cycle stall (BEQ는 MEM의 load도 기다림)</td></tr>
+    <tr><td class="nw"><code>1110_pipeline_EX</code></td><td>5단 파이프라인</td><td>EX 단</td><td class="n">2 cycle</td><td>1 cycle stall</td></tr>
+  </table></div>
+  <p>두 파이프라인 모두 나머지 데이터 의존은 포워딩으로 손실 없이 처리한다. 분기 예측기는 없다(항상 PC+4를 가져온다).</p>
+  <h3>넣은 개선</h3>
+  <p class="note">포트·기본 8명령·동기 RESET 계약은 바꾸지 않았고 cycle 수도 그대로다.</p>
+  <div class="tbl"><table>
+    <tr><th>개선</th><th>효과</th><th class="c">EX</th><th class="c">ID</th></tr>
+    <tr><td>BEQ의 같음 판정을 뺄셈 결과==0 대신 ALU와 병렬인 비교기로</td><td>분기 경로에서 adder 제거</td><td class="c">O</td><td class="c">해당 없음<br><span class="note">ID에 원래 비교기가 있다</span></td></tr>
+    <tr><td>포워딩 select를 ID에서 미리 계산해 ID/EX에 저장</td><td>EX의 레지스터 번호 비교기 제거</td><td class="c">O</td><td class="c">O</td></tr>
+    <tr><td>버블 때 데이터 레지스터는 두고 제어 비트만 0</td><td>flush/stall 신호의 팬아웃 축소</td><td class="c">O</td><td class="c">O</td></tr>
+    <tr><td>result mux를 MEM 단에서 하고 결과 32비트만 MEM/WB에 저장</td><td>WB 포워딩 경로의 mux 제거, FF 66개 감소</td><td class="c">O</td><td class="c">O</td></tr>
+  </table></div>
+</section>
+
+<section id="program">
+  <h2>프로그램</h2>
+  <p>모두 기본 8명령(ADD, SUB, AND, ADDI, LW, SW, BEQ, JAL)만 쓴다. 곱셈은 X[i]의 비트를 하나씩 검사해 W를 2배씩 키워 더하는 방식이고, 비트 검사 한 번을 출력 4행이 같이 쓴다.</p>
+  <div class="tbl"><table>
+    <tr><th>프로그램</th><th class="n">크기</th><th class="n">IMEM 구간</th><th>특징</th></tr>
+    <tr><td class="nw">기준 <code>baseline_int8_fc_slow</code></td><td class="n">57 word</td><td class="n">64</td><td>배포본</td></tr>
+    <tr><td class="nw"><code>int8_small</code></td><td class="n">48 word</td><td class="n">64</td><td>비트 루프로 접은 최소 크기</td></tr>
+    <tr><td class="nw"><code>int8_opt64</code></td><td class="n">58 word</td><td class="n">64</td><td>비트 루프 2비트 펼침, lw 직후 사용 0회 배치</td></tr>
+    <tr><td class="nw"><code>int8_opt64v2</code></td><td class="n">63 word</td><td class="n">64</td><td>다음 비트가 0일 때 JAL을 건너뛰고, 음수 X의 부호 처리 뒤 JAL을 없앰</td></tr>
+    <tr><td class="nw"><code>int8_fast</code></td><td class="n">192 word</td><td class="n">256</td><td>비트·i 루프 펼침. 가장 빠르지만 IMEM이 256 구간으로 커진다</td></tr>
+    <tr><td class="nw"><code>int8_fastv2</code></td><td class="n">193 word</td><td class="n">256</td><td>lw 직후 stall을 없애고 설정 명령 1개를 줄임</td></tr>
+  </table></div>
+  <p>v2 두 개는 알고리즘과 명령 종류는 그대로 두고, 파이프라인에서 버려지는 cycle만 줄인 판이다. EX 판과 ID 판에 같은 HEX를 쓴다.</p>
+  <h3>평균 cycle (공개 16 case)</h3>
+  <div class="tbl"><table>
+    <tr><th>프로그램</th><th class="n">single</th><th class="n">ID</th><th class="n">EX</th><th class="n">ID / single</th><th class="n">EX / single</th></tr>
+    <tr><td>기준 <span class="note">(로컬 시뮬레이션)</span></td><td class="n">8135.6875</td><td class="n">10186.3750</td><td class="n">12170.0625</td><td class="n">1.252</td><td class="n">1.496</td></tr>
+    <tr><td><code>int8_small</code></td><td class="n">729.5000</td><td class="n">831.3750</td><td class="n">929.2500</td><td class="n">1.140</td><td class="n">1.274</td></tr>
+    <tr><td><code>int8_opt64</code></td><td class="n">677.8750</td><td class="n">751.1250</td><td class="n">821.3750</td><td class="n">1.108</td><td class="n">1.212</td></tr>
+    <tr><td><code>int8_opt64v2</code></td><td class="n">663.1250</td><td class="n">721.6250</td><td class="n">777.1250</td><td class="n">1.088</td><td class="n">1.172</td></tr>
+    <tr><td><code>int8_fast</code></td><td class="n">552.5000</td><td class="n">594.3750</td><td class="n">636.2500</td><td class="n">1.076</td><td class="n">1.152</td></tr>
+    <tr class="best"><td><code>int8_fastv2</code></td><td class="n">551.5000</td><td class="n">592.3750</td><td class="n">630.2500</td><td class="n">1.074</td><td class="n">1.143</td></tr>
+  </table></div>
+  <h3>v2로 줄어든 cycle</h3>
+  <div class="tbl"><table>
+    <tr><th>바꾼 프로그램</th><th class="n">single</th><th class="n">ID</th><th class="n">EX</th></tr>
+    <tr><td><code>int8_opt64</code> → <code>int8_opt64v2</code></td><td class="n">−2.2%</td><td class="n">−3.9%</td><td class="n">−5.4%</td></tr>
+    <tr><td><code>int8_fast</code> → <code>int8_fastv2</code></td><td class="n">−0.2%</td><td class="n">−0.3%</td><td class="n">−0.9%</td></tr>
+  </table></div>
+  <p class="note">EX + <code>int8_fastv2</code>의 case별 cycle은 586 ~ 682다.</p>
+</section>
+
+<section id="ppa">
+  <h2>PPA 결과</h2>
+  <p>공식 flow, 공개 16 case. 막대는 T의 길이다(짧을수록 좋다).</p>
+  <div class="tbl"><table id="ppa-table">
+    <tr><th>CPU</th><th>프로그램</th><th class="n">주기 ns</th><th class="n">f MHz</th><th class="n">평균 cycle</th><th>T µs</th><th class="n">A 전체 µm²</th><th class="n">P 전체 mW</th><th class="n">표 내 점수</th></tr>
+  </table></div>
+  <p class="warn"><b>표 내 점수는 발표에서 점수로 말하면 안 된다.</b> 이 15개 행끼리만 비교한 <code>12.5·T_best/T + 6.25·A_best/A + 6.25·P_best/P</code>이고, 실제 점수는 다른 팀의 최솟값이 기준이다. 조합을 고른 근거로만 쓴다.</p>
+  <p class="note"><code>int8_small</code> 세 행은 11-10 실행, 나머지 12행은 11-11 실행이다. 두 실행에서 겹치는 조합의 값은 모두 같았다.</p>
+
+  <h3>면적 내역 (µm²)</h3>
+  <div class="tbl"><table>
+    <tr><th>CPU</th><th class="n">CPU cell</th><th class="n">+ IMEM 64 (8713.50) + DMEM (50667.68)</th><th class="n">+ IMEM 256 (27352.30) + DMEM</th></tr>
+    <tr><td>single</td><td class="n">18152.49</td><td class="n">77533.67</td><td class="n">96172.47</td></tr>
+    <tr><td>ID</td><td class="n">22837.38</td><td class="n">82218.56</td><td class="n">100857.36</td></tr>
+    <tr><td>EX</td><td class="n">22322.99</td><td class="n">81704.17</td><td class="n">100342.97</td></tr>
+  </table></div>
+  <p>EX + <code>int8_fastv2</code>에서 메모리가 전체 면적의 77.8%다. 그래서 CPU 구조를 바꿔도 A는 5% 안에서만 움직인다.</p>
+
+  <h3>전력 내역 (mW)</h3>
+  <div class="tbl"><table id="power-table">
+    <tr><th>CPU</th><th>프로그램</th><th class="n">CPU</th><th class="n">메모리 동적</th><th class="n">메모리 정적</th><th class="n">전체</th></tr>
+  </table></div>
+  <p class="note">전력은 배치·배선 전 추정값이다(case별 RTL SAIF를 같은 합성 결과에 입혀 cycle 가중 평균).</p>
+</section>
+
+<section id="path">
+  <h2>주기를 결정하는 경로</h2>
+  <p>setup 보고서에서 확인한 가장 느린 경로다.</p>
+  <div class="tbl"><table>
+    <tr><th>CPU</th><th class="n">주기</th><th>가장 느린 경로</th><th class="n">도착 시각</th></tr>
+    <tr><td>single</td><td class="n">3.82 ns</td><td><code>INSTR</code> 입력 → 레지스터 읽기 → ALU 덧셈기 → <code>ALURESULT</code> 출력</td><td class="n">2.7192 ns</td></tr>
+    <tr><td>ID</td><td class="n">2.36 ns</td><td>MEM 결과 → EX 포워딩 → ALU 뺄셈기 → ID 비교기로 포워딩 → 분기 판정 → PC 선택 → <code>PC</code></td><td class="n">2.2077 ns</td></tr>
+    <tr><td>EX</td><td class="n">1.62 ns</td><td><code>PCE</code> 레지스터 → 분기 목표 덧셈기 → PC 선택 → <code>PC</code></td><td class="n">1.4653 ns</td></tr>
+  </table></div>
+  <ul>
+    <li><b>single</b>: 입력 지연 1.00 ns와 출력 지연 1.00 ns가 한 경로에 같이 들어간다. 3.82 ns 중 공통 SDC가 가져가는 몫이 2.00 ns다.</li>
+    <li><b>ID</b>: 같은 cycle 안에 "EX의 ALU 결과 → ID의 같음 비교 → PC 선택"이 이어진다. 분기 손실을 1 cycle로 줄인 대가다.</li>
+    <li><b>EX</b>: 남은 경로는 레지스터에서 레지스터로 가는 덧셈기 하나다. ALU와 분기 판정은 더 이상 최악 경로가 아니다.</li>
+  </ul>
+</section>
+
+<section id="reading">
+  <h2>발표에서 쓸 해석</h2>
+  <p class="note">아래 비교는 <code>int8_fastv2</code> 기준이다.</p>
+  <ul>
+    <li><b>EX가 T에서 이긴다.</b> EX는 single보다 cycle이 14.3% 많지만 주기가 2.36배 짧다(3.82 → 1.62 ns). T는 2.06배 짧다.</li>
+    <li><b>ID는 cycle이 적어도 주기에서 진다.</b> ID는 EX보다 cycle이 6.0% 적지만 주기가 45.7% 길어서 T가 36.9% 길다(1.3980 대 1.0210 µs).</li>
+    <li><b>P는 EX가 가장 나쁘다.</b> single의 2.20배다. 클럭이 빨라진 만큼 초당 스위칭이 늘기 때문이다.</li>
+    <li><b>한 번 실행에 드는 에너지(P × T)는 셋이 비슷하다.</b> single 14.74 nJ, ID 16.04 nJ, EX 15.73 nJ. 채점 항목은 아니고 위 표에서 계산한 값이다.</li>
+    <li><b>256 구간 프로그램을 고른 이유.</b> EX에서 <code>int8_opt64v2</code> 대신 <code>int8_fastv2</code>를 쓰면 A가 22.8%, P가 30.0% 늘지만 T가 18.9% 줄고 T 배점이 A·P의 두 배다. 다만 v2로 차이가 좁혀져서(표 내 점수 19.47 대 18.85), A·P가 아주 작은 팀이 있으면 순서가 바뀔 수 있다.</li>
+    <li><b>v2의 효과는 분기가 많은 프로그램에서 크다.</b> <code>int8_opt64</code>는 EX에서 5.4% 줄었고, 이미 분기를 펼쳐 놓은 <code>int8_fast</code>는 0.9%만 줄었다.</li>
+  </ul>
+</section>
+
+<section id="period">
+  <h2>주기를 정한 방법</h2>
+  <p>후보 주기마다 공식 <code>synth/run_ppa.tcl</code>과 같은 순서·같은 <code>compile</code>로 합성해 setup·hold slack이 둘 다 0 이상인 가장 짧은 주기를 골랐다. <code>compile_ultra</code>는 쓰지 않았다. 고른 주기로 공식 flow를 돌렸을 때 slack이 탐색 값과 소수 넷째 자리까지 같았다.</p>
+  <p>1차 탐색(0.05 ~ 0.30 ns 간격)에서 통과한 최소 주기는 single 3.90, ID 2.40, EX 1.70 ns였고, 그 아래를 0.02 ns 간격으로 다시 탐색했다.</p>
+  <div class="cols">
+    <div><h3>single</h3><div class="tbl"><table>
+      <tr><th class="n">주기 ns</th><th class="n">setup slack</th><th class="c">판정</th></tr>
+      <tr><td class="n">3.90</td><td class="n">0.0005</td><td class="c"><span class="pill ok">통과</span></td></tr>
+      <tr><td class="n">3.88</td><td class="n">0.0020</td><td class="c"><span class="pill ok">통과</span></td></tr>
+      <tr><td class="n">3.86</td><td class="n">−0.0020</td><td class="c"><span class="pill bad">실패</span></td></tr>
+      <tr><td class="n">3.84</td><td class="n">−0.0037</td><td class="c"><span class="pill bad">실패</span></td></tr>
+      <tr class="best"><td class="n">3.82</td><td class="n">0.0008</td><td class="c"><span class="pill ok">통과</span></td></tr>
+      <tr><td class="n">3.80</td><td class="n">−0.0000</td><td class="c"><span class="pill bad">실패</span></td></tr>
+    </table></div></div>
+    <div><h3>ID</h3><div class="tbl"><table>
+      <tr><th class="n">주기 ns</th><th class="n">setup slack</th><th class="c">판정</th></tr>
+      <tr><td class="n">2.40</td><td class="n">0.0016</td><td class="c"><span class="pill ok">통과</span></td></tr>
+      <tr><td class="n">2.38</td><td class="n">0.0008</td><td class="c"><span class="pill ok">통과</span></td></tr>
+      <tr class="best"><td class="n">2.36</td><td class="n">0.0003</td><td class="c"><span class="pill ok">통과</span></td></tr>
+      <tr><td class="n">2.34</td><td class="n">−0.0006</td><td class="c"><span class="pill bad">실패</span></td></tr>
+      <tr><td class="n">2.32</td><td class="n">−0.0055</td><td class="c"><span class="pill bad">실패</span></td></tr>
+      <tr><td class="n">2.30</td><td class="n">−0.0019</td><td class="c"><span class="pill bad">실패</span></td></tr>
+    </table></div></div>
+    <div><h3>EX</h3><div class="tbl"><table>
+      <tr><th class="n">주기 ns</th><th class="n">setup slack</th><th class="c">판정</th></tr>
+      <tr><td class="n">1.70</td><td class="n">0.0031</td><td class="c"><span class="pill ok">통과</span></td></tr>
+      <tr><td class="n">1.68</td><td class="n">0.0007</td><td class="c"><span class="pill ok">통과</span></td></tr>
+      <tr><td class="n">1.66</td><td class="n">0.0002</td><td class="c"><span class="pill ok">통과</span></td></tr>
+      <tr><td class="n">1.64</td><td class="n">−0.0014</td><td class="c"><span class="pill bad">실패</span></td></tr>
+      <tr class="best"><td class="n">1.62</td><td class="n">0.0026</td><td class="c"><span class="pill ok">통과</span></td></tr>
+      <tr><td class="n">1.60</td><td class="n">−0.0000</td><td class="c"><span class="pill bad">실패</span></td></tr>
+    </table></div></div>
+  </div>
+  <p class="note">hold slack은 모든 주기에서 0.1030 ns 이상이다. 색칠한 행이 고른 주기다.</p>
+  <ul>
+    <li><b>통과가 주기 순서대로 나오지 않는 이유.</b> 합성이 목표 주기마다 다른 회로를 만들기 때문이다(EX: 1.64 실패, 1.62 통과). 한계 근처에서는 slack이 0 주변 수 ps 안에서 흔들린다.</li>
+    <li><b>재현성.</b> 같은 RTL·같은 flow·같은 툴이면 결과가 같다. 11-10과 11-11 두 번의 실행에서 slack과 면적이 같았다.</li>
+    <li><b>주기는 소수 둘째 자리까지만 쓴다.</b> TB 시간 단위가 1 fs라서 반주기가 fs로 나누어떨어져야 공식 flow의 "cycle × 주기 = 실행 구간" 검사를 통과한다.</li>
+  </ul>
+</section>
+
+<section id="verify">
+  <h2>검증</h2>
+  <div class="tbl"><table>
+    <tr><th>어디서</th><th>무엇을</th><th>결과</th></tr>
+    <tr><td class="nw">서버, 공식 flow</td><td>15개 조합 각각 공개 16 case</td><td>모두 16/16 PASS, timing PASS</td></tr>
+    <tr><td class="nw">로컬 ModelSim</td><td>세 CPU에서 프로그램 4종(기준, small, opt64, fast) × 16 case, 실행 도중 RESET 재인가, 해저드 지향 시험, 무작위 프로그램 150개를 ISA 모델과 store 순서·주소·데이터·최종 DMEM까지 비교</td><td>CPU마다 219/219 일치</td></tr>
+    <tr><td class="nw">로컬 ModelSim</td><td>v2 프로그램 2종을 세 CPU에서 공개 16 case, Python ISA 모델 16 case</td><td>모두 PASS</td></tr>
+    <tr><td class="nw">로컬 ModelSim</td><td>개선한 ID 판과 개선 전 ID 판의 cycle 수</td><td>219개 실행 모두 같음</td></tr>
+    <tr><td class="nw">계약 검사</td><td><code>tools/check_release.py</code>: TOP 48 포트, 합성 목록(CPU RTL 3개), 공통 SDC</td><td>통과</td></tr>
+  </table></div>
+</section>
+
+<section id="caution">
+  <h2>말할 때 조심할 것</h2>
+  <ul>
+    <li>숫자는 공개 16 case 기준이다. 공식 성적은 비공개 8개를 더한 24 case로 따로 나온다.</li>
+    <li>타이밍 여유가 EX 2.6 ps, single 0.8 ps, ID 0.3 ps다. RTL을 한 줄이라도 고치면 주기를 다시 탐색해야 한다.</li>
+    <li>R1.3a 이전 flow(<code>compile_ultra</code>, 옛 SDC)로 얻은 숫자(예: 2.1 ns, 1.7 ns)는 조건이 달라 이 표와 섞어 쓰면 안 된다. <code>PRESENTATION_COMPARE_KO.md</code>가 그 옛 자료다.</li>
+    <li>기본 8명령만 구현했다. 선택 확장 명령과 M 확장은 쓰지 않았다.</li>
+  </ul>
+</section>
+
+<section id="todo">
+  <h2>남은 일</h2>
+  <ul>
+    <li>제출 폴더 <code>Project1_INT8_R1p4_20261103</code>의 <code>rtl/CORE.v</code>는 아직 개선 전 ID 판이고 주기도 4.00 ns다. EX로 제출하려면 <code>1110_pipeline_EX</code>의 <code>rtl/CORE.v</code>, <code>synth/common.sdc</code>(주기 1.62), <code>programs/int8_fastv2.*</code>를 옮기고 공식 flow를 한 번 더 돌려야 한다.</li>
+    <li>제출 마감은 2026-11-17(화) 09:00, 발표는 같은 날, 동료 평가는 23:59까지다.</li>
+  </ul>
+</section>
+
+<section id="source">
+  <h2>원본 위치</h2>
+  <p>서버 결과 전체가 <code>Project_1/1110 tests/1112 tests 7/1110_compare.tar</code>에 들어 있다. 아래는 tar 안의 경로다.</p>
+  <div class="tbl"><table>
+    <tr><th>자료</th><th>위치</th></tr>
+    <tr><td>실행 로그</td><td><code>1110_compare/run_all_v2.log</code> (11-11, v2 포함 12개 조합), <code>run_all.log</code> (11-10, 주기 탐색과 <code>int8_small</code>)</td></tr>
+    <tr><td>비교표 (12개 조합)</td><td><code>1110_compare/results/summary.md</code>, <code>summary.csv</code></td></tr>
+    <tr><td>조합별 공식 결과</td><td><code>1110_compare/&lt;CPU 폴더&gt;/comparisons/&lt;프로그램&gt;_P&lt;주기&gt;/</code></td></tr>
+    <tr><td><code>int8_small</code>의 공식 결과</td><td><code>1110_compare/&lt;CPU 폴더&gt;/comparisons.prev.1111_*/</code></td></tr>
+    <tr><td>0.02 ns 간격 탐색 표</td><td><code>Project_1/1110 tests/1110 test 6 last terminal output.txt</code> 끝부분</td></tr>
+    <tr><td>일괄 실행 스크립트</td><td><code>1110_compare/run_all.sh</code></td></tr>
+    <tr><td>EX + <code>int8_fastv2</code>의 fingerprint</td><td><code>6c86481c07015e83d969e142fee0115345167ec06d2fd5005c384d04662a01df</code></td></tr>
+    <tr><td>같은 내용의 Markdown</td><td><code>Project_1/PRESENTATION_1110_KO.md</code></td></tr>
+  </table></div>
+</section>
+</div>
+
+<script>
+// [cpu, program, period, f, cycles, T, A, P, score, Pcpu, Pdyn, Pstatic]
+var ROWS = [
+  ["single","int8_small","3.82","261.78","729.5000",2.7867,"77533.67","5.2745","17.08","3.2472","0.8398","1.1876"],
+  ["single","int8_opt64","3.82","261.78","677.8750",2.5895,"77533.67","5.3181","17.38","3.2712","0.8592","1.1876"],
+  ["single","int8_opt64v2","3.82","261.78","663.1250",2.5331,"77533.67","5.3109","17.50","3.2579","0.8654","1.1876"],
+  ["single","int8_fast","3.82","261.78","552.5000",2.1105,"96172.47","6.9959","15.80","3.2651","2.1705","1.5604"],
+  ["single","int8_fastv2","3.82","261.78","551.5000",2.1067,"96172.47","6.9973","15.81","3.2658","2.1711","1.5604"],
+  ["ID","int8_small","2.36","423.73","831.3750",1.9620,"82218.56","8.8657","16.12","6.3167","1.3614","1.1876"],
+  ["ID","int8_opt64","2.36","423.73","751.1250",1.7727,"82218.56","8.9327","16.78","6.3657","1.3793","1.1876"],
+  ["ID","int8_opt64v2","2.36","423.73","721.6250",1.7030,"82218.56","8.9382","17.08","6.3792","1.3714","1.1876"],
+  ["ID","int8_fast","2.36","423.73","594.3750",1.4027,"100857.36","11.5112","16.77","6.4392","3.5116","1.5604"],
+  ["ID","int8_fastv2","2.36","423.73","592.3750",1.3980,"100857.36","11.4706","16.81","6.4338","3.4764","1.5604"],
+  ["EX","int8_small","1.62","617.28","929.2500",1.5054,"81704.17","11.8007","17.20","8.6248","1.9883","1.1876"],
+  ["EX","int8_opt64","1.62","617.28","821.3750",1.3306,"81704.17","11.8878","18.30","8.7022","1.9979","1.1876"],
+  ["EX","int8_opt64v2","1.62","617.28","777.1250",1.2589,"81704.17","11.8581","18.85","8.7067","1.9638","1.1876"],
+  ["EX","int8_fast","1.62","617.28","636.2500",1.0307,"100342.97","15.5594","19.33","8.8349","5.1641","1.5604"],
+  ["EX","int8_fastv2","1.62","617.28","630.2500",1.0210,"100342.97","15.4104","19.47","8.8303","5.0197","1.5604"]
+];
+function cell(tr, text, cls) { var td = document.createElement("td"); if (cls) td.className = cls; td.textContent = text; tr.appendChild(td); return td; }
+function progCell(tr, name) { var td = document.createElement("td"); td.className = "nw"; var c = document.createElement("code"); c.textContent = name; td.appendChild(c); tr.appendChild(td); }
+var ppa = document.getElementById("ppa-table"), pw = document.getElementById("power-table"), prev = "";
+ROWS.forEach(function (r) {
+  var best = r[0] === "EX" && r[1] === "int8_fastv2", grp = prev && prev !== r[0]; prev = r[0];
+  var cls = (best ? "best " : "") + (grp ? "grp" : "");
+  var a = document.createElement("tr"); a.className = cls;
+  cell(a, r[0]); progCell(a, r[1]); cell(a, r[2], "n"); cell(a, r[3], "n"); cell(a, r[4], "n");
+  var t = document.createElement("td"); t.className = "barcell";
+  var num = document.createElement("span"); num.className = "num"; num.textContent = r[5].toFixed(4);
+  var bar = document.createElement("span"); bar.className = "bar"; bar.style.width = (r[5] / 2.7867 * 110).toFixed(1) + "px";
+  t.appendChild(num); t.appendChild(bar); a.appendChild(t);
+  cell(a, r[6], "n"); cell(a, r[7], "n"); cell(a, r[8], "n"); ppa.appendChild(a);
+  var b = document.createElement("tr"); b.className = cls;
+  cell(b, r[0]); progCell(b, r[1]); cell(b, r[9], "n"); cell(b, r[10], "n"); cell(b, r[11], "n"); cell(b, r[7], "n"); pw.appendChild(b);
+});
+</script>
+</body>
+</html>
