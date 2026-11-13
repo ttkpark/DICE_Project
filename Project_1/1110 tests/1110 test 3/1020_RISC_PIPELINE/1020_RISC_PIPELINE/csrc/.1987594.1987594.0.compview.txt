@@ -1,9 +1,0 @@
-{"vcs1":{"timestamp_begin":1794276011.185819898, "rt":1.04, "ut":0.11, "st":0.07}}
-{"vcselab":{"timestamp_begin":1794276012.284214036, "rt":0.30, "ut":0.11, "st":0.02}}
-{"link":{"timestamp_begin":1794276012.623393917, "rt":0.14, "ut":0.09, "st":0.06}}
-{"SNPS_VCS_INTERNAL_ROOT_START_TIME": 1794276010.904420313}
-{"VCS_COMP_START_TIME": 1794276010.904420313}
-{"VCS_COMP_END_TIME": 1794276012.817440855}
-{"VCS_USER_OPTIONS": "-full64 -timescale=1ns/1ps -top TB_TOP_DEMO rtl/TOP.v rtl/CORE.v rtl/CONTROLLER.v rtl/IMEM.v rtl/DMEM.v sim/MEMORY_POWER.v sim/tb_top_demo.v -o build/simv -l build/compile.log"}
-{"vcs1": {"peak_mem": 384028}}
-{"vcselab": {"peak_mem": 240776}}

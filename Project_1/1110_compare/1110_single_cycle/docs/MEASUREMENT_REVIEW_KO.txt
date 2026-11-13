@@ -1,9 +1,0 @@
-R1.4 측정 결과 확인 항목
-
-1. 기능: 공식 고정 덱의 Y/DONE·입력 보존·timeout·ISA·예약 포트 조건 확인. 공개 16개 PASS와 공식 24개 PASS 구분.
-2. 경계: TOP 안에 메모리 없음. synth/rtl.f에 CPU만 포함. black box나 unresolved reference 없음.
-3. 환경: SAED32 RVT SS 0.95V 125°C. report_units의 ns/fF 확인. 팀별 변경은 clock period만.
-4. timing: RESET은 compile 후에만 0 case analysis. 실제 setup/hold path·slack과 check_timing/constraints 보고서를 확인. 빈 보고서를 PASS로 해석하지 않음.
-5. activity: 같은 RTL·program·SDC로 만든 case별 active-window VCD/SAIF. reset 대기·park 제외. TB_TOP/dut 이름 매핑과 annotation의 누락 항목 조교 확인.
-6. power: 같은 mapped netlist에서 case별 CPU 평균전력. cycle 가중 평균과 별도 SRAM 비용의 합산 확인. vectorless 또는 누락 activity 결과는 실제 측정값으로 대체하지 않음.
-7. 재현: 로그·source fingerprint·도구 버전·library/corner·프로그램·선언 주기 일치 확인. 로컬 RELEASE_VALIDATION은 상용 도구 실측 결과가 아님.

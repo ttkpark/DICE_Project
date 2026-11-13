@@ -1,5 +1,0 @@
-DC 실행기: dc_shell_queue
-==== PERIOD 4.0 ns (250.0 MHz) 합성 중 ... (dc_P4.0.log)
-
-period   MHz       setup_slack hold_slack  area_um2     power
-4.0      250.0     0.36        0.15        24469.747184 Total Dynamic Power = 2.3646 mW (100%) Cell Leakage Power = 1.3927 mW 

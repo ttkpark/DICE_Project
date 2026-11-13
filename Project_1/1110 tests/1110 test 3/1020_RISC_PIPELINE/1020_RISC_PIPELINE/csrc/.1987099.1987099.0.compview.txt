@@ -1,9 +1,0 @@
-{"vcs1":{"timestamp_begin":1794276009.298556650, "rt":0.35, "ut":0.08, "st":0.06}}
-{"vcselab":{"timestamp_begin":1794276009.703533627, "rt":0.48, "ut":0.10, "st":0.03}}
-{"link":{"timestamp_begin":1794276010.224840876, "rt":0.15, "ut":0.10, "st":0.06}}
-{"SNPS_VCS_INTERNAL_ROOT_START_TIME": 1794276009.052356385}
-{"VCS_COMP_START_TIME": 1794276009.052356385}
-{"VCS_COMP_END_TIME": 1794276010.802977694}
-{"VCS_USER_OPTIONS": "-full64 -timescale=1ns/1ps -top TB_CTRL rtl/CONTROLLER.v sim/tb_ctrl.v -o build/simv_ctrl -R -l build/tb_ctrl.log"}
-{"vcs1": {"peak_mem": 384772}}
-{"vcselab": {"peak_mem": 240756}}
