@@ -1,6 +1,12 @@
 # 팀 EX 작업본 · R1.7
 
-## 현재 상태 (2026-11-14, 박기호)
+## 4입력판 추가 측정 (2026-11-14)
+
+- 같은 EX RTL로 `int8_horner4`를 **1.52 ns**에서 측정했다. 공개 16/16 PASS, setup +0.000328541 ns, hold +0.102992 ns. **491.25 cycle, 0.746700 µs, 100,344.24 µm², 16.2857 mW**. [측정 결과와 재현 명령](measurements/R1p7_20261114/README.md#4입력-horner-프로그램-152-ns)
+- 4입력판의 코드와 HEX/LST는 `programs/`에 있다. 1.52 ns SDC와 해당 실행의 DDC·결과는 `measurements/R1p7_20261114/int8_horner4/`에 있다.
+- 아래의 발표자료와 `submission/Project1_TEAM_ID.zip`에는 기존 **`fastv2` 1.62 ns** 결과가 들어 있다. 4입력판을 제출하면 슬라이드와 ZIP의 프로그램·SDC·DDC·보고서를 같은 실행으로 맞춘다.
+
+## 기존 측정과 제출 초안 (2026-11-14, 박기호)
 
 - **R1.7 서버 측정 완료.** 이 폴더를 DICE에서 그대로 돌렸다(`int8_opt64v2` 먼저, `int8_fastv2` 마지막). 결과·명령·요약: [`measurements/R1p7_20261114/`](measurements/R1p7_20261114/README.md)
   - `int8_fastv2` (최종): 16/16 PASS, timing PASS (setup +0.0026 ns), T 1.021005 µs, A 100342.97 µm², P 15.4104 mW, DDC 416 KB, 계층 TOP > CORE > CONTROLLER

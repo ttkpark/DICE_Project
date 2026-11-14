@@ -1,0 +1,5 @@
+VCD to SAIF translator version V-2023.12-SP5 Synopsys, Inc.
+direct mapping all VCD instances
+processing header of VCD file: /home/dice/dice003/Project1_R1p7_Update_20261112/build/random_06.active.vcd
+processing value changes of VCD file: /home/dice/dice003/Project1_R1p7_Update_20261112/build/random_06.active.vcd
+generating backward SAIF file: /home/dice/dice003/Project1_R1p7_Update_20261112/build/random_06.saif
