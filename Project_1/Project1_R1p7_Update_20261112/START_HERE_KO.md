@@ -5,7 +5,8 @@
 - 같은 EX RTL로 `int8_horner4`를 **1.52 ns**에서 측정했다. 공개 16/16 PASS, setup +0.000328541 ns, hold +0.102992 ns. **491.25 cycle, 0.746700 µs, 100,344.24 µm², 16.2857 mW**. [측정 결과와 재현 명령](measurements/R1p7_20261114/README.md#4입력-horner-프로그램-152-ns)
 - 4입력판의 코드와 HEX/LST는 `programs/`에 있다. 1.52 ns SDC와 해당 실행의 DDC·결과는 `measurements/R1p7_20261114/int8_horner4/`에 있다.
 - **제출본은 4입력판이다 (2026-11-15).** `submission/Project1_TEAM_ID.zip`의 프로그램·SDC·DDC·보고서·로그·README·재현 스크립트를 이 `int8_horner4` 1.52 ns 실행으로 바꿨다. ZIP 안 RTL·SDC·HEX·도구의 SHA-256은 `results/simulation_manifest.json`의 기록과 같다.
-- **발표자료는 아직 `fastv2` 1.62 ns 수치다.** `presentation/project1.pptx`/`.pdf`와 ZIP 안의 사본 모두 그렇다. 슬라이드를 4입력판 수치로 고친 뒤 ZIP의 `presentation/`을 바꿔 넣는다.
+- **발표자료도 4입력판 수치로 바꿨다 (2026-11-15).** `presentation/project1.pptx`/`.pdf` 19장, ZIP 안의 사본도 같다. 결론·단계별 표(③ Horner·주기)·재현 명령·부록을 `int8_horner4` 1.52 ns 기준으로 고쳤고, 15개 조합 비교(1.62 ns 등)는 그대로 두고 최종 조합을 한 행·한 열로 덧붙였다. 수치는 `presentation/build/build_deck.js`의 `H4`에 있다.
+- **서버에서 다시 돌리기:** [서버 실행 가이드](docs/SERVER_RUN_HORNER4_KO.md). 1.52 ns SDC 적용부터 결과 비교, 오류 대처까지 적었다.
 
 ## 기존 측정과 제출 초안 (2026-11-14, 박기호)
 
