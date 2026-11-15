@@ -23,7 +23,7 @@ bash run_sim.sh --program programs/int8_fastv2.hex  && bash run_ppa.sh
 - 값은 앞선 측정과 끝자리까지 같다: `int8_fastv2` 는 R1.6 Tcl 실행(11-12), `int8_opt64v2` 는 R1.4 Tcl 비교 실험(11-11). R1.7 Tcl 은 R1.6 과 같고 RTL·주기도 같기 때문이다.
 - `logs/dc_ppa.log` 안의 `error "P1: ..."` 줄은 Tcl 스크립트 본문이 그대로 찍힌 것이고 실제 오류가 아니다. 두 실행 모두 `P1_PPA_COMPLETE` 로 끝났다.
 - 폴더마다 `results/`(ppa_summary·status·manifest, TOP_mapped.ddc/.v, TOP_normal_mode.sdc), `reports/`(setup, hold, cpu_area, cpu_hierarchy, case별 power·annotation), `logs/`(compile, case 16개, vcd2saif, dc_ppa).
-- 기존 제출 초안은 `int8_fastv2` 결과로 만든 `../../submission/Project1_TEAM_ID.zip`.
+- 제출 초안은 처음에 `int8_fastv2` 결과로 만들었고, 2026-11-15에 아래 `int8_horner4` 실행으로 바꿨다: `../../submission/Project1_TEAM_ID.zip`.
 
 ## 4입력 Horner 프로그램 (1.52 ns)
 

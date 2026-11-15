@@ -4,7 +4,8 @@
 
 - 같은 EX RTL로 `int8_horner4`를 **1.52 ns**에서 측정했다. 공개 16/16 PASS, setup +0.000328541 ns, hold +0.102992 ns. **491.25 cycle, 0.746700 µs, 100,344.24 µm², 16.2857 mW**. [측정 결과와 재현 명령](measurements/R1p7_20261114/README.md#4입력-horner-프로그램-152-ns)
 - 4입력판의 코드와 HEX/LST는 `programs/`에 있다. 1.52 ns SDC와 해당 실행의 DDC·결과는 `measurements/R1p7_20261114/int8_horner4/`에 있다.
-- 아래의 발표자료와 `submission/Project1_TEAM_ID.zip`에는 기존 **`fastv2` 1.62 ns** 결과가 들어 있다. 4입력판을 제출하면 슬라이드와 ZIP의 프로그램·SDC·DDC·보고서를 같은 실행으로 맞춘다.
+- **제출본은 4입력판이다 (2026-11-15).** `submission/Project1_TEAM_ID.zip`의 프로그램·SDC·DDC·보고서·로그·README·재현 스크립트를 이 `int8_horner4` 1.52 ns 실행으로 바꿨다. ZIP 안 RTL·SDC·HEX·도구의 SHA-256은 `results/simulation_manifest.json`의 기록과 같다.
+- **발표자료는 아직 `fastv2` 1.62 ns 수치다.** `presentation/project1.pptx`/`.pdf`와 ZIP 안의 사본 모두 그렇다. 슬라이드를 4입력판 수치로 고친 뒤 ZIP의 `presentation/`을 바꿔 넣는다.
 
 ## 기존 측정과 제출 초안 (2026-11-14, 박기호)
 
@@ -12,7 +13,7 @@
   - `int8_fastv2` (최종): 16/16 PASS, timing PASS (setup +0.0026 ns), T 1.021005 µs, A 100342.97 µm², P 15.4104 mW, DDC 416 KB, 계층 TOP > CORE > CONTROLLER
   - `int8_opt64v2`: 16/16 PASS, T 1.2589 µs, A 81704.17 µm², P 11.8581 mW
   - 두 값 모두 R1.4·R1.6 측정과 끝자리까지 같다.
-- **제출본:** [`submission/Project1_TEAM_ID.zip`](submission/Project1_TEAM_ID.zip) — 위 `int8_fastv2` 실행의 results·reports·logs·DDC + RTL·asm·SDC·도구·재현 스크립트·발표 슬라이드. 안의 `TEAM_ID` 폴더 이름만 팀 번호로 바꿔 다시 묶는다.
+- **제출본:** [`submission/Project1_TEAM_ID.zip`](submission/Project1_TEAM_ID.zip) — 11-15부터 위 4입력판(`int8_horner4`) 실행의 results·reports·logs·DDC + RTL·asm·SDC·도구·재현 스크립트·발표 슬라이드. 안의 `TEAM_ID` 폴더 이름만 팀 번호로 바꿔 다시 묶는다.
 - **발표:** [`presentation/project1.pptx`](presentation/project1.pptx) / `.pdf` 19장 (R1.7 명령·fingerprint 반영, 부록 E는 수업 명령만으로 재현). 다시 만들기: `cd presentation/build && npm install && node build_deck.js ../project1.pptx apply_theme.js` (PDF는 Windows PowerPoint에서 `powershell -File export.ps1 -Pptx ..\project1.pptx -Pdf <절대경로>\project1.pdf`)
 - **문서:** [팀 실험 정리 HTML](docs/PRESENTATION_1110_KO.html)에 "최종 실행·제출본", "서버에서 재현하기"(공식 2줄 판 + 수업 명령만으로 하는 판) 추가. [발표 지침](docs/발표_지침_KO.md), [통합 컨텍스트](docs/PROJECT1_CONTEXT_KO.md)(옛 자료 링크는 커밋 `ffaa3cd`).
 - **남은 일:** ① 제출 ZIP의 `TEAM_ID` → 팀 번호, ② 기준본 P 서버 측정(슬라이드 8 빈칸, 명령은 [발표 지침 §9](docs/발표_지침_KO.md)), ③ 발표 시간·피어리뷰 양식 확인. 마감 11-17(화) 09:00.
