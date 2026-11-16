@@ -105,9 +105,13 @@ git checkout synth/common.sdc
 저장소 없이 제출 ZIP과 수업 배포 ZIP 두 개만으로도 돌릴 수 있다. ZIP 안의 `run/reproduce.sh`가 R1.4 패키지를 새로 풀고 R1.7 업데이트를 적용한 뒤, 제출본의 RTL·SDC(1.52 ns)·프로그램·도구를 넣고 3절의 세 명령을 실행한다.
 
 ```bash
-unzip Project1_TEAM_ID.zip
-bash TEAM_ID/run/reproduce.sh ~/Project1_INT8_Release1p4_20261103.zip ~/Project1_R1p7_Update_20261112.zip ~/p1_repro
-diff ~/p1_repro/Project1_INT8_R1p4_20261103/results/ppa_summary.json TEAM_ID/results/ppa_summary.json && echo SAME
+unzip Project1_TEAM_01.zip
+bash TEAM_01/run/reproduce.sh ~/Project1_INT8_Release1p4_20261103.zip ~/Project1_R1p7_Update_20261112.zip ~/p1_repro
+R=~/p1_repro/Project1_INT8_R1p4_20261103
+diff <(grep -v fingerprint $R/results/ppa_summary.json) <(grep -v fingerprint TEAM_01/results/ppa_summary.json) && echo SAME
+grep fingerprint $R/results/ppa_summary.json     # 9b4281ce…d724 이면 정상
 ```
+
+fingerprint 한 줄은 다르게 나오는 것이 정상이다. 공식 R1.4 ZIP의 `cases/*` 48개는 줄바꿈이 CRLF이고, 저장소 사본(제출본 측정에 씀)은 git을 거쳐 LF다. fingerprint가 `cases/*`까지 해시하므로 공식 ZIP 재현은 `9b4281ce…d724`, 제출본은 `9497435a…73705`가 된다. 2026-11-15 PC에서 두 ZIP으로 같은 폴더를 만들어 확인했다: case의 CR만 지우면 `9497435a…`와 정확히 같고, RTL·SDC·HEX·TB·Tcl·도구 해시는 모두 제출본 기록과 같다. 숫자(cycle·T·A·P·slack)는 같아야 한다.
 
 이 스크립트는 `fastv2` 판에서 쓰던 것을 프로그램 이름과 주기만 바꾼 것이고, `horner4` 판으로는 아직 서버에서 돌려 보지 않았다.

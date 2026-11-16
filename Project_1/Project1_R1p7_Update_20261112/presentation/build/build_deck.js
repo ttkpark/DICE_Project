@@ -531,7 +531,7 @@ pres.addSection({ title: "부록" });
   const s = content("부록 D. 제출물 구성 (R1.5~R1.7 지침)", "부록", "R1.5~R1.7 공지에 따른 제출물 구성입니다. R1.6부터 results/TOP_mapped.ddc가 필수이고, 최종 PPA를 잰 바로 그 실행에서 나온 DDC와 측정 결과를 냅니다. 이 슬라이드 파일 자체가 presentation/project1.pptx로 들어갑니다. 선택 명령은 쓰지 않았으므로 단독 기능 시험 대상이 없습니다.", "부록");
   card(s, { x: 0.6, y: 1.5, w: 5.4, h: 4.45, fill: { color: C.text2 }, line: { color: C.text2 } });
   txt(s, [
-    "TEAM_ID/", "  README.txt", "  rtl/TOP.v  CORE.v  CONTROLLER.v", "  asm/int8_horner4.s  .hex  .lst", "  synth/common.sdc (1.52)  rtl.f",
+    "TEAM_01/  (1조)", "  README.txt", "  rtl/TOP.v  CORE.v  CONTROLLER.v", "  asm/int8_horner4.s  .hex  .lst", "  synth/common.sdc (1.52)  rtl.f",
     "  tools/  (Python 3.6용 공식 도구 3개)", "  run/reproduce.sh",
     "  results/ppa_summary.json  ppa_status.json", "          simulation_manifest.json", "          TOP_mapped.ddc   ← R1.6 필수", "          TOP_mapped.v  TOP_normal_mode.sdc",
     "  reports/ setup hold cpu_area", "          cpu_hierarchy  case별 power", "  logs/    compile  case 16개  dc_ppa", "  presentation/project1.pptx  .pdf",

@@ -4,7 +4,7 @@
 
 
 작성 2026-11-11, **2026-11-12 갱신** (v2 서버 측정 결과, R1.5·R1.6 명세 갱신, R1.6 반영 발표 슬라이드). 이 파일 하나로 프로젝트의 무엇·왜·어떻게·얼마나를 설명하고, 모든 숫자를 원본 파일로 따라갈 수 있게 모았다.
-**현재 발표본은 `Project1_발표_R1p6.pptx` / `.pdf`** (19장, 생성기 [`build/build_deck_r16.js`](../presentation/build/build_deck.js))이다. **제출본은 [`../제출/Project1_TEAM_ID.zip`](../submission/Project1_TEAM_ID.zip)**. 팀원용 요약·서버 재현 절차는 [PRESENTATION_1110_KO.html](https://github.com/ttkpark/DICE_Project/blob/ffaa3cd/Project_1/PRESENTATION_1110_KO.html). 발표 지침과 피어리뷰 대응표는 [발표_지침_KO.md](https://github.com/ttkpark/DICE_Project/blob/ffaa3cd/Project_1/%EB%B0%9C%ED%91%9C/%EB%B0%9C%ED%91%9C_%EC%A7%80%EC%B9%A8_KO.md). 지난 판 슬라이드는 `이전판/` 에 있다 (§12).
+**현재 발표본은 `Project1_발표_R1p6.pptx` / `.pdf`** (19장, 생성기 [`build/build_deck_r16.js`](../presentation/build/build_deck.js))이다. **제출본은 [`../제출/Project1_TEAM_01.zip`](../submission/Project1_TEAM_01.zip)**. 팀원용 요약·서버 재현 절차는 [PRESENTATION_1110_KO.html](https://github.com/ttkpark/DICE_Project/blob/ffaa3cd/Project_1/PRESENTATION_1110_KO.html). 발표 지침과 피어리뷰 대응표는 [발표_지침_KO.md](https://github.com/ttkpark/DICE_Project/blob/ffaa3cd/Project_1/%EB%B0%9C%ED%91%9C/%EB%B0%9C%ED%91%9C_%EC%A7%80%EC%B9%A8_KO.md). 지난 판 슬라이드는 `이전판/` 에 있다 (§12).
 
 - 링크는 이 폴더(`Project_1/발표/`) 기준 상대 경로다. `1110_compare.tar` 안 파일은 링크가 안 되므로 tar 내부 경로를 코드로 적는다. 꺼내 보려면 `tar xf ../1110_compare.tar 1110_compare/results/summary.md` 처럼 한다.
 - **숫자 규칙:** 발표 숫자는 모두 2026-11-10~11 서버에서 R1.4 공통 flow(R1.4 `run_ppa.tcl`)로 잰 **공개 16 case** 값이다(§6). R1.6 Tcl 로 다시 돌린 최종 실행도 같은 값이다(§10-1). 공식 성적은 숨김 8 case 를 더한 24 case 로 따로 나온다. R1.3a 이전 flow 의 숫자와는 섞지 않는다(§9).
@@ -269,7 +269,7 @@ hold slack 은 모든 주기에서 0.1030 ns 이상이다. 통과 여부가 주�
 | `PROJECT1_CONTEXT_KO.md` | 이 문서 |
 | [발표_지침_KO.md](https://github.com/ttkpark/DICE_Project/blob/ffaa3cd/Project_1/%EB%B0%9C%ED%91%9C/%EB%B0%9C%ED%91%9C_%EC%A7%80%EC%B9%A8_KO.md) | 수업 자료의 발표·제출 지침 모음 (일정, 배점, 평가 요소, 제출물 구성, 남은 일) |
 | **`Project1_발표_R1p6.pptx` / `.pdf`** | **현재 발표본.** 19장 (본문 14 + 부록 A~E), 발표자 노트 포함. R1.5 판에 R1.6 을 반영: 12 재현 명령·최종 fingerprint, 13 한계·예상 질문, 14 정리, 부록 D 실제 제출본 구조, 부록 E 수업 명령만으로 재현 |
-| [../제출/](../submission/) | **제출본** `TEAM_ID/` 폴더와 `Project1_TEAM_ID.zip` (97 파일): README, rtl, asm, synth, tools(Python 3.6용), run/reproduce.sh, results(DDC 포함), reports, logs, presentation. `TEAM_ID` 는 팀 번호로 바꿔서 낸다 |
+| [../제출/](../submission/) | **제출본** `TEAM_01/` 폴더와 `Project1_TEAM_01.zip` (97 파일): README, rtl, asm, synth, tools(Python 3.6용), run/reproduce.sh, results(DDC 포함), reports, logs, presentation. 1조라 팀 폴더는 `TEAM_01` |
 | `이전판/` | 지난 판: `Project1_발표_R1p5.*` (R1.6 반영 전, 11-12 16:01), `Project1_발표.*` (11-11 첫 판, `int8_fast` 9조합) |
 | [build/build_deck_r16.js](../presentation/build/build_deck.js) | 현재 발표본 생성기 (pptxgenjs 3.12.0). 맨 위 "수치" 블록만 고치면 된다. `BASE_P` 는 기준본 P 측정 후 채운다 |
 | [build/apply_theme.js](../presentation/build/apply_theme.js) | pptxgenjs 가 쓴 pptx 에 테마 색을 넣는 후처리 (생성기 두 번째 인자) |

@@ -8,7 +8,7 @@
 - **R1.6 공지** (2026-11-12): e-Campus 공지 "[Project 1 R1.6] 전체 계층 DDC 제출 및 공통 합성 Tcl 업데이트". R1.7(2026-11-12)은 서버 Python 3.12·`vcd2saif` 경로 자동 설정. 둘 다 [`RELEASE_NOTES_KO.md`](RELEASE_NOTES_KO.md)
 - **비교 주의사항**: [`PPA_비교_주의사항_KO.md`](PPA_비교_주의사항_KO.md)
 
-만든 슬라이드는 [`../presentation/project1.pptx`](../presentation/project1.pptx)(PDF 같이 있음, 19장)이고, 제출본은 [`../submission/Project1_TEAM_ID.zip`](../submission/Project1_TEAM_ID.zip)(폴더 이름 `TEAM_ID`를 팀 번호로 바꿀 것)이다. 슬라이드 생성기는 `../presentation/build/` (`npm install` 후 `node build_deck.js ../project1.pptx apply_theme.js`, PDF는 Windows PowerPoint로 `export.ps1`).
+만든 슬라이드는 [`../presentation/project1.pptx`](../presentation/project1.pptx)(PDF 같이 있음, 19장)이고, 제출본은 [`../submission/Project1_TEAM_01.zip`](../submission/Project1_TEAM_01.zip)(팀 폴더 `TEAM_01/`, 1조)이다. 슬라이드 생성기는 `../presentation/build/` (`npm install` 후 `node build_deck.js ../project1.pptx apply_theme.js`, PDF는 Windows PowerPoint로 `export.ps1`).
 
 ## 1. 일정과 형식
 

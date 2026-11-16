@@ -284,7 +284,7 @@ body { margin: 0; }
 <section id="todo">
   <h2>남은 일</h2>
   <ul>
-    <li><strong>R1.7 측정·제출본 완성 (2026-11-14).</strong> 이 작업 폴더를 서버에서 그대로 돌린 결과가 <code>measurements/R1p7_20261114/</code>에, 그 <code>int8_fastv2</code> 실행으로 만든 제출본이 <code>submission/Project1_TEAM_ID.zip</code>에 있다 (<a href="#final">최종 실행·제출본</a>). 남은 것은 <code>TEAM_ID</code>를 팀 번호로 바꾸는 일과 기준본 P 서버 측정(슬라이드 8)이다.</li>
+    <li><strong>R1.7 측정·제출본 완성 (2026-11-14).</strong> 이 작업 폴더를 서버에서 그대로 돌린 결과가 <code>measurements/R1p7_20261114/</code>에, 그 <code>int8_fastv2</code> 실행으로 만든 제출본이 <code>submission/Project1_TEAM_01.zip</code>에 있다 (<a href="#final">최종 실행·제출본</a>). 팀 폴더 이름은 <code>TEAM_01</code>(1조)로 정했다. 남은 것은 기준본 P 서버 측정(슬라이드 8)이다.</li>
     <li>값은 앞선 측정과 끝자리까지 같다: R1.6 Tcl 실행(11-12)과 R1.7 실행(11-14) 모두 T 1.021005 µs · A 100342.97 µm² · P 15.4104 mW · setup +0.00261915 / hold +0.114771 ns. R1.7 합성 Tcl은 R1.6과 같고 RTL·주기도 같기 때문이다.</li>
     <li>제출 마감은 2026-11-17(화) 09:00, 발표는 같은 날, 동료 평가는 23:59까지다.</li>
   </ul>
@@ -305,7 +305,7 @@ body { margin: 0; }
   </table></div>
   <p class="note">비교 후보 <code>int8_opt64v2</code>(63 word, IMEM 64): 777.125 cycle, T 1.2589425 µs, A 81704.17 µm², P 11.8581 mW, timing 같음. <code>measurements/R1p7_20261114/int8_opt64v2/</code>.</p>
   <h3>제출본</h3>
-  <p><code>submission/Project1_TEAM_ID.zip</code>. 압축을 풀면 <code>TEAM_ID/</code> 폴더가 나온다. 폴더 이름 <code>TEAM_ID</code>는 실제 팀 번호로 바꿔서 다시 묶어 낸다.</p>
+  <p><code>submission/Project1_TEAM_01.zip</code>. 압축을 풀면 <code>TEAM_01/</code> 폴더(1조)가 나온다.</p>
   <div class="tbl"><table>
     <tr><th>폴더</th><th>내용</th></tr>
     <tr><td><code>README.txt</code></td><td>설계·결과·폴더·재현 요약</td></tr>
@@ -468,7 +468,7 @@ P  cpu 8.8303 + mem_dyn 5.0197 + mem_static 1.5604 = 15.4104 mW</code></pre>
     <tr><td>일괄 실행 스크립트</td><td><code>1110_compare/run_all.sh</code></td></tr>
     <tr><td>EX + <code>int8_fastv2</code>의 fingerprint (R1.4 Tcl, 비교 실험)</td><td><code>6c86481c07015e83d969e142fee0115345167ec06d2fd5005c384d04662a01df</code></td></tr>
     <tr><td>R1.7 최종 측정 (이 작업 폴더)</td><td><code>measurements/R1p7_20261114/int8_fastv2/</code>, <code>int8_opt64v2/</code> (results, reports, logs, README)</td></tr>
-    <tr><td>제출본</td><td><code>submission/Project1_TEAM_ID.zip</code></td></tr>
+    <tr><td>제출본</td><td><code>submission/Project1_TEAM_01.zip</code></td></tr>
     <tr><td>발표 슬라이드와 생성기</td><td><code>presentation/project1.pptx</code>, <code>project1.pdf</code>, <code>presentation/build/</code></td></tr>
   </table></div>
 </section>
